@@ -7,6 +7,7 @@
     List<CategoryListDTO> list = (List<CategoryListDTO>) Model["list"];
     int CategoryID = (int)Model["CategoryID"];
     string? UserID = Context.Session.GetString("UserID");
+    string name = (string) Model["name"];
 }
 <section class="products section bg-gray">
     <div class="container-fluid">
@@ -14,7 +15,8 @@
             <div class="col-lg-12 title">
                 <div class="row" style="margin-left: 3%">
                     <form action="Home">
-                        Category:<select name="CategoryID" onchange="this.form.submit()">
+                        <input type="text" class="form-control" name="name" placeholder="Search" value="@name"/><br /><br />
+                        Category:<select name="CategoryID">
                             <option value="@null">ALL</option>
                             @foreach(CategoryListDTO DTO in list)
                             {
@@ -28,6 +30,7 @@
                                 }    
                             } 
                         </select>
+                        <button type="submit" class="btn btn-outline-primary ms-lg-2">Search</button>
                     </form>
 
                     <table class="table table-bordered">

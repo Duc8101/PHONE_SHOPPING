@@ -19,17 +19,28 @@ namespace MVC.Services
             }
             return null;
         }
-        private async Task<PagedResultDTO<ProductListDTO>?> getPagedResult(int? CategoryID, int? page)
+        private async Task<PagedResultDTO<ProductListDTO>?> getPagedResult(string? name, int? CategoryID, int? page)
         {
             int pageSelected = page == null ? 1 : page.Value;
             string URL = "https://localhost:7033/Product/List";
-            if(CategoryID == null)
+            if(CategoryID == null && name == null)
             {
                 URL = URL + "?page=" + pageSelected;
             }
             else
             {
-                URL = URL + "?CategoryID=" + CategoryID + "&page=" + pageSelected;
+                if(name == null)
+                {
+                    URL = URL + "?CategoryID=" + CategoryID;
+                }else if(CategoryID == null)
+                {
+                    URL = URL + "?name=" + name;
+                }
+                else
+                {
+                    URL = URL + "?name=" + name + "&CategoryID=" + CategoryID;
+                }
+                URL = URL +  "&page=" + pageSelected;
             }
             HttpResponseMessage response = await GetAsync(URL);
             string data = await getResponseData(response);
@@ -40,12 +51,12 @@ namespace MVC.Services
             }
             return null;
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, int? page)
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(string? name, int? CategoryID, int? page)
         {
             try
             {
                 List<CategoryListDTO>? list = await getListCategory();
-                PagedResultDTO<ProductListDTO>? paged = await getPagedResult(CategoryID, page);
+                PagedResultDTO<ProductListDTO>? paged = await getPagedResult(name, CategoryID, page);
                 if(list == null)
                 {
                     return new ResponseDTO<Dictionary<string, object>?>(null, "Get list category failed", (int)HttpStatusCode.InternalServerError);
@@ -58,6 +69,7 @@ namespace MVC.Services
                 result["result"] = paged;
                 result["list"] = list;
                 result["CategoryID"] = CategoryID == null ? 0 : CategoryID;
+                result["name"] = name == null ? "" : name.Trim();
                 return new ResponseDTO<Dictionary<string, object>?>(result, string.Empty);
             }
             catch (Exception ex)

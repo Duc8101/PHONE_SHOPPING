@@ -16,7 +16,7 @@ namespace API.Services
 
         }
 
-        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(int? CategoryID, int page)
+        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(string? name, int? CategoryID, int page)
         {
             int prePage = page - 1;
             int nextPage = page + 1;
@@ -26,7 +26,7 @@ namespace API.Services
             string lastURL;
             try
             {
-                int numberPage = await daoProduct.getNumberPage(CategoryID);
+                int numberPage = await daoProduct.getNumberPage(name, CategoryID);
                 // if not choose category
                 if (CategoryID == null)
                 {
@@ -42,7 +42,7 @@ namespace API.Services
                     firstURL = "/Home" + "?CategoryID=" + CategoryID;
                     lastURL = "/Home" + "?CategoryID=" + CategoryID + "&page=" + numberPage;
                 }
-                List<Product> listProduct = await daoProduct.getList(CategoryID, page);
+                List<Product> listProduct = await daoProduct.getList(name, CategoryID, page);
                 List<ProductListDTO> productDTOs = mapper.Map<List<ProductListDTO>>(listProduct);
                 PagedResultDTO<ProductListDTO> result = new PagedResultDTO<ProductListDTO>()
                 {
