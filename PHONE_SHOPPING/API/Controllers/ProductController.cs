@@ -1,6 +1,8 @@
 ﻿using API.Services;
+using DataAccess.DTO;
 using DataAccess.DTO.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Controllers
 {
@@ -15,11 +17,11 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<ProductListDTO>> List()
+        public async Task<ResponseDTO<Dictionary<string, object>?>> List(int? CategoryID, [Required] int page = 1)
         {
-            /* List<Product> list = context.Products.Include(p => p.Category).ToList();
-             List<ProductListDTO> result = mapper.Map<List<ProductListDTO>>(list);*/
-            return await service.List();
+            ResponseDTO<Dictionary<string, object>?> result = await service.List(CategoryID, page);
+            Response.StatusCode = result.Code;
+            return result;
         }
     }
 }

@@ -11,6 +11,8 @@
         public int NumberPage { get; set; }
         public string PRE_URL { get; set; } = null!;
         public string NEXT_URL { get; set; } = null!;
+        public string FIRST_URL { get; set; } = null!;
+        public string LAST_URL { get; set; } = null!;
 
     }
 }
