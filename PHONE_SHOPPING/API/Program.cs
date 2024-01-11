@@ -16,6 +16,7 @@ namespace API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<ProductService, ProductService>();
+            builder.Services.AddScoped<CategoryService, CategoryService>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var config = new MapperConfiguration(cfg =>
             {

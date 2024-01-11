@@ -17,9 +17,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ResponseDTO<Dictionary<string, object>?>> List(int? CategoryID, [Required] int page = 1)
+        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(int? CategoryID, [Required] int page = 1)
         {
-            ResponseDTO<Dictionary<string, object>?> result = await service.List(CategoryID, page);
+            ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await service.List(CategoryID, page);
             Response.StatusCode = result.Code;
             return result;
         }

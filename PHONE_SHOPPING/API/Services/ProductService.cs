@@ -11,13 +11,12 @@ namespace API.Services
     public class ProductService : BaseService
     {
         private readonly DAOProduct daoProduct = new DAOProduct();
-        private readonly DAOCategory daoCategory = new DAOCategory();
         public ProductService(IMapper mapper) : base(mapper)
         {
 
         }
 
-        public async Task<ResponseDTO<Dictionary<string, object>?>> List(int? CategoryID, int page)
+        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(int? CategoryID, int page)
         {
             int prePage = page - 1;
             int nextPage = page + 1;
@@ -45,7 +44,7 @@ namespace API.Services
                 }
                 List<Product> listProduct = await daoProduct.getList(CategoryID, page);
                 List<ProductListDTO> productDTOs = mapper.Map<List<ProductListDTO>>(listProduct);
-                PagedResultDTO<ProductListDTO> pagedDTO = new PagedResultDTO<ProductListDTO>()
+                PagedResultDTO<ProductListDTO> result = new PagedResultDTO<ProductListDTO>()
                 {
                     PageSelected = page,
                     Results = productDTOs,
@@ -54,17 +53,12 @@ namespace API.Services
                     NEXT_URL = nextURL,
                     FIRST_URL = firstURL,
                     NumberPage = numberPage,
-                };
-                List<Category> listCategory = await daoCategory.getList();
-                List<CategoryListDTO> categoryDTOs = mapper.Map<List<CategoryListDTO>>(listCategory);
-                Dictionary<string, object> result = new Dictionary<string, object>();
-                result["pagedResult"] = pagedDTO;
-                result["listCategory"] = categoryDTOs;
-                return new ResponseDTO<Dictionary<string, object>?>(result, string.Empty);
+                };       
+                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int) HttpStatusCode.InternalServerError);
+                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, ex.Message + " " + ex, (int) HttpStatusCode.InternalServerError);
             }
         }
     }
