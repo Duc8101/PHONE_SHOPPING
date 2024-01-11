@@ -1,8 +1,86 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using DataAccess.DTO;
+@using DataAccess.DTO.CategoryDTO;
+@using DataAccess.DTO.ProductDTO;
+@model Dictionary<string,object>
+@{
+    PagedResultDTO<ProductListDTO> result = (PagedResultDTO<ProductListDTO>) Model["result"];
+    List<CategoryListDTO> list = (List<CategoryListDTO>) Model["list"];
+    int CategoryID = (int)Model["CategoryID"];
+    string? UserID = Context.Session.GetString("UserID");
 }
+<section class="products section bg-gray">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 title">
+                <div class="row" style="margin-left: 3%">
+                    <form action="Home">
+                        Category:<select name="CategoryID" onchange="this.form.submit()">
+                            <option value="@null">ALL</option>
+                            @foreach(CategoryListDTO DTO in list)
+                            {
+                                if (DTO.Id == CategoryID)
+                                {
+                                    <option value="@DTO.Id" selected>@DTO.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@DTO.Id">@DTO.Name</option>
+                                }    
+                            } 
+                        </select>
+                    </form>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Image</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Category Name</th>
+                                <th>Add Cart</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(ProductListDTO DTO in result.Results)
+                            {
+                                <tr>
+                                    <td>@DTO.ProductName</td>
+                                    <td>
+                                        <img src="@DTO.Image" height="50" width="50" alt="">
+                                    </td>
+                                    <td>@DTO.Price</td>
+                                    <td>@DTO.Quantity</td>
+                                    <td>@DTO.CategoryName</td>
+                                    <td>
+                                        <button class="posision-fixed" style="radius: 10px">
+                                            <a href="/Cart/List?ProductID=@DTO.ProductId&UserID=@UserID">
+                                                Add to Cart
+                                            </a>
+                                        </button>                                   
+                                    </td>
+                                </tr>
+                            }             
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+
+        </div>
+        
+        @if(result.NumberPage > 1)
+        {
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center list-group" style="margin-left: 50%">
+                    <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.FIRST_URL" aria-disabled="true" role="button">First</a></li>
+                    <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.Results" aria-disabled="true" role="button">Previous</a></li>
+                    <li class="page-item"><a href="" class="page-link btn btn-primary btn-lg">@result.PageSelected/@result.NumberPage</a></li>
+                    <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.NEXT_URL" aria-disabled="true" role="button">Next</a></li>
+                    <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.LAST_URL" aria-disabled="true" role="button">Last</a></li>
+                </ul>
+            </nav>
+        } 
+    </div>
+</section>
