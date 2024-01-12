@@ -27,6 +27,9 @@ namespace MVC.Controllers
                 }
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
+            HttpContext.Session.SetString("UserID", UserID);
+            HttpContext.Session.SetString("username", response.Data.Username);
+            HttpContext.Session.SetInt32("role", response.Data.RoleId);
             return View();
         }
     }
