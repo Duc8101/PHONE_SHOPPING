@@ -38,18 +38,19 @@ namespace DataAccess.Entity
         {
             modelBuilder.Entity<Cart>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.ProductId, e.Quantity, e.IsCheckout })
-                    .HasName("PK__Cart__9F2C9EDBCA9455D5");
-
                 entity.ToTable("Cart");
 
-                entity.Property(e => e.UserId).HasColumnName("UserID");
+                entity.Property(e => e.CartId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("CartID");
+
+                entity.Property(e => e.IsCheckout).HasColumnName("isCheckout");
 
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
-                entity.Property(e => e.IsCheckout).HasColumnName("isCheckout");
+                entity.Property(e => e.UserId).HasColumnName("UserID");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Carts)
@@ -106,7 +107,7 @@ namespace DataAccess.Entity
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
-                    .HasName("PK__OrderDet__08D097C11B77CCFE");
+                    .HasName("PK__OrderDet__08D097C1960D9207");
 
                 entity.ToTable("OrderDetail");
 

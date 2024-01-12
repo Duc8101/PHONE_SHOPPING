@@ -3,6 +3,8 @@ using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services;
 using System.Net;
+using DataAccess.Entity;
+using Microsoft.AspNetCore.Http;
 
 namespace MVC.Controllers
 {
@@ -30,7 +32,34 @@ namespace MVC.Controllers
             HttpContext.Session.SetString("UserID", UserID);
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetInt32("role", response.Data.RoleId);
-            return View();
+            return Redirect("/Home");
         }
+
+        [HttpPost]
+        public async Task<ActionResult> Index(LoginDTO DTO)
+        {
+            ResponseDTO<UserDTO?> response = await service.Index(DTO);
+            if (response.Data == null)
+            {
+                if (response.Code == (int)HttpStatusCode.Conflict)
+                {
+                    ViewData["message"] = response.Message;
+                    return View();
+                }
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+            }
+            HttpContext.Session.SetString("UserID", response.Data.UserId.ToString());
+            HttpContext.Session.SetString("username", response.Data.Username);
+            HttpContext.Session.SetInt32("role", response.Data.RoleId);
+            CookieOptions option = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(1)
+            };
+            // add cookie
+            Response.Cookies.Append("UserID", response.Data.UserId.ToString(), option);
+            return Redirect("/Home");
+        }
+
+
     }
 }
