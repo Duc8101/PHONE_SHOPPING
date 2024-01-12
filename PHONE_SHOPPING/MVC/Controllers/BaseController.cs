@@ -8,5 +8,15 @@ namespace MVC.Controllers
         {
             return HttpContext.Session.GetInt32("role");
         }
+
+        protected string? getUsername()
+        {
+            return HttpContext.Session.GetString("username");
+        }
+
+        protected string? getUserID()
+        {
+            return HttpContext.Session.GetString("UserID");
+        }
     }
 }

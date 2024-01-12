@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
+using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 
 namespace API
@@ -12,6 +13,8 @@ namespace API
             CreateMap<Product, ProductListDTO>()
                 .ForMember(d => d.CategoryName, m => m.MapFrom(source => source.Category.Name));
             CreateMap<Category, CategoryListDTO>();
+            CreateMap<User, UserDTO>()
+                .ForMember(d => d.RoleName, m => m.MapFrom(source => source.Role.Name));
         }
     }
 }
