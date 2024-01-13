@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DataAccess.Entity
+﻿namespace DataAccess.Entity
 {
     public partial class Cart
     {

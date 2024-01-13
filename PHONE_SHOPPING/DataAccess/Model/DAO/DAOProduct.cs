@@ -31,5 +31,9 @@ namespace DataAccess.Model.DAO
             int count = await query.CountAsync();
             return (int)Math.Ceiling((double)count / PageSizeConst.MAX_PRODUCT_IN_PAGE);
         }
+        public async Task<Product?> getProduct(Guid ProductID)
+        {
+            return await context.Products.SingleOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+        }
     }
 }

@@ -1,0 +1,61 @@
+﻿@using DataAccess.DTO.CartDTO;
+@model List<CartListDTO>
+@{
+    decimal sum = 0;
+}
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content">
+                    <h1 class="page-name">Show Cart</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="user-dashboard page-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dashboard-wrapper user-dashboard">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Image</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                    <th class="col-md-2 col-sm-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (CartListDTO DTO in Model)
+                                {
+                                    <tr>
+                                        <td><a class="btn btn-link" href="/Cart/Create?ProductID=@DTO.ProductId">@DTO.ProductName</a></td>
+                                        <td><img src="@DTO.Image" alt="" width="50" height="50"></td>
+                                        <td>@DTO.Quantity</td>
+                                        <td>@DTO.Price</td>
+                                        <td>@(DTO.Price * DTO.Quantity)</td>
+                                        <td><a href="/Cart/Remove?ProductID=@DTO.ProductId" class="btn btn-danger" onclick="return confirm('Do you sure you want to remove?')"> Delete</a></td>
+                                    </tr>
+
+                                    sum = sum + DTO.Price * DTO.Quantity;
+                                }
+                            </tbody>
+                        </table>
+                        <h3>Total Amount: @sum</h3>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <a href="/Cart/Checkout" class="btn btn-success w-100 @(Model.Count == 0 ? "disabled" : "")" aria-disabled="true" role="button">check out</a>
+
+    </div>
+
+</section>
+
