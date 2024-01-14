@@ -111,5 +111,31 @@ namespace API.Services
                 return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO)
+        {
+            try
+            {
+                User? user = await daoUser.getUser(DTO.Email.Trim());
+                if (user == null)
+                {
+                    return new ResponseDTO<bool>(false, "Not found email", (int)HttpStatusCode.NotFound);
+                }
+                string newPw = UserUtil.RandomPassword();
+                string hashPw = UserUtil.HashPassword(newPw);
+                // get body email
+                string body = UserUtil.BodyEmailForForgetPassword(newPw);
+                // send email
+                await UserUtil.sendEmail("Welcome to PHONE SHOPPING", body, DTO.Email.Trim());
+                user.Password = hashPw;
+                user.UpdateAt = DateTime.Now;
+                await daoUser.UpdateUser(user);
+                return new ResponseDTO<bool>(true, "Password changed successful. Please check your email");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

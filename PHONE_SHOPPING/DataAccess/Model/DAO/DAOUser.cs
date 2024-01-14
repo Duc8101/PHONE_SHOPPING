@@ -28,5 +28,14 @@ namespace DataAccess.Model.DAO
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
         }
+        public async Task<User?> getUser(string email)
+        {
+            return await context.Users.SingleOrDefaultAsync(u => u.Email == email.Trim());
+        }
+        public async Task UpdateUser(User user)
+        {
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
+        }
     }
 }
