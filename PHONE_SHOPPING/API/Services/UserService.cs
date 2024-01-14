@@ -18,40 +18,40 @@ namespace API.Services
         {
 
         }
-        public async Task<ResponseDTO<UserDTO?>> Detail(Guid UserID)
+        public async Task<ResponseDTO<UserListDTO?>> Detail(Guid UserID)
         {
             try
             {
                 User? user = await daoUser.getUser(UserID);
                 if (user == null)
                 {
-                    return new ResponseDTO<UserDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO<UserListDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                UserDTO DTO = mapper.Map<UserDTO>(user);
-                return new ResponseDTO<UserDTO?>(DTO, string.Empty);
+                UserListDTO DTO = mapper.Map<UserListDTO>(user);
+                return new ResponseDTO<UserListDTO?>(DTO, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO<UserListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<UserDTO?>> Login(LoginDTO DTO)
+        public async Task<ResponseDTO<UserListDTO?>> Login(LoginDTO DTO)
         {
             try
             {
                 User? user = await daoUser.getUser(DTO);
                 if (user == null)
                 {
-                    return new ResponseDTO<UserDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO<UserListDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
                 }
-                UserDTO data = mapper.Map<UserDTO>(user);
-                return new ResponseDTO<UserDTO?>(data, string.Empty);
+                UserListDTO data = mapper.Map<UserListDTO>(user);
+                return new ResponseDTO<UserListDTO?>(data, string.Empty);
 
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO<UserListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -77,7 +77,7 @@ namespace API.Services
             }
         }
 
-        public async Task<ResponseDTO<bool>> Register(RegisterDTO DTO)
+        public async Task<ResponseDTO<bool>> Create(UserCreateDTO DTO)
         {
             try
             {

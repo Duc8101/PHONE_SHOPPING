@@ -19,7 +19,7 @@ namespace MVC.Controllers
             {
                 return View();
             }
-            ResponseDTO<UserDTO?> response = await service.Index(UserID);
+            ResponseDTO<UserListDTO?> response = await service.Index(UserID);
             // if get user failed
             if (response.Data == null)
             {
@@ -38,7 +38,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(LoginDTO DTO)
         {
-            ResponseDTO<UserDTO?> response = await service.Index(DTO);
+            ResponseDTO<UserListDTO?> response = await service.Index(DTO);
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)

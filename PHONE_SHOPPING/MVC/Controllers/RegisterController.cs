@@ -15,7 +15,7 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(RegisterDTO DTO)
+        public async Task<ActionResult> Index(UserCreateDTO DTO)
         {
             ResponseDTO<bool> response = await service.Register(DTO);
             if(response.Code == (int) HttpStatusCode.OK)

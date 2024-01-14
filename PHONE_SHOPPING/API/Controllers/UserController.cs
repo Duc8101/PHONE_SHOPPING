@@ -17,17 +17,17 @@ namespace API.Controllers
         }
 
         [HttpGet("{UserID}")]
-        public async Task<ResponseDTO<UserDTO?>> Detail([Required] Guid UserID)
+        public async Task<ResponseDTO<UserListDTO?>> Detail([Required] Guid UserID)
         {
-            ResponseDTO<UserDTO?> response = await service.Detail(UserID);
+            ResponseDTO<UserListDTO?> response = await service.Detail(UserID);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<UserDTO?>> Login([Required] LoginDTO DTO)
+        public async Task<ResponseDTO<UserListDTO?>> Login([Required] LoginDTO DTO)
         {
-            ResponseDTO<UserDTO?> response = await service.Login(DTO);
+            ResponseDTO<UserListDTO?> response = await service.Login(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -41,9 +41,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<bool>> Register([Required] RegisterDTO DTO)
+        public async Task<ResponseDTO<bool>> Create([Required] UserCreateDTO DTO)
         {
-            ResponseDTO<bool> response = await service.Register(DTO);
+            ResponseDTO<bool> response = await service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }

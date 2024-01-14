@@ -6,12 +6,12 @@ namespace MVC.Services
 {
     public class RegisterService : BaseService
     {
-        public async Task<ResponseDTO<bool>> Register(RegisterDTO DTO)
+        public async Task<ResponseDTO<bool>> Register(UserCreateDTO DTO)
         {
             try
             {
-                string URL = "https://localhost:7033/User/Register";
-                string requestData = getRequestData<RegisterDTO?>(DTO);
+                string URL = "https://localhost:7033/User/Create";
+                string requestData = getRequestData<UserCreateDTO?>(DTO);
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PostAsync(URL, content);
                 string responseData = await getResponseData(response);
