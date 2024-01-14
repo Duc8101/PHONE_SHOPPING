@@ -20,6 +20,8 @@ namespace API
                 .ForMember(d => d.ProductName, m => m.MapFrom(source => source.Product.ProductName))
                 .ForMember(d => d.Image, m => m.MapFrom(source => source.Product.Image))
                 .ForMember(d => d.Price, m => m.MapFrom(source => source.Product.Price));
+            CreateMap<RegisterDTO, User>()
+                .ForMember(d => d.Email, m => m.MapFrom(source => source.Email.Trim()));
         }
     }
 }

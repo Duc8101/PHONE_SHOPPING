@@ -19,5 +19,14 @@ namespace DataAccess.Model.DAO
             }
             return user;
         }
+        public async Task<bool> isExist(string username, string email)
+        {
+            return await context.Users.AnyAsync(u => u.Username == username || u.Email == email.Trim());
+        }
+        public async Task CreateUser(User user)
+        {
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+        }
     }
 }

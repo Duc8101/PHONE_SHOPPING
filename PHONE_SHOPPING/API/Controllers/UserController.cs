@@ -39,5 +39,13 @@ namespace API.Controllers
             Response.StatusCode = response.Code;
             return response;
         }
+
+        [HttpPost]
+        public async Task<ResponseDTO<bool>> Register([Required] RegisterDTO DTO)
+        {
+            ResponseDTO<bool> response = await service.Register(DTO);
+            Response.StatusCode = response.Code;
+            return response;
+        }
     }
 }
