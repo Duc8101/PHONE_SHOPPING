@@ -37,5 +37,10 @@ namespace DataAccess.Model.DAO
             context.Users.Update(user);
             await context.SaveChangesAsync();
         }
+        public async Task<bool> isExist(string email , Guid UserID)
+        {
+            return await context.Users.AnyAsync(u => u.Email == email.Trim() && u.UserId != UserID);
+        }
+
     }
 }

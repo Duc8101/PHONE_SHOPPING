@@ -5,6 +5,7 @@ using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
 using DataAccess.Model.DAO;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -18,40 +19,40 @@ namespace API.Services
         {
 
         }
-        public async Task<ResponseDTO<UserListDTO?>> Detail(Guid UserID)
+        public async Task<ResponseDTO<UserDetailDTO?>> Detail(Guid UserID)
         {
             try
             {
                 User? user = await daoUser.getUser(UserID);
                 if (user == null)
                 {
-                    return new ResponseDTO<UserListDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                UserListDTO DTO = mapper.Map<UserListDTO>(user);
-                return new ResponseDTO<UserListDTO?>(DTO, string.Empty);
+                UserDetailDTO DTO = mapper.Map<UserDetailDTO>(user);
+                return new ResponseDTO<UserDetailDTO?>(DTO, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO<UserDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<UserListDTO?>> Login(LoginDTO DTO)
+        public async Task<ResponseDTO<UserDetailDTO?>> Login(LoginDTO DTO)
         {
             try
             {
                 User? user = await daoUser.getUser(DTO);
                 if (user == null)
                 {
-                    return new ResponseDTO<UserListDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
                 }
-                UserListDTO data = mapper.Map<UserListDTO>(user);
-                return new ResponseDTO<UserListDTO?>(data, string.Empty);
+                UserDetailDTO data = mapper.Map<UserDetailDTO>(user);
+                return new ResponseDTO<UserDetailDTO?>(data, string.Empty);
 
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO<UserDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -135,6 +136,33 @@ namespace API.Services
             catch (Exception ex)
             {
                 return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<ResponseDTO<UserDetailDTO?>> Update([Required] Guid UserID, [Required] UserUpdateDTO DTO)
+        {
+            try
+            {
+                User? user = await daoUser.getUser(UserID);
+                if (user == null)
+                {
+                    return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                }
+                user.FullName = DTO.FullName.Trim();
+                user.Phone = DTO.Phone;
+                user.Email = DTO.Email.Trim();
+                UserDetailDTO data = mapper.Map<UserDetailDTO>(user);
+                if (await daoUser.isExist(DTO.Email.Trim(), UserID))
+                {
+                    return new ResponseDTO<UserDetailDTO?>(data, "Email has existed", (int)HttpStatusCode.Conflict);
+                }
+                user.UpdateAt = DateTime.Now;
+                await daoUser.UpdateUser(user);
+                return new ResponseDTO<UserDetailDTO?>(data, "Update successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<UserDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

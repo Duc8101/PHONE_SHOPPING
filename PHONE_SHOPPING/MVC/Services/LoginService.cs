@@ -12,57 +12,57 @@ namespace MVC.Services
 
         }
 
-        public async Task<ResponseDTO<UserListDTO?>> Index(string UserID)
+        public async Task<ResponseDTO<UserDetailDTO?>> Index(string UserID)
         {
             try
             {
                 string URL = "https://localhost:7033/User/Detail/" + UserID;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<UserListDTO?>? result = Deserialize<ResponseDTO<UserListDTO?>>(data);
+                ResponseDTO<UserDetailDTO?>? result = Deserialize<ResponseDTO<UserDetailDTO?>>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<UserListDTO?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO<UserDetailDTO?>(null, data, (int)response.StatusCode);
                 }
                 if (response.IsSuccessStatusCode)
                 {
-                    return new ResponseDTO<UserListDTO?>(result.Data, string.Empty);
+                    return new ResponseDTO<UserDetailDTO?>(result.Data, string.Empty);
                 }
-                return new ResponseDTO<UserListDTO?>(null, result.Message, (int)response.StatusCode);
+                return new ResponseDTO<UserDetailDTO?>(null, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserListDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO<UserDetailDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<UserListDTO?>> Index(LoginDTO DTO)
+        public async Task<ResponseDTO<UserDetailDTO?>> Index(LoginDTO DTO)
         {
             try
             {
                 if (DTO.Password == null)
                 {
-                    return new ResponseDTO<UserListDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
                 }
                 string URL = "https://localhost:7033/User/Login";
                 string requestData = getRequestData<LoginDTO?>(DTO);
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PostAsync(URL, content);
                 string data = await getResponseData(response);
-                ResponseDTO<UserListDTO?>? result = Deserialize<ResponseDTO<UserListDTO?>>(data);
+                ResponseDTO<UserDetailDTO?>? result = Deserialize<ResponseDTO<UserDetailDTO?>>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<UserListDTO?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO<UserDetailDTO?>(null, data, (int)response.StatusCode);
                 }
                 if (response.IsSuccessStatusCode)
                 {
-                    return new ResponseDTO<UserListDTO?>(result.Data, string.Empty);
+                    return new ResponseDTO<UserDetailDTO?>(result.Data, string.Empty);
                 }
-                return new ResponseDTO<UserListDTO?>(null, result.Message, (int)response.StatusCode);
+                return new ResponseDTO<UserDetailDTO?>(null, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserListDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO<UserDetailDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

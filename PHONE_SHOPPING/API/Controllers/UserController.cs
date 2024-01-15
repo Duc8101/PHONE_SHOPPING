@@ -17,17 +17,17 @@ namespace API.Controllers
         }
 
         [HttpGet("{UserID}")]
-        public async Task<ResponseDTO<UserListDTO?>> Detail([Required] Guid UserID)
+        public async Task<ResponseDTO<UserDetailDTO?>> Detail([Required] Guid UserID)
         {
-            ResponseDTO<UserListDTO?> response = await service.Detail(UserID);
+            ResponseDTO<UserDetailDTO?> response = await service.Detail(UserID);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<UserListDTO?>> Login([Required] LoginDTO DTO)
+        public async Task<ResponseDTO<UserDetailDTO?>> Login([Required] LoginDTO DTO)
         {
-            ResponseDTO<UserListDTO?> response = await service.Login(DTO);
+            ResponseDTO<UserDetailDTO?> response = await service.Login(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -52,6 +52,14 @@ namespace API.Controllers
         public async Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO)
         {
             ResponseDTO<bool> response = await service.ForgotPassword(DTO);
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpPut("{UserID}")]
+        public async Task<ResponseDTO<UserDetailDTO?>> Update([Required] Guid UserID, [Required] UserUpdateDTO DTO)
+        {
+            ResponseDTO<UserDetailDTO?> response = await service.Update(UserID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }

@@ -1,10 +1,8 @@
-﻿using DataAccess.DTO.UserDTO;
-using DataAccess.DTO;
+﻿using DataAccess.DTO;
+using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services;
 using System.Net;
-using DataAccess.Entity;
-using Microsoft.AspNetCore.Http;
 
 namespace MVC.Controllers
 {
@@ -19,7 +17,7 @@ namespace MVC.Controllers
             {
                 return View();
             }
-            ResponseDTO<UserListDTO?> response = await service.Index(UserID);
+            ResponseDTO<UserDetailDTO?> response = await service.Index(UserID);
             // if get user failed
             if (response.Data == null)
             {
@@ -38,7 +36,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(LoginDTO DTO)
         {
-            ResponseDTO<UserListDTO?> response = await service.Index(DTO);
+            ResponseDTO<UserDetailDTO?> response = await service.Index(DTO);
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)

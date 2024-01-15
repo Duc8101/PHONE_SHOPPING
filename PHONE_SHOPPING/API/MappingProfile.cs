@@ -14,7 +14,7 @@ namespace API
             CreateMap<Product, ProductListDTO>()
                 .ForMember(d => d.CategoryName, m => m.MapFrom(source => source.Category.Name));
             CreateMap<Category, CategoryListDTO>();
-            CreateMap<User, UserListDTO>()
+            CreateMap<User, UserDetailDTO>()
                 .ForMember(d => d.RoleName, m => m.MapFrom(source => source.Role.Name));
             CreateMap<Cart, CartListDTO>()
                 .ForMember(d => d.ProductName, m => m.MapFrom(source => source.Product.ProductName))
