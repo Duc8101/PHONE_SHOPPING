@@ -5,7 +5,6 @@ using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
 using DataAccess.Model.DAO;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -139,7 +138,7 @@ namespace API.Services
             }
         }
 
-        public async Task<ResponseDTO<UserDetailDTO?>> Update([Required] Guid UserID, [Required] UserUpdateDTO DTO)
+        public async Task<ResponseDTO<UserDetailDTO?>> Update(Guid UserID, UserUpdateDTO DTO)
         {
             try
             {

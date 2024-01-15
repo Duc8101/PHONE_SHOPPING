@@ -31,7 +31,7 @@ namespace DataAccess.Model.DAO
 
         public async Task<Cart?> getCart(CartCreateRemoveDTO DTO)
         {
-            return await context.Carts.FirstOrDefaultAsync(c => c.UserId == DTO.UserId && c.ProductId == DTO.ProductId);
+            return await context.Carts.FirstOrDefaultAsync(c => c.UserId == DTO.UserId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
         }
     }
 }

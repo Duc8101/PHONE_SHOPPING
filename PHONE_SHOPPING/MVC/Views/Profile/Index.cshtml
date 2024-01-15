@@ -1,0 +1,53 @@
+﻿@using DataAccess.Const;
+@using DataAccess.DTO.UserDTO;
+@model UserDetailDTO
+<section class="products section bg-gray" style="height: 100vh">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 title text-center">
+                <ul class="list-group">
+                    <li class="list-group-item" style="margin-left: 5%;background-color: #1bbb1b"><a href="Profile">Edit profile</a></li>
+                    <li class="list-group-item" style="margin-left: 5%"><a href="ChangePassword">Change password</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-9 title text-center" style="margin-left: 4%">
+                <h2 class="text-center">Profile</h2>
+                <p style="color:red" id="error">@ViewData["error"]</p>
+                <p style="color:green" id="success">@ViewData["success"]</p>
+                <form method="post" class="text-left clearfix" action="/Profile">
+                    <div class="form-group">
+                        <input type="text" name="FullName" class="form-control" placeholder="Your FullName" id="FullName" value="@Model.FullName" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" name="Phone" class="form-control" placeholder="Your phone" id="phone" value="@Model.Phone" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="Email" class="form-control" placeholder="Your email" value="@Model.Email">
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-main text-center" onclick="myFunction()">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function myFunction() {
+        var FullName = document.getElementById("FullName");
+        var phone = document.getElementById("phone");
+        const regexNumber = new RegExp("^[0-9]");
+        if (FullName.value.toString().trim().length === 0) {
+            document.getElementById("error").innerHTML = "You have to input your name";
+            handleSubmit(event);
+        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @UserConst.PHONE_LENGTH) {
+            document.getElementById("error").innerHTML = "Phone must be " + @UserConst.PHONE_LENGTH +" numbers";
+            handleSubmit(event);
+        }
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+    }
+</script>

@@ -22,6 +22,7 @@ namespace API
                 .ForMember(d => d.Price, m => m.MapFrom(source => source.Product.Price));
             CreateMap<UserCreateDTO, User>()
                 .ForMember(d => d.Email, m => m.MapFrom(source => source.Email.Trim()));
+
         }
     }
 }

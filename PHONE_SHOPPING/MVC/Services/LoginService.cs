@@ -48,11 +48,11 @@ namespace MVC.Services
                 string requestData = getRequestData<LoginDTO?>(DTO);
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PostAsync(URL, content);
-                string data = await getResponseData(response);
-                ResponseDTO<UserDetailDTO?>? result = Deserialize<ResponseDTO<UserDetailDTO?>>(data);
+                string responseData = await getResponseData(response);
+                ResponseDTO<UserDetailDTO?>? result = Deserialize<ResponseDTO<UserDetailDTO?>>(responseData);
                 if (result == null)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO<UserDetailDTO?>(null, responseData, (int)response.StatusCode);
                 }
                 if (response.IsSuccessStatusCode)
                 {

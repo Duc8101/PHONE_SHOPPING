@@ -77,7 +77,7 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center list-group" style="margin-left: 50%">
                     <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.FIRST_URL" aria-disabled="true" role="button">First</a></li>
-                    <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.Results" aria-disabled="true" role="button">Previous</a></li>
+                    <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.PRE_URL" aria-disabled="true" role="button">Previous</a></li>
                     <li class="page-item"><a href="" class="page-link btn btn-primary btn-lg">@result.PageSelected/@result.NumberPage</a></li>
                     <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.NEXT_URL" aria-disabled="true" role="button">Next</a></li>
                     <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.LAST_URL" aria-disabled="true" role="button">Last</a></li>
