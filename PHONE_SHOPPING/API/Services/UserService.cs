@@ -164,5 +164,45 @@ namespace API.Services
                 return new ResponseDTO<UserDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseDTO<bool>> ChangePassword(Guid UserID, ChangePasswordDTO DTO)
+        {
+            try
+            {
+                User? user = await daoUser.getUser(UserID);
+                if (user == null)
+                {
+                    return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                }
+                if (DTO.CurrentPassword == null)
+                {
+                    return new ResponseDTO<bool>(false, "Current password must not contain all space", (int)HttpStatusCode.Conflict);
+                }
+                if (DTO.ConfirmPassword == null)
+                {
+                    return new ResponseDTO<bool>(false, "Confirm password must not contain all space", (int)HttpStatusCode.Conflict);
+                }
+                if (DTO.NewPassword == null)
+                {
+                    return new ResponseDTO<bool>(false, "New password must not contain all space", (int)HttpStatusCode.Conflict);
+                }
+                if (user.Password != UserUtil.HashPassword(DTO.CurrentPassword))
+                {
+                    return new ResponseDTO<bool>(false, "Your old password not correct", (int)HttpStatusCode.Conflict);
+                }
+                if (!DTO.ConfirmPassword.Equals(DTO.NewPassword))
+                {
+                    return new ResponseDTO<bool>(false, "Your confirm password not the same new password", (int)HttpStatusCode.Conflict);
+                }
+                user.Password = UserUtil.HashPassword(DTO.NewPassword);
+                user.UpdateAt = DateTime.Now;
+                await daoUser.UpdateUser(user);
+                return new ResponseDTO<bool>(true, "Change successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

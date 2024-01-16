@@ -63,5 +63,13 @@ namespace API.Controllers
             Response.StatusCode = response.Code;
             return response;
         }
+
+        [HttpPut("{UserID}")]
+        public async Task<ResponseDTO<bool>> ChangePassword([Required] Guid UserID, [Required] ChangePasswordDTO DTO)
+        {
+            ResponseDTO<bool> response = await service.ChangePassword(UserID, DTO);
+            Response.StatusCode = response.Code;
+            return response;
+        }
     }
 }
