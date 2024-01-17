@@ -79,5 +79,45 @@ namespace API.Services
                 return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseDTO<bool>> Remove(CartCreateRemoveDTO DTO)
+        {
+            try
+            {
+                User? user = await daoUser.getUser(DTO.UserId);
+                if (user == null)
+                {
+                    return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                }
+                Product? product = await daoProduct.getProduct(DTO.ProductId);
+                if (product == null)
+                {
+                    return new ResponseDTO<bool>(false, "Product not exist", (int)HttpStatusCode.Conflict);
+                }
+                Cart? cart = await daoCart.getCart(DTO);
+                if (cart == null)
+                {
+                    return new ResponseDTO<bool>(false, "Cart not exist", (int)HttpStatusCode.Conflict);
+                }
+                else
+                {
+                    if(cart.Quantity == 1)
+                    {
+                        await daoCart.DeleteCart(cart);
+                    }
+                    else
+                    {
+                        cart.Quantity--;
+                        cart.UpdateAt = DateTime.Now;
+                        await daoCart.UpdateCart(cart);
+                    }     
+                }
+                return new ResponseDTO<bool>(true, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

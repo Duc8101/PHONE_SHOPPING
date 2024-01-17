@@ -25,9 +25,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<bool>> Create(CartCreateRemoveDTO DTO)
+        public async Task<ResponseDTO<bool>> Create([Required] CartCreateRemoveDTO DTO)
         {
             ResponseDTO<bool> response = await service.Create(DTO);
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpPost]
+        public async Task<ResponseDTO<bool>> Remove([Required] CartCreateRemoveDTO DTO)
+        {
+            ResponseDTO<bool> response = await service.Remove(DTO);
             Response.StatusCode = response.Code;
             return response;
         }

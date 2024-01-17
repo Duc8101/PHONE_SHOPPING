@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.DTO.CartDTO;
 using DataAccess.DTO.CategoryDTO;
+using DataAccess.DTO.OrderDTO;
 using DataAccess.DTO.ProductDTO;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
@@ -22,7 +23,7 @@ namespace API
                 .ForMember(d => d.Price, m => m.MapFrom(source => source.Product.Price));
             CreateMap<UserCreateDTO, User>()
                 .ForMember(d => d.Email, m => m.MapFrom(source => source.Email.Trim()));
-
+            CreateMap<OrderCreateDTO, Order>();
         }
     }
 }

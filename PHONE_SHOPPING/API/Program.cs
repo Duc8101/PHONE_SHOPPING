@@ -19,6 +19,7 @@ namespace API
             builder.Services.AddScoped<CategoryService, CategoryService>();
             builder.Services.AddScoped<UserService, UserService>();
             builder.Services.AddScoped<CartService, CartService>();
+            builder.Services.AddScoped<OrderService, OrderService>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var config = new MapperConfiguration(cfg =>
             {
