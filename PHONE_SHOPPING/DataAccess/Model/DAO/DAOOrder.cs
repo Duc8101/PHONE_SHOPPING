@@ -26,5 +26,18 @@ namespace DataAccess.Model.DAO
             query = query.OrderBy(o => (o.Status == OrderConst.STATUS_PENDING) ? 0 : 1).ThenByDescending(o => o.UpdateAt);
             return query;
         }
+
+        public async Task<List<Order>> getList(Guid? UserID, string? status, int page)
+        {
+            IQueryable<Order> query = getQuery(UserID, status);
+            return await query.Skip(PageSizeConst.MAX_ORDER_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_ORDER_IN_PAGE).ToListAsync();
+        }
+
+        public async Task<int> getNumberPage(Guid? UserID, string? status)
+        {
+            IQueryable<Order> query = getQuery(UserID, status);
+            int count = await query.CountAsync();
+            return (int)Math.Ceiling((double)count / PageSizeConst.MAX_ORDER_IN_PAGE);
+        }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using DataAccess.DTO.CartDTO;
+using AutoMapper.Execution;
+using DataAccess.Const;
 using DataAccess.DTO;
-using DataAccess.Model.DAO;
+using DataAccess.DTO.CartDTO;
 using DataAccess.DTO.OrderDTO;
 using DataAccess.Entity;
-using System.Net;
-using DataAccess.Const;
 using DataAccess.Model;
+using DataAccess.Model.DAO;
+using System.Net;
 
 namespace API.Services
 {
@@ -33,25 +34,25 @@ namespace API.Services
                 }
                 List<Cart> list = await daoCart.getList(DTO.UserId);
                 List<CartListDTO> data = mapper.Map<List<CartListDTO>>(list);
-                if(DTO.Address == null || DTO.Address.Trim().Length == 0)
+                if (DTO.Address == null || DTO.Address.Trim().Length == 0)
                 {
-                    return new ResponseDTO<List<CartListDTO>?>(data, "You have to input address", (int) HttpStatusCode.Conflict);
+                    return new ResponseDTO<List<CartListDTO>?>(data, "You have to input address", (int)HttpStatusCode.Conflict);
                 }
-                foreach(CartListDTO item in data)
+                foreach (CartListDTO item in data)
                 {
                     Product? product = await daoProduct.getProduct(item.ProductId);
-                    if(product == null)
+                    if (product == null)
                     {
                         return new ResponseDTO<List<CartListDTO>?>(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.Conflict);
                     }
-                    if(product.Quantity < item.Quantity)
+                    if (product.Quantity < item.Quantity)
                     {
                         return new ResponseDTO<List<CartListDTO>?>(data, "Product " + item.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
                     }
                 }
                 string body = UserUtil.BodyEmailForAdminReceiveOrder();
                 List<string> emails = await daoUser.getEmailAdmins();
-                if(emails.Count > 0)
+                if (emails.Count > 0)
                 {
                     foreach (string email in emails)
                     {
@@ -93,9 +94,43 @@ namespace API.Services
             }
         }
 
-        /*public Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, int page)
+        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, int page)
         {
-
-        }*/
+            try
+            {
+                if(UserID != null)
+                {
+                    User? user = await daoUser.getUser(UserID.Value);
+                    if(user == null)
+                    {
+                        return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, "Not found user", (int) HttpStatusCode.NotFound);
+                    }
+                }
+                List<Order> list = await daoOrder.getList(UserID, status, page);
+                List<OrderListDTO> result = mapper.Map<List<OrderListDTO>>(list);
+                int number = await daoOrder.getNumberPage(UserID, status);
+                int prePage = page - 1;
+                int nextPage = page + 1;
+                string preURL = "/MyOrder?page=" + prePage;
+                string nextURL = "/MyOrder?page=" + nextPage;
+                string firstURL = "/MyOrder";
+                string lastURL = "/MyOrder?page=" + number;
+                PagedResultDTO<OrderListDTO> data = new PagedResultDTO<OrderListDTO>()
+                {
+                    PageSelected = page,
+                    NumberPage = number,
+                    Results = result,
+                    FIRST_URL = firstURL,
+                    LAST_URL = lastURL,
+                    NEXT_URL = nextURL,
+                    PRE_URL = preURL,
+                };
+                return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(data, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

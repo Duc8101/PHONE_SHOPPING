@@ -24,5 +24,13 @@ namespace API.Controllers
             Response.StatusCode = response.Code;
             return response;
         }
+
+        [HttpGet]
+        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, [Required] int page = 1)
+        {
+            ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await service.List(UserID, status, page);
+            Response.StatusCode = response.Code;
+            return response;
+        }
     }
 }
