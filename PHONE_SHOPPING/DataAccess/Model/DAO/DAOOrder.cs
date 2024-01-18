@@ -1,4 +1,5 @@
-﻿using DataAccess.Entity;
+﻿using DataAccess.Const;
+using DataAccess.Entity;
 
 namespace DataAccess.Model.DAO
 {
@@ -8,6 +9,21 @@ namespace DataAccess.Model.DAO
         {
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
+        }
+
+        private IQueryable<Order> getQuery(Guid? UserID, string? status)
+        {
+            IQueryable<Order> query = context.Orders.Where(o => o.IsDeleted == false);
+            if(UserID != null)
+            {
+                query = query.Where(o => o.UserId == UserID);
+            }
+            if(status != null && status.Trim().Length > 0)
+            {
+                query = query.Where(o => o.Status == status.Trim());
+            }
+            query = query.OrderBy(o => (o.Status == OrderConst.STATUS_PENDING) ? 0 : 1).ThenByDescending(o => o.UpdateAt);
+            return query;
         }
     }
 }

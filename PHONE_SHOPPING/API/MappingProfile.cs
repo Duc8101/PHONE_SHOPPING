@@ -24,6 +24,9 @@ namespace API
             CreateMap<UserCreateDTO, User>()
                 .ForMember(d => d.Email, m => m.MapFrom(source => source.Email.Trim()));
             CreateMap<OrderCreateDTO, Order>();
+            CreateMap<Order, OrderListDTO>()
+                .ForMember(d => d.Username, m => m.MapFrom(source => source.User.Username))
+                .ForMember(d => d.OrderDate, m => m.MapFrom(source => source.CreatedAt));
         }
     }
 }
