@@ -74,5 +74,13 @@ namespace DataAccess.Model
                             "<p>Không nên chia sẻ mật khẩu của bạn với người khác.</p>";
             return body;
         }
+
+        public static string BodyEmailForAdminReceiveOrder()
+        {
+            string body = "<h1>New Order</h1>\n";
+            body = body + "<p>Please check information order</p>\n";
+            return body;
+        }
+
     }
 }

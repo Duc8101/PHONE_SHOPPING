@@ -6,6 +6,7 @@ using DataAccess.DTO.OrderDTO;
 using DataAccess.Entity;
 using System.Net;
 using DataAccess.Const;
+using DataAccess.Model;
 
 namespace API.Services
 {
@@ -46,6 +47,15 @@ namespace API.Services
                     if(product.Quantity < item.Quantity)
                     {
                         return new ResponseDTO<List<CartListDTO>?>(data, "Product " + item.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
+                    }
+                }
+                string body = UserUtil.BodyEmailForAdminReceiveOrder();
+                List<string> emails = await daoUser.getEmailAdmins();
+                if(emails.Count > 0)
+                {
+                    foreach (string email in emails)
+                    {
+                        await UserUtil.sendEmail("[PHONE SHOPPING] Notification for new order", body, email);
                     }
                 }
                 Order order = mapper.Map<Order>(DTO);

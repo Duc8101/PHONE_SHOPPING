@@ -1,4 +1,5 @@
-﻿using DataAccess.DTO.UserDTO;
+﻿using DataAccess.Const;
+using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,11 @@ namespace DataAccess.Model.DAO
         public async Task<bool> isExist(string email , Guid UserID)
         {
             return await context.Users.AnyAsync(u => u.Email == email.Trim() && u.UserId != UserID);
+        }
+
+        public async Task<List<string>> getEmailAdmins()
+        {
+            return await context.Users.Where(u => u.RoleId == RoleConst.ROLE_ADMIN).Select(u => u.Email).ToListAsync();
         }
 
     }
