@@ -1,5 +1,6 @@
 ﻿using DataAccess.Const;
 using DataAccess.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Model.DAO
 {
@@ -13,7 +14,7 @@ namespace DataAccess.Model.DAO
 
         private IQueryable<Order> getQuery(Guid? UserID, string? status)
         {
-            IQueryable<Order> query = context.Orders.Where(o => o.IsDeleted == false);
+            IQueryable<Order> query = context.Orders.Include(u => u.User).Where(o => o.IsDeleted == false);
             if(UserID != null)
             {
                 query = query.Where(o => o.UserId == UserID);
