@@ -14,7 +14,7 @@ namespace DataAccess.Model.DAO
 
         private IQueryable<Order> getQuery(Guid? UserID, string? status)
         {
-            IQueryable<Order> query = context.Orders.Include(u => u.User).Where(o => o.IsDeleted == false);
+            IQueryable<Order> query = context.Orders.Include(u => u.User);
             if(UserID != null)
             {
                 query = query.Where(o => o.UserId == UserID);
@@ -38,6 +38,11 @@ namespace DataAccess.Model.DAO
             IQueryable<Order> query = getQuery(UserID, status);
             int count = await query.CountAsync();
             return (int)Math.Ceiling((double)count / PageSizeConst.MAX_ORDER_IN_PAGE);
+        }
+
+        public async Task<Order?> getOrder(Guid OrderID)
+        {
+            return await context.Orders.Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).SingleOrDefaultAsync(o => o.OrderId == OrderID);
         }
     }
 }

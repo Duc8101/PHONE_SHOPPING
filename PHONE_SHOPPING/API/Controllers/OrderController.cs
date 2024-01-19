@@ -4,6 +4,7 @@ using DataAccess.DTO.OrderDTO;
 using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using DataAccess.DTO.OrderDetailDTO;
 
 namespace API.Controllers
 {
@@ -29,6 +30,14 @@ namespace API.Controllers
         public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, [Required] int page = 1)
         {
             ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await service.List(UserID, status, page);
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpGet("{OrderID}")]
+        public async Task<ResponseDTO<OrderDetailDTO?>> Detail([Required] Guid OrderID)
+        {
+            ResponseDTO<OrderDetailDTO?> response = await service.Detail(OrderID);
             Response.StatusCode = response.Code;
             return response;
         }

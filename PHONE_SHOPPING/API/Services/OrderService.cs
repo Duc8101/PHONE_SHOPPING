@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
 using DataAccess.Const;
 using DataAccess.DTO;
 using DataAccess.DTO.CartDTO;
+using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
@@ -98,12 +98,12 @@ namespace API.Services
         {
             try
             {
-                if(UserID != null)
+                if (UserID != null)
                 {
                     User? user = await daoUser.getUser(UserID.Value);
-                    if(user == null)
+                    if (user == null)
                     {
-                        return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, "Not found user", (int) HttpStatusCode.NotFound);
+                        return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                     }
                 }
                 List<Order> list = await daoOrder.getList(UserID, status, page);
@@ -130,6 +130,31 @@ namespace API.Services
             catch (Exception ex)
             {
                 return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<ResponseDTO<OrderDetailDTO?>> Detail(Guid OrderID)
+        {
+            try
+            {
+                Order? order = await daoOrder.getOrder(OrderID);
+                if(order == null)
+                {
+                    return new ResponseDTO<OrderDetailDTO?>(null, "Not found order",(int) HttpStatusCode.NotFound);
+                }
+                List<OrderDetail> list = order.OrderDetails.ToList();
+                List<DetailDTO> DTOs = mapper.Map<List<DetailDTO>>(list);
+                OrderDetailDTO data = new OrderDetailDTO()
+                {
+                    OrderId = OrderID,
+                    UserId = order.UserId,
+                    DetailDTOs = DTOs,
+                };
+                return new ResponseDTO<OrderDetailDTO?>(data, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

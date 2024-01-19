@@ -18,6 +18,7 @@
                                     <th>Order Date</th>
                                     <th>Status</th>
                                     <th>Address</th>
+                                    <th>Note</th>
                                     <th class="col-md-2 col-sm-3">Detail</th>
                                 </tr>
                             </thead>
@@ -27,21 +28,22 @@
                                     string color;
                                     if (order.Status == OrderConst.STATUS_PENDING)
                                     {
-                                        color = "text-warning";
+                                       color = "gold";
                                     }
                                     else if (order.Status == OrderConst.STATUS_APPROVED)
                                     {
-                                        color = "text-success";
+                                        color = "green";
                                     }
                                     else
                                     {
-                                        color = "text-danger";
+                                        color = "red";
                                     }
                                     <tr>
                                         <td>@No</td>
                                         <td>@order.OrderDate</td>
-                                        <td><p class="@color">@order.Status</p></td>
+                                        <td class="ant-table-cell"><span style="color:@color">@order.Status</span></td>
                                         <td>@order.Address</td>
+                                        <td>@order.Note</td>
                                         <td><a href="/MyOrder/Detail/@order.OrderId" class="btn btn-success">Detail</a></td>
                                     </tr>
                                     No++;
