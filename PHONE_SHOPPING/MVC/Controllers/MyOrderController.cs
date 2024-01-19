@@ -1,5 +1,6 @@
 ﻿using DataAccess.Const;
 using DataAccess.DTO;
+using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services;
@@ -40,7 +41,20 @@ namespace MVC.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-
+                if(id == null)
+                {
+                    return Redirect("/MyOrder");
+                }
+                ResponseDTO<OrderDetailDTO?> response = await service.Detail(id.Value, Guid.Parse(UserID));
+                if(response.Data == null)
+                {
+                    if(response.Code == (int) HttpStatusCode.NotFound)
+                    {
+                        return Redirect("/MyOrder");
+                    }
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                }
+                return View(response.Data);
             }
             return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
