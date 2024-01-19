@@ -30,5 +30,20 @@ namespace MVC.Controllers
             return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
 
+        public async Task<ActionResult> Detail(Guid? id)
+        {
+            int? role = getRole();
+            if (role == RoleConst.ROLE_CUSTOMER)
+            {
+                string? UserID = getUserID();
+                if (UserID == null)
+                {
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
+                }
+
+            }
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+        }
+
     }
 }
