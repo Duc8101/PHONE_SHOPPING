@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DataAccess.DTO;
-using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
 using DataAccess.Entity;
 using DataAccess.Model.DAO;
@@ -16,31 +15,30 @@ namespace API.Services
 
         }
 
-        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(string? name, int? CategoryID, int page)
+        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(bool isAdmin, string? name, int? CategoryID, int page)
         {
             int prePage = page - 1;
             int nextPage = page + 1;
-            string preURL;
-            string nextURL;
-            string firstURL;
-            string lastURL;
+            string preURL = isAdmin ? "/ManagerProduct" : "/Home";
+            string nextURL = isAdmin ? "/ManagerProduct" : "/Home";
+            string firstURL = isAdmin ? "/ManagerProduct" : "/Home";
+            string lastURL = isAdmin ? "/ManagerProduct" : "/Home";
             try
             {
                 int numberPage = await daoProduct.getNumberPage(name, CategoryID);
                 // if not choose category
                 if (CategoryID == null)
                 {
-                    preURL = "/Home" + "?page=" + prePage;
-                    nextURL = "/Home" + "?page=" + nextPage;
-                    firstURL = "/Home";
-                    lastURL = "/Home" + "?page=" + numberPage;
+                    preURL = preURL + "?page=" + prePage;
+                    nextURL = nextURL + "?page=" + nextPage;
+                    lastURL = lastURL + "?page=" + numberPage;
                 }
                 else
                 {
-                    preURL = "/Home" + "?CategoryID=" + CategoryID + "&page=" + prePage;
-                    nextURL = "/Home" + "?CategoryID=" + CategoryID + "&page=" + nextPage;
-                    firstURL = "/Home" + "?CategoryID=" + CategoryID;
-                    lastURL = "/Home" + "?CategoryID=" + CategoryID + "&page=" + numberPage;
+                    preURL = preURL + "?CategoryID=" + CategoryID + "&page=" + prePage;
+                    nextURL = nextURL + "?CategoryID=" + CategoryID + "&page=" + nextPage;
+                    firstURL = firstURL + "?CategoryID=" + CategoryID;
+                    lastURL = lastURL + "?CategoryID=" + CategoryID + "&page=" + numberPage;
                 }
                 List<Product> listProduct = await daoProduct.getList(name, CategoryID, page);
                 List<ProductListDTO> productDTOs = mapper.Map<List<ProductListDTO>>(listProduct);
@@ -53,12 +51,12 @@ namespace API.Services
                     NEXT_URL = nextURL,
                     FIRST_URL = firstURL,
                     NumberPage = numberPage,
-                };       
+                };
                 return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, ex.Message + " " + ex, (int) HttpStatusCode.InternalServerError);
+                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }
