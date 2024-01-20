@@ -17,7 +17,7 @@ namespace MVC.Controllers
                 return Redirect("/ManagerProduct");
             }
             ResponseDTO<Dictionary<string, object>?> result = await service.Index(name, CategoryID, page);
-            if (result.Code == (int) HttpStatusCode.InternalServerError)
+            if (result.Data == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
             }

@@ -34,6 +34,9 @@ namespace API
                 .ForMember(d => d.Price, m => m.MapFrom(source => source.Product.Price))
                 .ForMember(d => d.CategoryId, m => m.MapFrom(source => source.Product.CategoryId))
                 .ForMember(d => d.CategoryName, m => m.MapFrom(source => source.Product.Category.Name));
+            CreateMap<ProductCreateUpdateDTO, Product>()
+                .ForMember(d => d.ProductName, m => m.MapFrom(source => source.ProductName.Trim()))
+                .ForMember(d => d.Image, m => m.MapFrom(source => source.Image.Trim()));
         }
     }
 }

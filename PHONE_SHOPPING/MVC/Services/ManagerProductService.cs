@@ -92,6 +92,10 @@ namespace MVC.Services
                 return new ResponseDTO<Dictionary<string, object>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
+        public async Task<ResponseDTO<List<CategoryListDTO>?>> Create()
+        {
+            return await getListCategory();
+        }
 
     }
 }

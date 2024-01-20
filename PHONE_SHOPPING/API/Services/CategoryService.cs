@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
-using DataAccess.DTO.ProductDTO;
 using DataAccess.Entity;
 using DataAccess.Model.DAO;
 using System.Net;

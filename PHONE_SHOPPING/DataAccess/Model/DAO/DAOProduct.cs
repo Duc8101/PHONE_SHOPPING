@@ -35,5 +35,10 @@ namespace DataAccess.Model.DAO
         {
             return await context.Products.SingleOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
         }
+        public async Task CreateProduct(Product product)
+        {
+            await context.Products.AddAsync(product);
+            await context.SaveChangesAsync();
+        }
     }
 }
