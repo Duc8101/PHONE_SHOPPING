@@ -44,5 +44,21 @@ namespace DataAccess.Model.DAO
             await context.Products.AddAsync(product);
             await context.SaveChangesAsync();
         }
+        public async Task<bool> isExist(string ProductName, Guid ProductID)
+        {
+            return await context.Products.AnyAsync(p => p.ProductName == ProductName.Trim() && p.IsDeleted == false && p.ProductId != ProductID);
+        }
+
+        public async Task UpdateProduct(Product product)
+        {
+            context.Products.Update(product);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteProduct(Product product)
+        {
+            product.IsDeleted = true;
+            await UpdateProduct(product);
+        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using API.Services;
 using DataAccess.DTO;
-using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -18,9 +17,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(string? name, int? CategoryID, [Required] bool isAdmin = false,[Required] int page = 1)
+        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(string? name, int? CategoryID, [Required] bool isAdmin = false, [Required] int page = 1)
         {
-            ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await service.List(isAdmin,name, CategoryID, page);
+            ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await service.List(isAdmin, name, CategoryID, page);
             Response.StatusCode = result.Code;
             return result;
         }
@@ -37,6 +36,22 @@ namespace API.Controllers
         public async Task<ResponseDTO<ProductListDTO?>> Detail([Required] Guid ProductID)
         {
             ResponseDTO<ProductListDTO?> response = await service.Detail(ProductID);
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpPut("{ProductID}")]
+        public async Task<ResponseDTO<ProductListDTO?>> Update([Required] Guid ProductID, [Required] ProductCreateUpdateDTO DTO)
+        {
+            ResponseDTO<ProductListDTO?> response = await service.Update(ProductID, DTO);
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpDelete("{ProductID}")]
+        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> Delete([Required] Guid ProductID)
+        {
+            ResponseDTO<PagedResultDTO<ProductListDTO>?> response = await service.Delete(ProductID);
             Response.StatusCode = response.Code;
             return response;
         }

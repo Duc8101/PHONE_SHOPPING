@@ -128,5 +128,65 @@ namespace API.Services
                 return new ResponseDTO<ProductListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseDTO<ProductListDTO?>> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
+        {
+            try
+            {
+                Product? product = await daoProduct.getProduct(ProductID);
+                if (product == null)
+                {
+                    return new ResponseDTO<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                }
+                product.ProductName = DTO.ProductName.Trim();
+                product.Image = DTO.Image.Trim();
+                product.Price = DTO.Price;
+                product.CategoryId = DTO.CategoryId;
+                product.Quantity = DTO.Quantity;
+                ProductListDTO data = mapper.Map<ProductListDTO>(product);
+                if (DTO.ProductName.Trim().Length == 0)
+                {
+                    return new ResponseDTO<ProductListDTO?>(data, "You have to input product name", (int)HttpStatusCode.Conflict);
+                }
+                if (DTO.Image.Trim().Length == 0)
+                {
+                    return new ResponseDTO<ProductListDTO?>(data, "You have to input image link", (int)HttpStatusCode.Conflict);
+                }
+                if (await daoProduct.isExist(DTO.ProductName.Trim(), ProductID))
+                {
+                    return new ResponseDTO<ProductListDTO?>(data, "Product existed", (int)HttpStatusCode.Conflict);
+                }
+                product.UpdateAt = DateTime.Now;
+                await daoProduct.UpdateProduct(product);
+                return new ResponseDTO<ProductListDTO?>(data, "Update successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<ProductListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> Delete(Guid ProductID)
+        {
+            try
+            {
+                Product? product = await daoProduct.getProduct(ProductID);
+                if (product == null)
+                {
+                    return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                }
+                await daoProduct.DeleteProduct(product);
+                ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await List(true, null, null, 1);
+                if(result.Code == (int)HttpStatusCode.OK)
+                {
+                    return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(result.Data, "Delete successful");
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
