@@ -26,11 +26,19 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<List<CategoryListDTO>?>> Create([Required] ProductCreateUpdateDTO DTO)
+        public async Task<ResponseDTO<bool>> Create([Required] ProductCreateUpdateDTO DTO)
         {
-            ResponseDTO<List<CategoryListDTO>?> result = await service.Create(DTO);
+            ResponseDTO<bool> result = await service.Create(DTO);
             Response.StatusCode = result.Code;
             return result;
+        }
+
+        [HttpGet("{ProductID}")]
+        public async Task<ResponseDTO<ProductListDTO?>> Detail([Required] Guid ProductID)
+        {
+            ResponseDTO<ProductListDTO?> response = await service.Detail(ProductID);
+            Response.StatusCode = response.Code;
+            return response;
         }
     }
 }

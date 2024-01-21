@@ -79,7 +79,7 @@ namespace API.Services
             }
         }
 
-        public async Task<ResponseDTO<List<CategoryListDTO>?>> Create(ProductCreateUpdateDTO DTO)
+        public async Task<ResponseDTO<bool>> Create(ProductCreateUpdateDTO DTO)
         {
             try
             {
@@ -87,11 +87,15 @@ namespace API.Services
                 List<CategoryListDTO> data = mapper.Map<List<CategoryListDTO>>(list);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
-                    return new ResponseDTO<List<CategoryListDTO>?>(data, "You have to input product name", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO<bool>(false, "You have to input product name", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Image.Trim().Length == 0)
                 {
-                    return new ResponseDTO<List<CategoryListDTO>?>(data, "You have to input image link", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO<bool>(false, "You have to input image link", (int)HttpStatusCode.Conflict);
+                }
+                if (await daoProduct.isExist(DTO.ProductName.Trim()))
+                {
+                    return new ResponseDTO<bool>(false, "Product existed", (int)HttpStatusCode.Conflict);
                 }
                 Product product = mapper.Map<Product>(DTO);
                 product.ProductId = Guid.NewGuid();
@@ -99,11 +103,29 @@ namespace API.Services
                 product.UpdateAt = DateTime.Now;
                 product.IsDeleted = false;
                 await daoProduct.CreateProduct(product);
-                return new ResponseDTO<List<CategoryListDTO>?>(data, "Create successful");
+                return new ResponseDTO<bool>(true, "Create successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<List<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<ResponseDTO<ProductListDTO?>> Detail(Guid ProductID)
+        {
+            try
+            {
+                Product? product = await daoProduct.getProduct(ProductID);
+                if (product == null)
+                {
+                    return new ResponseDTO<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                }
+                ProductListDTO DTO = mapper.Map<ProductListDTO>(product);
+                return new ResponseDTO<ProductListDTO?>(DTO, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<ProductListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

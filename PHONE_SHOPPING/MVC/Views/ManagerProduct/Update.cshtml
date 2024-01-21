@@ -1,0 +1,57 @@
+﻿@using DataAccess.DTO.CategoryDTO;
+@using DataAccess.DTO.ProductDTO;
+@model Dictionary<string, object>
+@{
+    List<CategoryListDTO> list = (List<CategoryListDTO>)Model["list"];
+    ProductListDTO product = (ProductListDTO)Model["product"];
+}
+<section class="products section bg-gray" style="height: 100vh">
+    <div class="container-fluid">
+        <div class="row">
+            <p style="color:red;margin-left: 4%" id="error">@ViewData["error"]</p>
+            <p style="color:green;margin-left: 4%" id="success">@ViewData["success"]</p>
+            <div class="col-lg-12 title" style="margin-left: 4%">
+                <form method="post" class="text-left clearfix" action="/ManagerProduct/Update/@product.ProductId">
+                    <div class="form-group">
+                        <label for="CategoryId">Category</label><br />
+                        <select name="CategoryId">
+
+                            @foreach (CategoryListDTO category in list)
+                            {
+                                if (category.Id == product.CategoryId)
+                                {
+                                    <option value="@category.Id" selected>@category.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ProductName">Product Name</label><br />
+                        <input type="text" class="form-control" name="ProductName" style="width: 300px" placeholder="Product Name" value="@product.ProductName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Image">Image</label><br />
+                        <input type="text" name="Image" class="form-control" placeholder="Image link" value="@product.Image" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Price">Price</label><br />
+                        <input type="number" step="any" name="Price" class="form-control" placeholder="Price" value="@product.Price" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Price">Quantity</label><br />
+                        <input type="number" name="Quantity" class="form-control" placeholder="Quantity" min="0" value="@product.Quantity" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-main text-center" onclick="return confirm('Do you sure you want to save your change?')">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

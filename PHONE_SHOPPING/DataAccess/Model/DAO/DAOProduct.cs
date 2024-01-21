@@ -33,7 +33,11 @@ namespace DataAccess.Model.DAO
         }
         public async Task<Product?> getProduct(Guid ProductID)
         {
-            return await context.Products.SingleOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+            return await context.Products.Include(p => p.Category).SingleOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+        }
+        public async Task<bool> isExist(string ProductName)
+        {
+            return await context.Products.AnyAsync(p => p.ProductName == ProductName.Trim() && p.IsDeleted == false);
         }
         public async Task CreateProduct(Product product)
         {
