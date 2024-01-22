@@ -2,6 +2,7 @@
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Controllers
 {
@@ -19,6 +20,14 @@ namespace API.Controllers
         public async Task<ResponseDTO<List<CategoryListDTO>?>> List()
         {
             ResponseDTO<List<CategoryListDTO>?> response = await service.ListAll();
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpGet("Paged")]
+        public async Task<ResponseDTO<List<CategoryListDTO>?>> List(string? name, [Required] int page = 1)
+        {
+            ResponseDTO<List<CategoryListDTO>?> response = await service.ListPaged(name, page);
             Response.StatusCode = response.Code;
             return response;
         }

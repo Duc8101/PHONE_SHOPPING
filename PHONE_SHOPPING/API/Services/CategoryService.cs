@@ -28,5 +28,19 @@ namespace API.Services
                 return new ResponseDTO<List<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseDTO<List<CategoryListDTO>?>> ListPaged(string? name, int page)
+        {
+            try
+            {
+                List<Category> list = await daoCategory.getList(name, page);
+                List<CategoryListDTO> result = mapper.Map<List<CategoryListDTO>>(list);
+                return new ResponseDTO<List<CategoryListDTO>?>(result, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<List<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
