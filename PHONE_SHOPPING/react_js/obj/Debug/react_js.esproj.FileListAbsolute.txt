@@ -1,2 +1,0 @@
-D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\React_JS\obj\Debug\react_js.esproj.SuggestedBindingRedirects.cache
-D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\React_JS\obj\Debug\react_js.esproj.CoreCompileInputs.cache
