@@ -25,9 +25,9 @@ namespace API.Controllers
         }
 
         [HttpGet("Paged")]
-        public async Task<ResponseDTO<List<CategoryListDTO>?>> List(string? name, [Required] int page = 1)
+        public async Task<ResponseDTO<PagedResultDTO<CategoryListDTO>?>> List(string? name, [Required] int page = 1)
         {
-            ResponseDTO<List<CategoryListDTO>?> response = await service.ListPaged(name, page);
+            ResponseDTO<PagedResultDTO<CategoryListDTO>?> response = await service.ListPaged(name, page);
             Response.StatusCode = response.Code;
             return response;
         }

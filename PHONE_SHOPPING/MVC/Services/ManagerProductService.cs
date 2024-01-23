@@ -1,9 +1,7 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
-using DataAccess.Entity;
 using System.Net;
-using System.Xml.Linq;
 
 namespace MVC.Services
 {
@@ -213,7 +211,7 @@ namespace MVC.Services
                 {
                     return new ResponseDTO<Dictionary<string, object>?>(null, data, (int)response.StatusCode);
                 }
-                if(resPro.Data == null)
+                if (resPro.Data == null)
                 {
                     return new ResponseDTO<Dictionary<string, object>?>(null, resPro.Message, (int)response.StatusCode);
                 }
