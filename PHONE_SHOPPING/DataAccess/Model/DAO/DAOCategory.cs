@@ -31,5 +31,21 @@ namespace DataAccess.Model.DAO
             int count = await query.CountAsync();
             return (int)Math.Ceiling((double)count / PageSizeConst.MAX_CATEGORY_IN_PAGE);
         }
+
+        public async Task<bool> isExist(string name)
+        {
+            return await context.Categories.AnyAsync(c => c.Name == name.Trim());
+        }
+
+        public async Task CreateCategory(Category category)
+        {
+            await context.Categories.AddAsync(category);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<Category?> getCategory(int ID)
+        {
+            return await context.Categories.SingleOrDefaultAsync(c => c.Id == ID);
+        }
     }
 }

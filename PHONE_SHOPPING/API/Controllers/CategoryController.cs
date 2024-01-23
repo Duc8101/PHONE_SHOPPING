@@ -1,6 +1,6 @@
 ﻿using API.Services;
-using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO;
+using DataAccess.DTO.CategoryDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -28,6 +28,22 @@ namespace API.Controllers
         public async Task<ResponseDTO<PagedResultDTO<CategoryListDTO>?>> List(string? name, [Required] int page = 1)
         {
             ResponseDTO<PagedResultDTO<CategoryListDTO>?> response = await service.ListPaged(name, page);
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpPost]
+        public async Task<ResponseDTO<bool>> Create([Required] CategoryCreateUpdateDTO DTO)
+        {
+            ResponseDTO<bool> response = await service.Create(DTO);
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpGet("{ID}")]
+        public async Task<ResponseDTO<CategoryListDTO?>> Detail(int ID)
+        {
+            ResponseDTO<CategoryListDTO?> response = await service.Detail(ID);
             Response.StatusCode = response.Code;
             return response;
         }

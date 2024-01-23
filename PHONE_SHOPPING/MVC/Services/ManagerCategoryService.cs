@@ -34,5 +34,26 @@ namespace MVC.Services
                 return new ResponseDTO<PagedResultDTO<CategoryListDTO>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
+        public async Task<ResponseDTO<bool>> Create(CategoryCreateUpdateDTO DTO)
+        {
+            try
+            {
+                string URL = "https://localhost:7033/Category/Create";
+                string requestData = getRequestData<CategoryCreateUpdateDTO?>(DTO);
+                StringContent content = getContent(requestData);
+                HttpResponseMessage response = await PostAsync(URL, content);
+                string responseData = await getResponseData(response);
+                ResponseDTO<bool>? result = Deserialize<ResponseDTO<bool>>(responseData);
+                if (result == null)
+                {
+                    return new ResponseDTO<bool>(false, responseData, (int)response.StatusCode);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

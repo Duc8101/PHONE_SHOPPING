@@ -3,6 +3,7 @@ using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.Entity;
 using DataAccess.Model.DAO;
+using System.Collections.Generic;
 using System.Net;
 
 namespace API.Services
@@ -28,7 +29,6 @@ namespace API.Services
                 return new ResponseDTO<List<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-
         public async Task<ResponseDTO<PagedResultDTO<CategoryListDTO>?>> ListPaged(string? name, int page)
         {
             try
@@ -40,7 +40,7 @@ namespace API.Services
                 string nextURL = "/ManagerCategory";
                 string firstURL = "/ManagerCategory";
                 string lastURL = "/ManagerCategory";
-                if(name == null || name.Trim().Length == 0)
+                if (name == null || name.Trim().Length == 0)
                 {
                     preURL = preURL + "?page=" + (page - 1);
                     nextURL = nextURL + "?page=" + (page + 1);
@@ -48,7 +48,7 @@ namespace API.Services
                 }
                 else
                 {
-                    preURL = preURL + "?name=" + name.Trim() +  "&page=" + (page - 1);
+                    preURL = preURL + "?name=" + name.Trim() + "&page=" + (page - 1);
                     nextURL = nextURL + "?name=" + name.Trim() + "&page=" + (page + 1);
                     firstURL = firstURL + "?name=" + name.Trim();
                     lastURL = lastURL + "?name=" + name.Trim() + "&page=" + number;
@@ -68,6 +68,46 @@ namespace API.Services
             catch (Exception ex)
             {
                 return new ResponseDTO<PagedResultDTO<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+        public async Task<ResponseDTO<bool>> Create(CategoryCreateUpdateDTO DTO)
+        {
+            try
+            {
+                if (await daoCategory.isExist(DTO.Name.Trim()))
+                {
+                    return new ResponseDTO<bool>(false, "Category existed", (int)HttpStatusCode.Conflict);
+                }
+                Category category = new Category()
+                {
+                    Name = DTO.Name.Trim(),
+                    CreatedAt = DateTime.Now,
+                    UpdateAt = DateTime.Now,
+                    IsDeleted = false,
+                };
+                await daoCategory.CreateCategory(category);
+                return new ResponseDTO<bool>(true, "Create successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+        public async Task<ResponseDTO<CategoryListDTO?>> Detail(int ID)
+        {
+            try
+            {
+                Category? category = await daoCategory.getCategory(ID);
+                if(category == null)
+                {
+                    return new ResponseDTO<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
+                }
+                CategoryListDTO data = mapper.Map<CategoryListDTO>(category);
+                return new ResponseDTO<CategoryListDTO?>(data, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }
