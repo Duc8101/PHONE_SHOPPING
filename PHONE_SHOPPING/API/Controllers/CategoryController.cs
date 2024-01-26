@@ -41,9 +41,17 @@ namespace API.Controllers
         }
 
         [HttpGet("{ID}")]
-        public async Task<ResponseDTO<CategoryListDTO?>> Detail(int ID)
+        public async Task<ResponseDTO<CategoryListDTO?>> Detail([Required] int ID)
         {
             ResponseDTO<CategoryListDTO?> response = await service.Detail(ID);
+            Response.StatusCode = response.Code;
+            return response;
+        }
+
+        [HttpPut("{ID}")]
+        public async Task<ResponseDTO<CategoryListDTO?>> Update([Required] int ID, [Required] CategoryCreateUpdateDTO DTO)
+        {
+            ResponseDTO<CategoryListDTO?> response = await service.Update(ID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }

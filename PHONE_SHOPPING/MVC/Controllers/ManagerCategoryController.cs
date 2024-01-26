@@ -59,5 +59,55 @@ namespace MVC.Controllers
             }
             return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
+        public async Task<ActionResult> Update(int? id)
+        {
+            int? role = getRole();
+            if (role == RoleConst.ROLE_ADMIN)
+            {
+                if(id == null)
+                {
+                    return Redirect("/ManagerCategory");
+                }
+                ResponseDTO<CategoryListDTO?> response = await service.Update(id.Value);
+                if(response.Data == null)
+                {
+                    if(response.Code == (int) HttpStatusCode.NotFound)
+                    {
+                        return Redirect("/ManagerCategory");
+                    }
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                }
+                return View(response.Data);
+            }
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Update(int id, CategoryCreateUpdateDTO DTO)
+        {
+            int? role = getRole();
+            if (role == RoleConst.ROLE_ADMIN)
+            {
+                ResponseDTO<CategoryListDTO?> response = await service.Update(id, DTO);
+                if (response.Data == null)
+                {
+                    if (response.Code == (int)HttpStatusCode.NotFound)
+                    {
+                        return Redirect("/ManagerCategory");
+                    }
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                }
+                if(response.Code == (int) HttpStatusCode.Conflict)
+                {
+                    ViewData["error"] = response.Message;
+                }
+                else
+                {
+                    ViewData["success"] = response.Message;
+                }
+                return View(response.Data);
+            }
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+        }
     }
 }

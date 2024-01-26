@@ -55,5 +55,46 @@ namespace MVC.Services
                 return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        public async Task<ResponseDTO<CategoryListDTO?>> Update(int ID)
+        {
+            try
+            {
+                string URL = "https://localhost:7033/Category/Detail/" + ID;
+                HttpResponseMessage response = await GetAsync(URL);
+                string data = await getResponseData(response);
+                ResponseDTO<CategoryListDTO?>? result = Deserialize<ResponseDTO<CategoryListDTO?>>(data);
+                if (result == null)
+                {
+                    return new ResponseDTO<CategoryListDTO?>(null, data, (int)response.StatusCode);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+        public async Task<ResponseDTO<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO)
+        {
+            try
+            {
+                string URL = "https://localhost:7033/Category/Update/" + ID;
+                string requestData = getRequestData<CategoryCreateUpdateDTO?>(DTO);
+                StringContent content = getContent(requestData);
+                HttpResponseMessage response = await PutAsync(URL, content);
+                string responseData = await getResponseData(response);
+                ResponseDTO<CategoryListDTO?>? result = Deserialize<ResponseDTO<CategoryListDTO?>>(responseData);
+                if (result == null)
+                {
+                    return new ResponseDTO<CategoryListDTO?>(null, responseData, (int)response.StatusCode);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
     }
 }

@@ -47,5 +47,16 @@ namespace DataAccess.Model.DAO
         {
             return await context.Categories.SingleOrDefaultAsync(c => c.Id == ID);
         }
+
+        public async Task<bool> isExist(string name, int ID)
+        {
+            return await context.Categories.AnyAsync(c => c.Name == name.Trim() && c.Id != ID);
+        }
+
+        public async Task UpdateCategory(Category category)
+        {
+            context.Categories.Update(category);
+            await context.SaveChangesAsync();
+        }
     }
 }

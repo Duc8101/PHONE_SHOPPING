@@ -3,7 +3,6 @@ using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.Entity;
 using DataAccess.Model.DAO;
-using System.Collections.Generic;
 using System.Net;
 
 namespace API.Services
@@ -98,7 +97,7 @@ namespace API.Services
             try
             {
                 Category? category = await daoCategory.getCategory(ID);
-                if(category == null)
+                if (category == null)
                 {
                     return new ResponseDTO<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
                 }
@@ -110,5 +109,30 @@ namespace API.Services
                 return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        public async Task<ResponseDTO<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO)
+        {
+            try
+            {
+                Category? category = await daoCategory.getCategory(ID);
+                if (category == null)
+                {
+                    return new ResponseDTO<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
+                }
+                category.Name = DTO.Name.Trim();
+                CategoryListDTO data = mapper.Map<CategoryListDTO>(category);
+                if (await daoCategory.isExist(DTO.Name.Trim(), ID))
+                {
+                    return new ResponseDTO<CategoryListDTO?>(data, "Category existed", (int)HttpStatusCode.Conflict);
+                }
+                category.UpdateAt = DateTime.Now;
+                await daoCategory.UpdateCategory(category);
+                return new ResponseDTO<CategoryListDTO?>(data, "Update successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
     }
 }
