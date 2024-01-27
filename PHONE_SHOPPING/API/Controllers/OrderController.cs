@@ -27,9 +27,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, [Required] int page = 1)
+        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, [Required] bool isAdmin = false, [Required] int page = 1)
         {
-            ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await service.List(UserID, status, page);
+            ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await service.List(UserID, status,isAdmin, page);
             Response.StatusCode = response.Code;
             return response;
         }

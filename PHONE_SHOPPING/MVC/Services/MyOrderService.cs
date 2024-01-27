@@ -12,7 +12,7 @@ namespace MVC.Services
             try
             {
                 int pageSelected = page == null ? 1 : page.Value;
-                string URL = "https://localhost:7033/Order/List?UserID=" + UserID + "&page=" + pageSelected;
+                string URL = "https://localhost:7033/Order/List?UserID=" + UserID + "&isAdmin=false" + "&page=" + pageSelected;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
                 ResponseDTO<PagedResultDTO<OrderListDTO>?>? result = Deserialize<ResponseDTO<PagedResultDTO<OrderListDTO>?>>(data);

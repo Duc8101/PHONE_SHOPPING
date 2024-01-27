@@ -94,7 +94,7 @@ namespace API.Services
             }
         }
 
-        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, int page)
+        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, bool isAdmin, int page)
         {
             try
             {
@@ -111,10 +111,34 @@ namespace API.Services
                 int number = await daoOrder.getNumberPage(UserID, status);
                 int prePage = page - 1;
                 int nextPage = page + 1;
-                string preURL = "/MyOrder?page=" + prePage;
-                string nextURL = "/MyOrder?page=" + nextPage;
-                string firstURL = "/MyOrder";
-                string lastURL = "/MyOrder?page=" + number;
+                string preURL;
+                string nextURL;
+                string firstURL;
+                string lastURL;
+                if (isAdmin)
+                {
+                    if (status == null || status.Trim().Length == 0)
+                    {
+                        preURL = "/ManagerOrder?page=" + prePage;
+                        nextURL = "/ManagerOrder?page=" + nextPage;
+                        firstURL = "/ManagerOrder";
+                        lastURL = "/ManagerOrder?page=" + number;
+                    }
+                    else
+                    {
+                        preURL = "/ManagerOrder?status=" + status.Trim() + "&page=" + prePage;
+                        nextURL = "/ManagerOrder?status=" + status.Trim() + "&page=" + nextPage;
+                        firstURL = "/ManagerOrder?status=" + status.Trim();
+                        lastURL = "/ManagerOrder?status=" + status.Trim() + "&page=" + number;
+                    }
+                }
+                else
+                {
+                    preURL = "/MyOrder?page=" + prePage;
+                    nextURL = "/MyOrder?page=" + nextPage;
+                    firstURL = "/MyOrder";
+                    lastURL = "/MyOrder?page=" + number;
+                }
                 PagedResultDTO<OrderListDTO> data = new PagedResultDTO<OrderListDTO>()
                 {
                     PageSelected = page,
@@ -138,9 +162,9 @@ namespace API.Services
             try
             {
                 Order? order = await daoOrder.getOrder(OrderID);
-                if(order == null)
+                if (order == null)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, "Not found order",(int) HttpStatusCode.NotFound);
+                    return new ResponseDTO<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
                 }
                 List<OrderDetail> list = order.OrderDetails.ToList();
                 List<DetailDTO> DTOs = mapper.Map<List<DetailDTO>>(list);
