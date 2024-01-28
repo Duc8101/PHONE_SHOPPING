@@ -43,7 +43,7 @@ namespace API.Services
                     Product? product = await daoProduct.getProduct(item.ProductId);
                     if (product == null)
                     {
-                        return new ResponseDTO<List<CartListDTO>?>(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.Conflict);
+                        return new ResponseDTO<List<CartListDTO>?>(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
                     }
                     if (product.Quantity < item.Quantity)
                     {
@@ -172,9 +172,93 @@ namespace API.Services
                 {
                     OrderId = OrderID,
                     UserId = order.UserId,
+                    Username = order.User.Username,
+                    Status = order.Status,
+                    Address = order.Address,
+                    Note = order.Note,
+                    OrderDate = order.CreatedAt,
                     DetailDTOs = DTOs,
                 };
                 return new ResponseDTO<OrderDetailDTO?>(data, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<ResponseDTO<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO)
+        {
+            try
+            {
+                Order? order = await daoOrder.getOrder(OrderID);
+                if (order == null)
+                {
+                    return new ResponseDTO<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
+                }
+                List<OrderDetail> list = order.OrderDetails.ToList();
+                List<DetailDTO> DTOs = mapper.Map<List<DetailDTO>>(list);
+                OrderDetailDTO data = new OrderDetailDTO()
+                {
+                    OrderId = OrderID,
+                    UserId = order.UserId,
+                    Username = order.User.Username,
+                    Status = order.Status,
+                    Address = order.Address,
+                    Note = order.Note,
+                    OrderDate = order.CreatedAt,
+                    DetailDTOs = DTOs,
+                };
+                if (order.Status == OrderConst.STATUS_REJECTED || order.Status == OrderConst.STATUS_APPROVED)
+                {
+                    return new ResponseDTO<OrderDetailDTO?>(data, "Order was approved or rejected", (int)HttpStatusCode.Conflict);
+                }
+                if (DTO.Status.Trim() == OrderConst.STATUS_REJECTED || DTO.Status.Trim() == OrderConst.STATUS_PENDING)
+                {
+                    order.Status = DTO.Status.Trim();
+                    order.UpdateAt = DateTime.Now;
+                    order.Note = DTO.Note == null || DTO.Note.Trim().Length == 0 ? null : DTO.Note.Trim();
+                    await daoOrder.UpdateOrder(order);
+                    data.Status = order.Status;
+                    data.Note = order.Note;
+                    return new ResponseDTO<OrderDetailDTO?>(data, "Update successful");
+                }
+                if(DTO.Status.Trim() == OrderConst.STATUS_APPROVED)
+                {
+                    order.Status = DTO.Status.Trim();
+                    order.Note = DTO.Note == null || DTO.Note.Trim().Length == 0 ? null : DTO.Note.Trim();
+                    data.Status = order.Status;
+                    data.Note = order.Note;
+                    foreach (OrderDetail item in list)
+                    {
+                        Product? product = await daoProduct.getProduct(item.ProductId);
+                        if (product == null)
+                        {
+                            return new ResponseDTO<OrderDetailDTO?>(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
+                        }
+                        if (product.Quantity < item.Quantity)
+                        {
+                            return new ResponseDTO<OrderDetailDTO?>(data, "Product " + item.Product.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
+                        }
+                    }
+                    string body = UserUtil.BodyEmailForApproveOrder(list);
+                    await UserUtil.sendEmail("[PHONE SHOPPING] Notification for approve order", body, order.User.Email);
+                    foreach (OrderDetail item in list)
+                    {
+                        Product? product = await daoProduct.getProduct(item.ProductId);
+                        if (product != null)
+                        {
+                            product.Quantity =  product.Quantity - item.Quantity;
+                            product.UpdateAt = DateTime.Now;
+                            await daoProduct.UpdateProduct(product);
+                        }
+                   
+                    }
+                    order.UpdateAt = DateTime.Now;
+                    await daoOrder.UpdateOrder(order);
+                    return new ResponseDTO<OrderDetailDTO?>(data, "Update successful");
+                }
+                return new ResponseDTO<OrderDetailDTO?>(data, "Status update must be " + OrderConst.STATUS_APPROVED + "," + OrderConst.STATUS_REJECTED + " or " + OrderConst.STATUS_PENDING, (int)HttpStatusCode.Conflict);
             }
             catch (Exception ex)
             {

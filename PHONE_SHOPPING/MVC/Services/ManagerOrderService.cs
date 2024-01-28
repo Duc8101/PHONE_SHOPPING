@@ -97,5 +97,27 @@ namespace MVC.Services
                 return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseDTO<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO)
+        {
+            try
+            {
+                string URL = "https://localhost:7033/Order/Update/" + OrderID;
+                string requestData = getRequestData<OrderUpdateDTO?>(DTO);
+                StringContent content = getContent(requestData);
+                HttpResponseMessage response = await PutAsync(URL, content);
+                string responseData = await getResponseData(response);
+                ResponseDTO<OrderDetailDTO?>? result = Deserialize<ResponseDTO<OrderDetailDTO?>>(responseData);
+                if (result == null)
+                {
+                    return new ResponseDTO<OrderDetailDTO?>(null, responseData, (int)response.StatusCode);
+                }
+                return new ResponseDTO<OrderDetailDTO?>(result.Data, result.Message, (int)response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

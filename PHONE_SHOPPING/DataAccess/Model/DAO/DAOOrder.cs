@@ -42,7 +42,13 @@ namespace DataAccess.Model.DAO
 
         public async Task<Order?> getOrder(Guid OrderID)
         {
-            return await context.Orders.Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).SingleOrDefaultAsync(o => o.OrderId == OrderID);
+            return await context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).SingleOrDefaultAsync(o => o.OrderId == OrderID);
+        }
+
+        public async Task UpdateOrder(Order order)
+        {
+            context.Orders.Update(order);
+            await context.SaveChangesAsync();
         }
     }
 }

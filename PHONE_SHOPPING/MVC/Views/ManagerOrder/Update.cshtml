@@ -1,0 +1,47 @@
+﻿@using DataAccess.Const;
+@using DataAccess.DTO.OrderDetailDTO;
+@model OrderDetailDTO
+<section class="products section bg-gray" style="height: 100vh">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 title" style="margin-left: 4%">
+                <p style="color:red">@ViewData["error"]</p>
+                <p style="color:green">@ViewData["success"]</p>
+                <form method="post" class="text-left clearfix" action="/ManagerOrder/Update/@Model.OrderId">
+                    <select name="Status" @(ViewData["success"] == null || Model.Status == OrderConst.STATUS_PENDING ? "" : "disabled")>
+                        @if(Model.Status == OrderConst.STATUS_PENDING)
+                        {
+                            <option value="@OrderConst.STATUS_PENDING" selected>@OrderConst.STATUS_PENDING</option>
+                            <option value="@OrderConst.STATUS_APPROVED">@OrderConst.STATUS_APPROVED</option>
+                            <option value="@OrderConst.STATUS_REJECTED">@OrderConst.STATUS_REJECTED</option>
+                        }
+                        else if (Model.Status == OrderConst.STATUS_APPROVED)
+                        {
+                            <option value="@OrderConst.STATUS_PENDING">@OrderConst.STATUS_PENDING</option>
+                            <option value="@OrderConst.STATUS_APPROVED" selected>@OrderConst.STATUS_APPROVED</option>
+                            <option value="@OrderConst.STATUS_REJECTED">@OrderConst.STATUS_REJECTED</option>
+                        }
+                        else
+                        {
+                            <option value="@OrderConst.STATUS_PENDING">@OrderConst.STATUS_PENDING</option>
+                            <option value="@OrderConst.STATUS_APPROVED">@OrderConst.STATUS_APPROVED</option>
+                            <option value="@OrderConst.STATUS_REJECTED" selected>@OrderConst.STATUS_REJECTED</option>
+                        }
+                        </select>
+                    <br />
+
+                    <div>
+                        Note :
+                        <textarea name="Note" style="width: 300px" class="form-control" @(ViewData["success"] == null || Model.Status == OrderConst.STATUS_PENDING ? "" : "disabled")>
+                            @Model.Note
+                        </textarea>
+                    </div>
+                    <br />
+                    <div>
+                        <button type="submit" @(ViewData["success"] == null || Model.Status == OrderConst.STATUS_PENDING ? "" : "disabled") onclick="return confirm('Are you sure you want to save your change?')">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

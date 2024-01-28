@@ -1,14 +1,13 @@
-﻿namespace DataAccess.DTO.OrderDetailDTO
+﻿using DataAccess.DTO.OrderDTO;
+
+namespace DataAccess.DTO.OrderDetailDTO
 {
-    public class OrderDetailDTO
+    public class OrderDetailDTO : OrderListDTO
     {
         public OrderDetailDTO() 
         {
             DetailDTOs = new List<DetailDTO>();    
         }
-        public Guid OrderId { get; set; }
-        public Guid UserId { get; set; }
-
         public List<DetailDTO> DetailDTOs { get; set; }
     }
 }

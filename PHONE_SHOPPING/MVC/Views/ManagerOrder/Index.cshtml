@@ -36,6 +36,7 @@
                             <th>Order Date</th>
                             <th>Address</th>
                             <th>Status</th>
+                            <th>Note</th>
                             <th>View</th>
                             <th>Detail</th>
                             <th>Update</th>
@@ -65,6 +66,7 @@
                                 <td>@order.OrderDate</td>
                                 <td>@order.Address</td>
                                 <td style="color:@color">@order.Status</td>
+                                <td>@order.Note</td>
                                 <td><a href="/ManagerOrder/View/@order.UserId" class="btn btn-info" aria-disabled="true" role="button">View</a></td>
                                 <td><a class="btn btn-primary" href="/ManagerOrder/Detail/@order.OrderId">Detail</a></td>
                                 <td>

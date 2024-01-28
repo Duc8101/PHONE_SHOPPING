@@ -1,6 +1,8 @@
-﻿using MailKit.Net.Smtp;
+﻿using DataAccess.Entity;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -80,6 +82,16 @@ namespace DataAccess.Model
             string body = "<h1>New Order</h1>\n";
             body = body + "<p>Please check information order</p>\n";
             return body;
+        }
+
+        public static string BodyEmailForApproveOrder(List<OrderDetail> list)
+        {
+            StringBuilder builder = new StringBuilder("<p>Information order detail:</p>\n");
+            foreach (OrderDetail item in list)
+            {
+                builder.AppendLine("<p> - " + item.Product.ProductName + ", quantity: " + item.Quantity + "</p>");
+            }
+            return builder.ToString();
         }
 
     }

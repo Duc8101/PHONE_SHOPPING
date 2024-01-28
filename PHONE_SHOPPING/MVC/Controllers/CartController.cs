@@ -111,14 +111,14 @@ namespace MVC.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                 }
-                if(response.Code == (int) HttpStatusCode.Conflict)
+                if(response.Code == (int) HttpStatusCode.OK)
                 {
-                    ViewData["error"] = response.Message;
-                    ViewData["address"] = null;
+                    ViewData["success"] = response.Message;
                 }
                 else
                 {
-                    ViewData["success"] = response.Message;
+                    ViewData["error"] = response.Message;
+                    ViewData["address"] = null;           
                 }
                 return View(response.Data);
             }

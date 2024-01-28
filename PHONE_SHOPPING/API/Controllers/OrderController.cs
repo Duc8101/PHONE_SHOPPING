@@ -41,5 +41,13 @@ namespace API.Controllers
             Response.StatusCode = response.Code;
             return response;
         }
+
+        [HttpPut("{OrderID}")]
+        public async Task<ResponseDTO<OrderDetailDTO?>> Update([Required] Guid OrderID, [Required] OrderUpdateDTO DTO)
+        {
+            ResponseDTO<OrderDetailDTO?> response = await service.Update(OrderID, DTO);
+            Response.StatusCode = response.Code;
+            return response;
+        }
     }
 }
