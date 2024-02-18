@@ -2,12 +2,12 @@
 
 namespace DataAccess.Model.DAO
 {
-    public class DAOOrderDetail : BaseDAO
+    public class DAOOrderDetail : PHONE_SHOPPINGContext
     {
         public async Task CreateOrderDetail(OrderDetail detail)
         {
-            await context.OrderDetails.AddAsync(detail);
-            await context.SaveChangesAsync();
+            await OrderDetails.AddAsync(detail);
+            await SaveChangesAsync();
         }
     }
 }

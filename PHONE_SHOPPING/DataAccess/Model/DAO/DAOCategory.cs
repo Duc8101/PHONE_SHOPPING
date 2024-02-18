@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Model.DAO
 {
-    public class DAOCategory : BaseDAO
+    public class DAOCategory : PHONE_SHOPPINGContext
     {
         public async Task<List<Category>> getList()
         {
-            return await context.Categories.ToListAsync();
+            return await Categories.ToListAsync();
         }
 
         private IQueryable<Category> getQuery(string? name)
         {
-            IQueryable<Category> query = context.Categories;
+            IQueryable<Category> query = Categories;
             if(name != null && name.Trim().Length > 0)
             {
                 query = query.Where(c => c.Name.ToLower().Contains(name.Trim().ToLower()));
@@ -34,29 +34,29 @@ namespace DataAccess.Model.DAO
 
         public async Task<bool> isExist(string name)
         {
-            return await context.Categories.AnyAsync(c => c.Name == name.Trim());
+            return await Categories.AnyAsync(c => c.Name == name.Trim());
         }
 
         public async Task CreateCategory(Category category)
         {
-            await context.Categories.AddAsync(category);
-            await context.SaveChangesAsync();
+            await Categories.AddAsync(category);
+            await SaveChangesAsync();
         }
 
         public async Task<Category?> getCategory(int ID)
         {
-            return await context.Categories.SingleOrDefaultAsync(c => c.Id == ID);
+            return await Categories.SingleOrDefaultAsync(c => c.Id == ID);
         }
 
         public async Task<bool> isExist(string name, int ID)
         {
-            return await context.Categories.AnyAsync(c => c.Name == name.Trim() && c.Id != ID);
+            return await Categories.AnyAsync(c => c.Name == name.Trim() && c.Id != ID);
         }
 
         public async Task UpdateCategory(Category category)
         {
-            context.Categories.Update(category);
-            await context.SaveChangesAsync();
+            Categories.Update(category);
+            await SaveChangesAsync();
         }
     }
 }
