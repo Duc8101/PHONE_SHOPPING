@@ -9,33 +9,32 @@
                 <form method="post" class="text-left clearfix" action="/ManagerProduct/Create">
                     <div class="form-group">
                         <label for="CategoryId">Category</label><br />
-                        <select name="CategoryId">
-
+                        <select name="CategoryId" id="CategoryId" class="form-control" style="width: 900px">
                             @foreach (CategoryListDTO category in Model)
                             {
-                                    <option value="@category.Id">@category.Name</option>
+                                 <option value="@category.Id">@category.Name</option>
                             }
-                            </select>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label for="ProductName">Product Name</label><br />
-                        <input type="text" class="form-control" name="ProductName" style="width: 300px" placeholder="Product Name" required>
+                        <input type="text" class="form-control" name="ProductName" id="ProductName" style="width: 900px" placeholder="Product Name" required>
                     </div>
 
                     <div class="form-group">
                         <label for="Image">Image</label><br />
-                        <input type="text" name="Image" class="form-control" placeholder="Image link" required>
+                        <input type="text" name="Image" class="form-control" style="width: 900px" id="Image" placeholder="Image link" required>
                     </div>
                     <div class="form-group">
                         <label for="Price">Price</label><br />
-                        <input type="number" step="any" name="Price" class="form-control" placeholder="Price" min="0" required>
+                        <input type="number" step="any" name="Price" id="Price" style="width: 900px" class="form-control" placeholder="Price" min="0" required>
                     </div>
                     <div class="form-group">
                         <label for="Price">Quantity</label><br />
-                        <input type="number" name="Quantity" class="form-control" placeholder="Quantity" min="0" required>
+                        <input type="number" name="Quantity" id="Quantity" style="width: 900px" class="form-control" placeholder="Quantity" min="0" required>
                     </div>
-                    <div class="text-center">
+                    <div class="form-group">
                         <button type="submit" class="btn btn-main text-center" onclick="return confirm('Do you sure you want to save your change?')">Save</button>
                     </div>
                 </form>

@@ -8,12 +8,12 @@
     string status = (string)Model["status"];
     int No = 1;
 }
-<section class="products section bg-gray" style="height: 100vh">
+<section class="products section bg-gray" style="height: 120vh">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12 title">
                 <form style="margin-left:1%">
-                    <select name="status" onchange="this.form.submit()">
+                    <select name="status" onchange="this.form.submit()" class="form-control" style="width: 300px">
                         <option value="@null">ALL</option>
                         @foreach (string item in list)
                         {
@@ -27,7 +27,7 @@
                             }
                         }
                     </select>
-                </form>
+                </form><br />
                 <table class="table table-bordered">
                     <thead>
                         <tr>

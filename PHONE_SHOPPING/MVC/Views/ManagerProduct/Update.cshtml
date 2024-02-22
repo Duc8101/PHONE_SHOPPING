@@ -14,7 +14,7 @@
                 <form method="post" class="text-left clearfix" action="/ManagerProduct/Update/@product.ProductId">
                     <div class="form-group">
                         <label for="CategoryId">Category</label><br />
-                        <select name="CategoryId">
+                        <select name="CategoryId" id="CategoryId" class="form-control" style="width: 900px">
 
                             @foreach (CategoryListDTO category in list)
                             {
@@ -32,20 +32,20 @@
 
                     <div class="form-group">
                         <label for="ProductName">Product Name</label><br />
-                        <input type="text" class="form-control" name="ProductName" style="width: 300px" placeholder="Product Name" value="@product.ProductName" required>
+                        <input type="text" class="form-control" name="ProductName" id="ProductName" style="width: 900px" placeholder="Product Name" value="@product.ProductName" required>
                     </div>
 
                     <div class="form-group">
                         <label for="Image">Image</label><br />
-                        <input type="text" name="Image" class="form-control" placeholder="Image link" value="@product.Image" required>
+                        <input type="text" name="Image" class="form-control" style="width: 900px" id="Image" placeholder="Image link" value="@product.Image" required>
                     </div>
                     <div class="form-group">
                         <label for="Price">Price</label><br />
-                        <input type="number" step="any" name="Price" class="form-control" placeholder="Price" value="@product.Price" min="0" required>
+                        <input type="number" step="any" name="Price" class="form-control" id="Price" style="width: 900px" placeholder="Price" value="@product.Price" min="0" required>
                     </div>
                     <div class="form-group">
                         <label for="Price">Quantity</label><br />
-                        <input type="number" name="Quantity" class="form-control" placeholder="Quantity" min="0" value="@product.Quantity" required>
+                        <input type="number" name="Quantity" class="form-control" id="Quantity" style="width: 900px" placeholder="Quantity" min="0" value="@product.Quantity" required>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-main text-center" onclick="return confirm('Do you sure you want to save your change?')">Save</button>
