@@ -4,17 +4,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Model.DAO
 {
-    public class DAOCart : PHONE_SHOPPINGContext
+    public class DAOCart : BaseDAO
     {
         public async Task<List<Cart>> getList(Guid UserID)
         {
-            return await Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
+            return await context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
         }
 
         public async Task UpdateCart(Cart cart)
         {
-            Carts.Update(cart);
-            await SaveChangesAsync();
+            context.Carts.Update(cart);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteCart(Cart cart)
@@ -25,13 +25,13 @@ namespace DataAccess.Model.DAO
 
         public async Task CreateCart(Cart cart)
         {
-            await Carts.AddAsync(cart);
-            await SaveChangesAsync();
+            await context.Carts.AddAsync(cart);
+            await context.SaveChangesAsync();
         }
 
         public async Task<Cart?> getCart(CartCreateRemoveDTO DTO)
         {
-            return await Carts.FirstOrDefaultAsync(c => c.UserId == DTO.UserId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
+            return await context.Carts.FirstOrDefaultAsync(c => c.UserId == DTO.UserId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
         }
     }
 }

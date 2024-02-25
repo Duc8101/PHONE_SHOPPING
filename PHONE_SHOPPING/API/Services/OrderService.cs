@@ -245,14 +245,9 @@ namespace API.Services
                     await UserUtil.sendEmail("[PHONE SHOPPING] Notification for approve order", body, order.User.Email);
                     foreach (OrderDetail item in list)
                     {
-                        Product? product = await daoProduct.getProduct(item.ProductId);
-                        if (product != null)
-                        {
-                            product.Quantity =  product.Quantity - item.Quantity;
-                            product.UpdateAt = DateTime.Now;
-                            await daoProduct.UpdateProduct(product);
-                        }
-                   
+                        item.Product.Quantity = item.Product.Quantity - item.Quantity;
+                        item.Product.UpdateAt = DateTime.Now;
+                        await daoProduct.SaveChanges();
                     }
                     order.UpdateAt = DateTime.Now;
                     await daoOrder.UpdateOrder(order);
