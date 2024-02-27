@@ -119,5 +119,27 @@ namespace API.Services
                 return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseDTO<bool>> Delete(Guid UserID)
+        {
+            try
+            {
+                User? user = await daoUser.getUser(UserID);
+                if (user == null)
+                {
+                    return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                }
+                List<Cart> list = await daoCart.getList(UserID);
+                foreach(Cart cart in list)
+                {
+                    await daoCart.DeleteCart(cart);
+                }
+                return new ResponseDTO<bool>(false, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

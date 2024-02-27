@@ -43,7 +43,7 @@ namespace API.Services
                 User? user = await daoUser.getUser(DTO);
                 if (user == null)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.NotFound);
                 }
                 UserDetailDTO data = mapper.Map<UserDetailDTO>(user);
                 return new ResponseDTO<UserDetailDTO?>(data, string.Empty);
@@ -55,15 +55,10 @@ namespace API.Services
             }
         }
 
-        public async Task<ResponseDTO<bool>> Logout(Guid UserID)
+        /*public async Task<ResponseDTO<bool>> Logout(Guid UserID)
         {
             try
             {
-                User? user = await daoUser.getUser(UserID);
-                if (user == null)
-                {
-                    return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
-                }
                 List<Cart> list = await daoCart.getList(UserID);
                 foreach (Cart cart in list)
                 {
@@ -75,7 +70,7 @@ namespace API.Services
             {
                 return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
-        }
+        }*/
 
         public async Task<ResponseDTO<bool>> Create(UserCreateDTO DTO)
         {

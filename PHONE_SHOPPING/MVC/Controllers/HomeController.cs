@@ -11,6 +11,11 @@ namespace MVC.Controllers
         private readonly HomeService service = new HomeService();
         public async Task<ActionResult> Index(string? name, int? CategoryID, int? page)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {

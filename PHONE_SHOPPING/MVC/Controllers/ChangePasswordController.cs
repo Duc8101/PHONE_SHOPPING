@@ -11,6 +11,11 @@ namespace MVC.Controllers
         private readonly ChangePasswordService service = new ChangePasswordService();
         public ActionResult Index()
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if(role == null)
             {
@@ -22,6 +27,11 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(ChangePasswordDTO DTO)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == null)
             {

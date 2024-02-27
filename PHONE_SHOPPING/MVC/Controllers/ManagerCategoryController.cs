@@ -12,6 +12,11 @@ namespace MVC.Controllers
         private readonly ManagerCategoryService service = new ManagerCategoryService();
         public async Task<ActionResult> Index(string? name, int? page)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -30,6 +35,11 @@ namespace MVC.Controllers
 
         public ActionResult Create()
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -41,6 +51,11 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CategoryCreateUpdateDTO DTO)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -61,6 +76,11 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Update(int? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -85,6 +105,11 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(int id, CategoryCreateUpdateDTO DTO)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {

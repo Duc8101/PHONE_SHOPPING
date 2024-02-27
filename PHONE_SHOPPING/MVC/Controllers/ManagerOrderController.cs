@@ -14,6 +14,11 @@ namespace MVC.Controllers
         private readonly ManagerOrderService service = new ManagerOrderService();
         public async Task<ActionResult> Index(string? status , int? page)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -29,6 +34,11 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> View(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -52,6 +62,11 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Detail(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -75,6 +90,11 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Update(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -103,6 +123,11 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, OrderUpdateDTO DTO)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {

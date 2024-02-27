@@ -13,6 +13,11 @@ namespace MVC.Controllers
         private readonly MyOrderService service = new MyOrderService();
         public async Task<ActionResult> Index(int? page)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_CUSTOMER)
             {
@@ -33,6 +38,11 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Detail(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_CUSTOMER)
             {

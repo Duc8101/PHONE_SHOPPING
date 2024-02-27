@@ -11,7 +11,12 @@ namespace MVC.Controllers
         private readonly ForgotPasswordService service = new ForgotPasswordService();
         public ActionResult Index()
         {
-            return View();
+            int? role = getRole();
+            if (role == null)
+            {
+                return View();
+            }
+            return Redirect("/Home");
         }
 
         [HttpPost]

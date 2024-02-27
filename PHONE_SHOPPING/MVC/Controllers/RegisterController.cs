@@ -11,7 +11,12 @@ namespace MVC.Controllers
         private readonly RegisterService service = new RegisterService();
         public ActionResult Index()
         {
-            return View();
+            int? role = getRole();
+            if (role == null)
+            {
+                return View();
+            }
+            return Redirect("/Home");
         }
 
         [HttpPost]

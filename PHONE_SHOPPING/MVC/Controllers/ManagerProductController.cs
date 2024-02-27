@@ -13,6 +13,11 @@ namespace MVC.Controllers
         private readonly ManagerProductService service = new ManagerProductService();
         public async Task<ActionResult> Index(string? name, int? CategoryID, int? page)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -28,6 +33,11 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Create()
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -44,6 +54,11 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ProductCreateUpdateDTO DTO)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -67,6 +82,11 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Update(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -91,6 +111,11 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, ProductCreateUpdateDTO DTO)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
@@ -118,6 +143,11 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Delete(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {

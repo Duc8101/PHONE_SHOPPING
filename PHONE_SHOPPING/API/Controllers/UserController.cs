@@ -32,13 +32,13 @@ namespace API.Controllers
             return response;
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public async Task<ResponseDTO<bool>> Logout([Required] Guid UserID)
         {
             ResponseDTO<bool> response = await service.Logout(UserID);
             Response.StatusCode = response.Code;
             return response;
-        }
+        }*/
 
         [HttpPost]
         public async Task<ResponseDTO<bool>> Create([Required] UserCreateDTO DTO)

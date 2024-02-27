@@ -9,9 +9,9 @@ namespace MVC.Controllers
     public class LoginController : BaseController
     {
         private readonly LoginService service = new LoginService();
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            string? UserID = Request.Cookies["UserID"];
+           /* string? UserID = Request.Cookies["UserID"];
             // if not set cookie or cookie expired
             if (UserID == null)
             {
@@ -29,7 +29,12 @@ namespace MVC.Controllers
             }
             HttpContext.Session.SetString("UserID", UserID);
             HttpContext.Session.SetString("username", response.Data.Username);
-            HttpContext.Session.SetInt32("role", response.Data.RoleId);
+            HttpContext.Session.SetInt32("role", response.Data.RoleId);*/
+            int? role = getRole();
+            if(role == null)
+            {
+                return View();
+            }
             return Redirect("/Home");
         }
 
@@ -39,7 +44,7 @@ namespace MVC.Controllers
             ResponseDTO<UserDetailDTO?> response = await service.Index(DTO);
             if (response.Data == null)
             {
-                if (response.Code == (int)HttpStatusCode.Conflict)
+                if (response.Code == (int)HttpStatusCode.NotFound)
                 {
                     ViewData["message"] = response.Message;
                     return View();
@@ -49,12 +54,13 @@ namespace MVC.Controllers
             HttpContext.Session.SetString("UserID", response.Data.UserId.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetInt32("role", response.Data.RoleId);
-            CookieOptions option = new CookieOptions()
+            IDLogin = response.Data.UserId;
+/*            CookieOptions option = new CookieOptions()
             {
                 Expires = DateTime.Now.AddDays(1)
             };
             // add cookie
-            Response.Cookies.Append("UserID", response.Data.UserId.ToString(), option);
+            Response.Cookies.Append("UserID", response.Data.UserId.ToString(), option);*/
             return Redirect("/Home");
         }
 

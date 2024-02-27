@@ -13,6 +13,11 @@ namespace MVC.Controllers
         private readonly CartService service = new CartService();
         public async Task<ActionResult> Index()
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_CUSTOMER)
             {

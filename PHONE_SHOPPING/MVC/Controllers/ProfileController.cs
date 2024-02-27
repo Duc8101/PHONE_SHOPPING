@@ -12,6 +12,11 @@ namespace MVC.Controllers
         private readonly ProfileService service = new ProfileService();
         public async Task<ActionResult> Index()
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_CUSTOMER)
             {
@@ -34,6 +39,11 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(UserUpdateDTO DTO)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             int? role = getRole();
             if (role == RoleConst.ROLE_CUSTOMER)
             {

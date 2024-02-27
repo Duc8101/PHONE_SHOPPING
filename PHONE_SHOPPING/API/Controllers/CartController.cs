@@ -39,5 +39,13 @@ namespace API.Controllers
             Response.StatusCode = response.Code;
             return response;
         }
+
+        [HttpDelete("{UserID}")]
+        public async Task<ResponseDTO<bool>> Delete([Required] Guid UserID)
+        {
+            ResponseDTO<bool> response = await service.Delete(UserID);
+            Response.StatusCode = response.Code;
+            return response;
+        }
     }
 }

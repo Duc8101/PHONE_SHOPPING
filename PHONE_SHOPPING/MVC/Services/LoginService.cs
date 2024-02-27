@@ -12,7 +12,7 @@ namespace MVC.Services
 
         }
 
-        public async Task<ResponseDTO<UserDetailDTO?>> Index(string UserID)
+        /*public async Task<ResponseDTO<UserDetailDTO?>> Index(string UserID)
         {
             try
             {
@@ -24,17 +24,13 @@ namespace MVC.Services
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, data, (int)response.StatusCode);
                 }
-                if (response.IsSuccessStatusCode)
-                {
-                    return new ResponseDTO<UserDetailDTO?>(result.Data, string.Empty);
-                }
-                return new ResponseDTO<UserDetailDTO?>(null, result.Message, (int)response.StatusCode);
+                return new ResponseDTO<UserDetailDTO?>(result.Data, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
                 return new ResponseDTO<UserDetailDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
-        }
+        }*/
 
         public async Task<ResponseDTO<UserDetailDTO?>> Index(LoginDTO DTO)
         {
@@ -54,11 +50,7 @@ namespace MVC.Services
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, responseData, (int)response.StatusCode);
                 }
-                if (response.IsSuccessStatusCode)
-                {
-                    return new ResponseDTO<UserDetailDTO?>(result.Data, string.Empty);
-                }
-                return new ResponseDTO<UserDetailDTO?>(null, result.Message, (int)response.StatusCode);
+                return new ResponseDTO<UserDetailDTO?>(result.Data, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
