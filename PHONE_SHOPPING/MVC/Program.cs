@@ -8,7 +8,7 @@ namespace MVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession(options =>
-                options.IdleTimeout = new TimeSpan(0, 1, 0)
+                options.IdleTimeout = new TimeSpan(3, 0, 0)
             );
             var app = builder.Build();
 
