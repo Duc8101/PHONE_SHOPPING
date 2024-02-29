@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "H3EuMu7vGSo0Z1MLVB+N7KsqDSDKjKT9y2/0Uv9qTEkgyMrXCyYvdeb+fQfH9BGToDZOOLgf5YVWjl9EfllM2Q==",
+  "dgSpecHash": "h3zcRZffYDWlHlARzq3wzT7N/euAP47KkOc9RGo67PqopDevV1FC6vJ0Fo8OxkCeUPhiZMLI7Cupz3jtoL0jHA==",
   "success": true,
   "projectFilePath": "D:\\GitHub\\PHONE_SHOPPING\\PHONE_SHOPPING\\MVC\\MVC.csproj",
   "expectedPackageFiles": [
@@ -56,7 +56,11 @@
     "C:\\Users\\Admin\\.nuget\\packages\\system.text.encoding.codepages\\7.0.0\\system.text.encoding.codepages.7.0.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\system.text.json\\6.0.0\\system.text.json.6.0.0.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512"
+    "C:\\Users\\Admin\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.27\\microsoft.windowsdesktop.app.ref.6.0.27.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.27\\microsoft.netcore.app.ref.6.0.27.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.27\\microsoft.aspnetcore.app.ref.6.0.27.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.27\\microsoft.netcore.app.host.win-x64.6.0.27.nupkg.sha512"
   ],
   "logs": []
 }
