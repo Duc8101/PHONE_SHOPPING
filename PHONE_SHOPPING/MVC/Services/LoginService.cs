@@ -6,10 +6,8 @@ namespace MVC.Services
 {
     public class LoginService : BaseService
     {
-
-        public LoginService() : base()
+        public LoginService(HttpClient client) : base(client)
         {
-
         }
 
         /*public async Task<ResponseDTO<UserDetailDTO?>> Index(string UserID)

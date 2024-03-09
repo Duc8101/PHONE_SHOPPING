@@ -6,15 +6,19 @@ namespace DataAccess.Model.DAO
 {
     public class DAOOrder : BaseDAO
     {
+        public DAOOrder(PHONE_SHOPPINGContext context) : base(context)
+        {
+        }
+
         public async Task CreateOrder(Order order)
         {
-            await context.Orders.AddAsync(order);
-            await context.SaveChangesAsync();
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
         }
 
         private IQueryable<Order> getQuery(Guid? UserID, string? status)
         {
-            IQueryable<Order> query = context.Orders.Include(u => u.User);
+            IQueryable<Order> query = _context.Orders.Include(u => u.User);
             if(UserID != null)
             {
                 query = query.Where(o => o.UserId == UserID);
@@ -42,13 +46,13 @@ namespace DataAccess.Model.DAO
 
         public async Task<Order?> getOrder(Guid OrderID)
         {
-            return await context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).SingleOrDefaultAsync(o => o.OrderId == OrderID);
+            return await _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).SingleOrDefaultAsync(o => o.OrderId == OrderID);
         }
 
         public async Task UpdateOrder(Order order)
         {
-            context.Orders.Update(order);
-            await context.SaveChangesAsync();
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
         }
     }
 }

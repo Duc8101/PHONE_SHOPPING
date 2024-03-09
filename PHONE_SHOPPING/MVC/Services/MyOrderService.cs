@@ -7,6 +7,10 @@ namespace MVC.Services
 {
     public class MyOrderService : BaseService
     {
+        public MyOrderService(HttpClient client) : base(client)
+        {
+        }
+
         public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> Index(string UserID, int? page)
         {
             try

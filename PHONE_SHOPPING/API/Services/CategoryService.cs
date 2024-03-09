@@ -9,18 +9,18 @@ namespace API.Services
 {
     public class CategoryService : BaseService
     {
-        private readonly DAOCategory daoCategory = new DAOCategory();
-        public CategoryService(IMapper mapper) : base(mapper)
+        private readonly DAOCategory _daoCategory;
+        public CategoryService(IMapper mapper, DAOCategory daoCategory) : base(mapper)
         {
-
+            _daoCategory = daoCategory;
         }
 
         public async Task<ResponseDTO<List<CategoryListDTO>?>> ListAll()
         {
             try
             {
-                List<Category> list = await daoCategory.getList();
-                List<CategoryListDTO> result = mapper.Map<List<CategoryListDTO>>(list);
+                List<Category> list = await _daoCategory.getList();
+                List<CategoryListDTO> result = _mapper.Map<List<CategoryListDTO>>(list);
                 return new ResponseDTO<List<CategoryListDTO>?>(result, string.Empty);
             }
             catch (Exception ex)
@@ -32,9 +32,9 @@ namespace API.Services
         {
             try
             {
-                List<Category> list = await daoCategory.getList(name, page);
-                List<CategoryListDTO> result = mapper.Map<List<CategoryListDTO>>(list);
-                int number = await daoCategory.getNumberPage(name);
+                List<Category> list = await _daoCategory.getList(name, page);
+                List<CategoryListDTO> result = _mapper.Map<List<CategoryListDTO>>(list);
+                int number = await _daoCategory.getNumberPage(name);
                 string preURL = "/ManagerCategory";
                 string nextURL = "/ManagerCategory";
                 string firstURL = "/ManagerCategory";
@@ -73,7 +73,7 @@ namespace API.Services
         {
             try
             {
-                if (await daoCategory.isExist(DTO.Name.Trim()))
+                if (await _daoCategory.isExist(DTO.Name.Trim()))
                 {
                     return new ResponseDTO<bool>(false, "Category existed", (int)HttpStatusCode.Conflict);
                 }
@@ -84,7 +84,7 @@ namespace API.Services
                     UpdateAt = DateTime.Now,
                     IsDeleted = false,
                 };
-                await daoCategory.CreateCategory(category);
+                await _daoCategory.CreateCategory(category);
                 return new ResponseDTO<bool>(true, "Create successful");
             }
             catch (Exception ex)
@@ -96,12 +96,12 @@ namespace API.Services
         {
             try
             {
-                Category? category = await daoCategory.getCategory(ID);
+                Category? category = await _daoCategory.getCategory(ID);
                 if (category == null)
                 {
                     return new ResponseDTO<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
                 }
-                CategoryListDTO data = mapper.Map<CategoryListDTO>(category);
+                CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
                 return new ResponseDTO<CategoryListDTO?>(data, string.Empty);
             }
             catch (Exception ex)
@@ -113,19 +113,19 @@ namespace API.Services
         {
             try
             {
-                Category? category = await daoCategory.getCategory(ID);
+                Category? category = await _daoCategory.getCategory(ID);
                 if (category == null)
                 {
                     return new ResponseDTO<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
                 }
                 category.Name = DTO.Name.Trim();
-                CategoryListDTO data = mapper.Map<CategoryListDTO>(category);
-                if (await daoCategory.isExist(DTO.Name.Trim(), ID))
+                CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
+                if (await _daoCategory.isExist(DTO.Name.Trim(), ID))
                 {
                     return new ResponseDTO<CategoryListDTO?>(data, "Category existed", (int)HttpStatusCode.Conflict);
                 }
                 category.UpdateAt = DateTime.Now;
-                await daoCategory.UpdateCategory(category);
+                await _daoCategory.UpdateCategory(category);
                 return new ResponseDTO<CategoryListDTO?>(data, "Update successful");
             }
             catch (Exception ex)

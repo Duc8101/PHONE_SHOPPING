@@ -5,6 +5,10 @@ namespace MVC.Services
 {
     public class LogoutService : BaseService
     {
+        public LogoutService(HttpClient client) : base(client)
+        {
+        }
+
         public async Task<ResponseDTO<bool>> Index(Guid UserID)
         {
             try

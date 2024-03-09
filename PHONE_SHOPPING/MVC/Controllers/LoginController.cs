@@ -8,7 +8,12 @@ namespace MVC.Controllers
 {
     public class LoginController : BaseController
     {
-        private readonly LoginService service = new LoginService();
+        private readonly LoginService _service;
+
+        public LoginController(LoginService service)
+        {
+            _service = service;
+        }
         public ActionResult Index()
         {
            /* string? UserID = Request.Cookies["UserID"];
@@ -41,7 +46,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(LoginDTO DTO)
         {
-            ResponseDTO<UserDetailDTO?> response = await service.Index(DTO);
+            ResponseDTO<UserDetailDTO?> response = await _service.Index(DTO);
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)

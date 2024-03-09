@@ -8,7 +8,11 @@ namespace MVC.Controllers
 {
     public class ChangePasswordController : BaseController
     {
-        private readonly ChangePasswordService service = new ChangePasswordService();
+        private readonly ChangePasswordService _service;
+        public ChangePasswordController(ChangePasswordService service)
+        {
+            _service = service;
+        }
         public ActionResult Index()
         {
             // if session time out
@@ -42,7 +46,7 @@ namespace MVC.Controllers
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseDTO<bool> response = await service.Index(UserID, DTO);
+            ResponseDTO<bool> response = await _service.Index(UserID, DTO);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)

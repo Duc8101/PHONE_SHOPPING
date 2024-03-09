@@ -11,7 +11,12 @@ namespace MVC.Controllers
 {
     public class ManagerOrderController : BaseController
     {
-        private readonly ManagerOrderService service = new ManagerOrderService();
+        private readonly ManagerOrderService _service;
+
+        public ManagerOrderController(ManagerOrderService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index(string? status , int? page)
         {
             // if session time out
@@ -22,7 +27,7 @@ namespace MVC.Controllers
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
-                ResponseDTO<Dictionary<string, object>?> response = await service.Index(status, page);
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Index(status, page);
                 if(response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -46,7 +51,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerOrder");
                 }
-                ResponseDTO<UserDetailDTO?> response = await service.View(id.Value);
+                ResponseDTO<UserDetailDTO?> response = await _service.View(id.Value);
                 if (response.Data == null)
                 {
                     if(response.Code == (int) HttpStatusCode.NotFound)
@@ -74,7 +79,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerOrder");
                 }
-                ResponseDTO<OrderDetailDTO?> response = await service.Detail(id.Value);
+                ResponseDTO<OrderDetailDTO?> response = await _service.Detail(id.Value);
                 if (response.Data == null)
                 {
                     if (response.Code == (int)HttpStatusCode.NotFound)
@@ -102,7 +107,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerOrder");
                 }
-                ResponseDTO<OrderDetailDTO?> response = await service.Detail(id.Value);
+                ResponseDTO<OrderDetailDTO?> response = await _service.Detail(id.Value);
                 if (response.Data == null)
                 {
                     if (response.Code == (int)HttpStatusCode.NotFound)
@@ -131,7 +136,7 @@ namespace MVC.Controllers
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
-                ResponseDTO<OrderDetailDTO?> response = await service.Update(id, DTO);
+                ResponseDTO<OrderDetailDTO?> response = await _service.Update(id, DTO);
                 if (response.Data == null) 
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));

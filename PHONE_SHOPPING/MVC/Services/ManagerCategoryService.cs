@@ -6,6 +6,10 @@ namespace MVC.Services
 {
     public class ManagerCategoryService : BaseService
     {
+        public ManagerCategoryService(HttpClient client) : base(client)
+        {
+        }
+
         public async Task<ResponseDTO<PagedResultDTO<CategoryListDTO>?>> Index(string? name, int? page)
         {
             try

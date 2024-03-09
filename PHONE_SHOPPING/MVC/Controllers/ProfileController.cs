@@ -9,7 +9,12 @@ namespace MVC.Controllers
 {
     public class ProfileController : BaseController
     {
-        private readonly ProfileService service = new ProfileService();
+        private readonly ProfileService _service;
+
+        public ProfileController(ProfileService service) 
+        {
+            _service = service;    
+        }
         public async Task<ActionResult> Index()
         {
             // if session time out
@@ -25,7 +30,7 @@ namespace MVC.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<UserDetailDTO?> response = await service.Index(UserID);
+                ResponseDTO<UserDetailDTO?> response = await _service.Index(UserID);
                 // if get user failed
                 if (response.Data == null)
                 {
@@ -52,7 +57,7 @@ namespace MVC.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<UserDetailDTO?> response = await service.Index(UserID, DTO);
+                ResponseDTO<UserDetailDTO?> response = await _service.Index(UserID, DTO);
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));

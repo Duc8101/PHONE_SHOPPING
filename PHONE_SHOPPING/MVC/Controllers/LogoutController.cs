@@ -7,12 +7,17 @@ namespace MVC.Controllers
 {
     public class LogoutController : BaseController
     {
-        private readonly LogoutService service = new LogoutService();
+        private readonly LogoutService _service;
+
+        public LogoutController(LogoutService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index()
         {
             if (IDLogin.HasValue)
             {
-                ResponseDTO<bool> response = await service.Index(IDLogin.Value);
+                ResponseDTO<bool> response = await _service.Index(IDLogin.Value);
                 if (response.Code == (int)HttpStatusCode.OK)
                 {
                     HttpContext.Session.Clear();

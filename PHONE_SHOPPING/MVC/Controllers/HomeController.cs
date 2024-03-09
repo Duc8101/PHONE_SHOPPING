@@ -2,13 +2,16 @@
 using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services;
-using System.Net;
 
 namespace MVC.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly HomeService service = new HomeService();
+        private readonly HomeService _service;
+        public HomeController(HomeService service) 
+        {
+            _service = service;    
+        }
         public async Task<ActionResult> Index(string? name, int? CategoryID, int? page)
         {
             // if session time out
@@ -21,7 +24,7 @@ namespace MVC.Controllers
             {
                 return Redirect("/ManagerProduct");
             }
-            ResponseDTO<Dictionary<string, object>?> result = await service.Index(name, CategoryID, page);
+            ResponseDTO<Dictionary<string, object>?> result = await _service.Index(name, CategoryID, page);
             if (result.Data == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));

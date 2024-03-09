@@ -9,7 +9,12 @@ namespace MVC.Controllers
 {
     public class ManagerCategoryController : BaseController
     {
-        private readonly ManagerCategoryService service = new ManagerCategoryService();
+        private readonly ManagerCategoryService _service;
+
+        public ManagerCategoryController(ManagerCategoryService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index(string? name, int? page)
         {
             // if session time out
@@ -20,7 +25,7 @@ namespace MVC.Controllers
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
-                ResponseDTO<PagedResultDTO<CategoryListDTO>?> response = await service.Index(name, page);
+                ResponseDTO<PagedResultDTO<CategoryListDTO>?> response = await _service.Index(name, page);
                 if(response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -59,7 +64,7 @@ namespace MVC.Controllers
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
-                ResponseDTO<bool> response = await service.Create(DTO);
+                ResponseDTO<bool> response = await _service.Create(DTO);
                 if(response.Data == false)
                 {
                     if(response.Code == (int) HttpStatusCode.Conflict)
@@ -88,7 +93,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerCategory");
                 }
-                ResponseDTO<CategoryListDTO?> response = await service.Update(id.Value);
+                ResponseDTO<CategoryListDTO?> response = await _service.Update(id.Value);
                 if(response.Data == null)
                 {
                     if(response.Code == (int) HttpStatusCode.NotFound)
@@ -113,7 +118,7 @@ namespace MVC.Controllers
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
-                ResponseDTO<CategoryListDTO?> response = await service.Update(id, DTO);
+                ResponseDTO<CategoryListDTO?> response = await _service.Update(id, DTO);
                 if (response.Data == null)
                 {
                     if (response.Code == (int)HttpStatusCode.NotFound)

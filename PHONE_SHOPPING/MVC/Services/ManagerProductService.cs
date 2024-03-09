@@ -7,6 +7,10 @@ namespace MVC.Services
 {
     public class ManagerProductService : BaseService
     {
+        public ManagerProductService(HttpClient client) : base(client)
+        {
+        }
+
         private async Task<ResponseDTO<List<CategoryListDTO>?>> getListCategory()
         {
             try

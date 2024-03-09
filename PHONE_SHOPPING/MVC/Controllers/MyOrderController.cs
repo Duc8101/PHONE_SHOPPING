@@ -10,7 +10,11 @@ namespace MVC.Controllers
 {
     public class MyOrderController : BaseController
     {
-        private readonly MyOrderService service = new MyOrderService();
+        private readonly MyOrderService _service;
+        public MyOrderController(MyOrderService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index(int? page)
         {
             // if session time out
@@ -26,7 +30,7 @@ namespace MVC.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await service.Index(UserID, page);
+                ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await _service.Index(UserID, page);
                 if(response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -55,7 +59,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/MyOrder");
                 }
-                ResponseDTO<OrderDetailDTO?> response = await service.Detail(id.Value, Guid.Parse(UserID));
+                ResponseDTO<OrderDetailDTO?> response = await _service.Detail(id.Value, Guid.Parse(UserID));
                 if(response.Data == null)
                 {
                     if(response.Code == (int) HttpStatusCode.NotFound)

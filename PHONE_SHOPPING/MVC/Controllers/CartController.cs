@@ -10,7 +10,12 @@ namespace MVC.Controllers
 {
     public class CartController : BaseController
     {
-        private readonly CartService service = new CartService();
+        private readonly CartService _service;
+
+        public CartController(CartService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index()
         {
             // if session time out
@@ -26,7 +31,7 @@ namespace MVC.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<List<CartListDTO>?> response = await service.Index(UserID);
+                ResponseDTO<List<CartListDTO>?> response = await _service.Index(UserID);
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -55,7 +60,7 @@ namespace MVC.Controllers
                     ProductId = ProductID.Value,
                     UserId = Guid.Parse(UserID)
                 };
-                ResponseDTO<bool> response = await service.Create(DTO);
+                ResponseDTO<bool> response = await _service.Create(DTO);
                 if (response.Data)
                 {
                     return Redirect("/Cart");
@@ -84,7 +89,7 @@ namespace MVC.Controllers
                     ProductId = ProductID.Value,
                     UserId = Guid.Parse(UserID)
                 };
-                ResponseDTO<bool> response = await service.Remove(DTO);
+                ResponseDTO<bool> response = await _service.Remove(DTO);
                 if (response.Data || response.Code == (int)HttpStatusCode.Conflict)
                 {
                     return Redirect("/Cart");
@@ -111,7 +116,7 @@ namespace MVC.Controllers
                 }
                 DTO.UserId = Guid.Parse(UserID);
                 ViewData["address"] = DTO.Address;
-                ResponseDTO<List<CartListDTO>?> response = await service.Checkout(DTO);
+                ResponseDTO<List<CartListDTO>?> response = await _service.Checkout(DTO);
                 if(response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));

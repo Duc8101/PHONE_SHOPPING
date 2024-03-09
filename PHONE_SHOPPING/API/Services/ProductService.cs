@@ -10,11 +10,12 @@ namespace API.Services
 {
     public class ProductService : BaseService
     {
-        private readonly DAOProduct daoProduct = new DAOProduct();
-        private readonly DAOCategory daoCategory = new DAOCategory();
-        public ProductService(IMapper mapper) : base(mapper)
+        private readonly DAOProduct _daoProduct;
+        private readonly DAOCategory _daoCategory;
+        public ProductService(IMapper mapper, DAOProduct daoProduct, DAOCategory daoCategory) : base(mapper)
         {
-
+            _daoCategory = daoCategory;
+            _daoProduct = daoProduct;
         }
 
         public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(bool isAdmin, string? name, int? CategoryID, int page)
@@ -27,7 +28,7 @@ namespace API.Services
             string lastURL = isAdmin ? "/ManagerProduct" : "/Home";
             try
             {
-                int numberPage = await daoProduct.getNumberPage(name, CategoryID);
+                int numberPage = await _daoProduct.getNumberPage(name, CategoryID);
                 // if not choose category
                 if (CategoryID == null && (name == null || name.Trim().Length == 0))
                 {
@@ -59,8 +60,8 @@ namespace API.Services
                         lastURL = lastURL + "?name=" + name.Trim() + "&CategoryID=" + CategoryID + "&page=" + numberPage;
                     }
                 }
-                List<Product> listProduct = await daoProduct.getList(name, CategoryID, page);
-                List<ProductListDTO> productDTOs = mapper.Map<List<ProductListDTO>>(listProduct);
+                List<Product> listProduct = await _daoProduct.getList(name, CategoryID, page);
+                List<ProductListDTO> productDTOs = _mapper.Map<List<ProductListDTO>>(listProduct);
                 PagedResultDTO<ProductListDTO> result = new PagedResultDTO<ProductListDTO>()
                 {
                     PageSelected = page,
@@ -83,8 +84,8 @@ namespace API.Services
         {
             try
             {
-                List<Category> list = await daoCategory.getList();
-                List<CategoryListDTO> data = mapper.Map<List<CategoryListDTO>>(list);
+                List<Category> list = await _daoCategory.getList();
+                List<CategoryListDTO> data = _mapper.Map<List<CategoryListDTO>>(list);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
                     return new ResponseDTO<bool>(false, "You have to input product name", (int)HttpStatusCode.Conflict);
@@ -93,16 +94,16 @@ namespace API.Services
                 {
                     return new ResponseDTO<bool>(false, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
-                if (await daoProduct.isExist(DTO.ProductName.Trim()))
+                if (await _daoProduct.isExist(DTO.ProductName.Trim()))
                 {
                     return new ResponseDTO<bool>(false, "Product existed", (int)HttpStatusCode.Conflict);
                 }
-                Product product = mapper.Map<Product>(DTO);
+                Product product = _mapper.Map<Product>(DTO);
                 product.ProductId = Guid.NewGuid();
                 product.CreatedAt = DateTime.Now;
                 product.UpdateAt = DateTime.Now;
                 product.IsDeleted = false;
-                await daoProduct.CreateProduct(product);
+                await _daoProduct.CreateProduct(product);
                 return new ResponseDTO<bool>(true, "Create successful");
             }
             catch (Exception ex)
@@ -115,12 +116,12 @@ namespace API.Services
         {
             try
             {
-                Product? product = await daoProduct.getProduct(ProductID);
+                Product? product = await _daoProduct.getProduct(ProductID);
                 if (product == null)
                 {
                     return new ResponseDTO<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
                 }
-                ProductListDTO DTO = mapper.Map<ProductListDTO>(product);
+                ProductListDTO DTO = _mapper.Map<ProductListDTO>(product);
                 return new ResponseDTO<ProductListDTO?>(DTO, string.Empty);
             }
             catch (Exception ex)
@@ -133,7 +134,7 @@ namespace API.Services
         {
             try
             {
-                Product? product = await daoProduct.getProduct(ProductID);
+                Product? product = await _daoProduct.getProduct(ProductID);
                 if (product == null)
                 {
                     return new ResponseDTO<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
@@ -143,7 +144,7 @@ namespace API.Services
                 product.Price = DTO.Price;
                 product.CategoryId = DTO.CategoryId;
                 product.Quantity = DTO.Quantity;
-                ProductListDTO data = mapper.Map<ProductListDTO>(product);
+                ProductListDTO data = _mapper.Map<ProductListDTO>(product);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
                     return new ResponseDTO<ProductListDTO?>(data, "You have to input product name", (int)HttpStatusCode.Conflict);
@@ -152,12 +153,12 @@ namespace API.Services
                 {
                     return new ResponseDTO<ProductListDTO?>(data, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
-                if (await daoProduct.isExist(DTO.ProductName.Trim(), ProductID))
+                if (await _daoProduct.isExist(DTO.ProductName.Trim(), ProductID))
                 {
                     return new ResponseDTO<ProductListDTO?>(data, "Product existed", (int)HttpStatusCode.Conflict);
                 }
                 product.UpdateAt = DateTime.Now;
-                await daoProduct.UpdateProduct(product);
+                await _daoProduct.UpdateProduct(product);
                 return new ResponseDTO<ProductListDTO?>(data, "Update successful");
             }
             catch (Exception ex)
@@ -170,12 +171,12 @@ namespace API.Services
         {
             try
             {
-                Product? product = await daoProduct.getProduct(ProductID);
+                Product? product = await _daoProduct.getProduct(ProductID);
                 if (product == null)
                 {
                     return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, "Not found product", (int)HttpStatusCode.NotFound);
                 }
-                await daoProduct.DeleteProduct(product);
+                await _daoProduct.DeleteProduct(product);
                 ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await List(true, null, null, 1);
                 if(result.Code == (int)HttpStatusCode.OK)
                 {

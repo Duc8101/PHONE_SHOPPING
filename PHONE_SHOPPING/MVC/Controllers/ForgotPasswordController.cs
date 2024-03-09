@@ -8,7 +8,11 @@ namespace MVC.Controllers
 {
     public class ForgotPasswordController : BaseController
     {
-        private readonly ForgotPasswordService service = new ForgotPasswordService();
+        private readonly ForgotPasswordService _service;
+        public ForgotPasswordController(ForgotPasswordService service) 
+        { 
+            _service = service;
+        }
         public ActionResult Index()
         {
             int? role = getRole();
@@ -22,7 +26,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(ForgotPasswordDTO DTO)
         {
-            ResponseDTO<bool> response = await service.ForgotPassword(DTO);
+            ResponseDTO<bool> response = await _service.ForgotPassword(DTO);
             if(response.Code == (int)HttpStatusCode.NotFound)
             {
                 ViewData["error"] = response.Message;

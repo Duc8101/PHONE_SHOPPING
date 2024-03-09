@@ -2,6 +2,10 @@
 {
     public class BaseDAO
     {
-        internal readonly PHONE_SHOPPINGContext context = new PHONE_SHOPPINGContext();
+        internal readonly PHONE_SHOPPINGContext _context;
+        public BaseDAO(PHONE_SHOPPINGContext context)
+        {
+            _context = context;
+        }
     }
 }

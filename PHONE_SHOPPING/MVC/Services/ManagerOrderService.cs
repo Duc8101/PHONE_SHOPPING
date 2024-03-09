@@ -9,6 +9,10 @@ namespace MVC.Services
 {
     public class ManagerOrderService : BaseService
     {
+        public ManagerOrderService(HttpClient client) : base(client)
+        {
+        }
+
         public async Task<ResponseDTO<Dictionary<string, object>?>> Index(string? status, int? page)
         {
             try

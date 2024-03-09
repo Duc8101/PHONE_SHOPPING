@@ -6,6 +6,10 @@ namespace MVC.Services
 {
     public class ForgotPasswordService : BaseService
     {
+        public ForgotPasswordService(HttpClient client) : base(client)
+        {
+        }
+
         public async Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO)
         {
             try

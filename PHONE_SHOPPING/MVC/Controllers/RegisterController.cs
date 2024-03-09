@@ -8,7 +8,13 @@ namespace MVC.Controllers
 {
     public class RegisterController : BaseController
     {
-        private readonly RegisterService service = new RegisterService();
+        private readonly RegisterService _service;
+
+        public RegisterController(RegisterService service)
+        {
+            _service = service;
+        }
+
         public ActionResult Index()
         {
             int? role = getRole();
@@ -22,7 +28,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(UserCreateDTO DTO)
         {
-            ResponseDTO<bool> response = await service.Register(DTO);
+            ResponseDTO<bool> response = await _service.Register(DTO);
             if(response.Code == (int) HttpStatusCode.OK)
             {
                 ViewData["success"] = response.Message;

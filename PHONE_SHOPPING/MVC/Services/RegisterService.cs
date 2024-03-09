@@ -6,6 +6,10 @@ namespace MVC.Services
 {
     public class RegisterService : BaseService
     {
+        public RegisterService(HttpClient client) : base(client)
+        {
+        }
+
         public async Task<ResponseDTO<bool>> Register(UserCreateDTO DTO)
         {
             try

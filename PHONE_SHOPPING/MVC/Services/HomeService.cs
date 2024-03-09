@@ -7,6 +7,10 @@ namespace MVC.Services
 {
     public class HomeService : BaseService
     {
+        public HomeService(HttpClient client) : base(client)
+        {
+        }
+
         private async Task<ResponseDTO<List<CategoryListDTO>?>> getListCategory()
         {
             try

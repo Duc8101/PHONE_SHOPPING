@@ -12,22 +12,23 @@ namespace API.Services
 {
     public class UserService : BaseService
     {
-        private readonly DAOUser daoUser = new DAOUser();
-        private readonly DAOCart daoCart = new DAOCart();
-        public UserService(IMapper mapper) : base(mapper)
+        private readonly DAOUser _daoUser;
+        private readonly DAOCart _daoCart;
+        public UserService(IMapper mapper, DAOUser daoUser, DAOCart daoCart) : base(mapper)
         {
-
+            _daoUser = daoUser;
+            _daoCart = daoCart;
         }
         public async Task<ResponseDTO<UserDetailDTO?>> Detail(Guid UserID)
         {
             try
             {
-                User? user = await daoUser.getUser(UserID);
+                User? user = await _daoUser.getUser(UserID);
                 if (user == null)
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                UserDetailDTO DTO = mapper.Map<UserDetailDTO>(user);
+                UserDetailDTO DTO = _mapper.Map<UserDetailDTO>(user);
                 return new ResponseDTO<UserDetailDTO?>(DTO, string.Empty);
             }
             catch (Exception ex)
@@ -40,12 +41,12 @@ namespace API.Services
         {
             try
             {
-                User? user = await daoUser.getUser(DTO);
+                User? user = await _daoUser.getUser(DTO);
                 if (user == null)
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.NotFound);
                 }
-                UserDetailDTO data = mapper.Map<UserDetailDTO>(user);
+                UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
                 return new ResponseDTO<UserDetailDTO?>(data, string.Empty);
 
             }
@@ -81,7 +82,7 @@ namespace API.Services
                 {
                     return new ResponseDTO<bool>(false, "Invalid email", (int)HttpStatusCode.Conflict);
                 }
-                if (await daoUser.isExist(DTO.Username, DTO.Email.Trim()))
+                if (await _daoUser.isExist(DTO.Username, DTO.Email.Trim()))
                 {
                     return new ResponseDTO<bool>(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
                 }
@@ -91,14 +92,14 @@ namespace API.Services
                 string body = UserUtil.BodyEmailForRegister(newPw);
                 // send email
                 await UserUtil.sendEmail("Welcome to PHONE SHOPPING", body, DTO.Email.Trim());
-                User user = mapper.Map<User>(DTO);
+                User user = _mapper.Map<User>(DTO);
                 user.UserId = Guid.NewGuid();
                 user.Password = hashPw;
                 user.RoleId = RoleConst.ROLE_CUSTOMER;
                 user.CreatedAt = DateTime.Now;
                 user.UpdateAt = DateTime.Now;
                 user.IsDeleted = false;
-                await daoUser.CreateUser(user);
+                await _daoUser.CreateUser(user);
                 return new ResponseDTO<bool>(true, "Register successful");
             }
             catch (Exception ex)
@@ -111,7 +112,7 @@ namespace API.Services
         {
             try
             {
-                User? user = await daoUser.getUser(DTO.Email.Trim());
+                User? user = await _daoUser.getUser(DTO.Email.Trim());
                 if (user == null)
                 {
                     return new ResponseDTO<bool>(false, "Not found email", (int)HttpStatusCode.NotFound);
@@ -124,7 +125,7 @@ namespace API.Services
                 await UserUtil.sendEmail("Welcome to PHONE SHOPPING", body, DTO.Email.Trim());
                 user.Password = hashPw;
                 user.UpdateAt = DateTime.Now;
-                await daoUser.UpdateUser(user);
+                await _daoUser.UpdateUser(user);
                 return new ResponseDTO<bool>(true, "Password changed successful. Please check your email");
             }
             catch (Exception ex)
@@ -137,7 +138,7 @@ namespace API.Services
         {
             try
             {
-                User? user = await daoUser.getUser(UserID);
+                User? user = await _daoUser.getUser(UserID);
                 if (user == null)
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
@@ -145,13 +146,13 @@ namespace API.Services
                 user.FullName = DTO.FullName.Trim();
                 user.Phone = DTO.Phone;
                 user.Email = DTO.Email.Trim();
-                UserDetailDTO data = mapper.Map<UserDetailDTO>(user);
-                if (await daoUser.isExist(DTO.Email.Trim(), UserID))
+                UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
+                if (await _daoUser.isExist(DTO.Email.Trim(), UserID))
                 {
                     return new ResponseDTO<UserDetailDTO?>(data, "Email has existed", (int)HttpStatusCode.Conflict);
                 }
                 user.UpdateAt = DateTime.Now;
-                await daoUser.UpdateUser(user);
+                await _daoUser.UpdateUser(user);
                 return new ResponseDTO<UserDetailDTO?>(data, "Update successful");
             }
             catch (Exception ex)
@@ -164,7 +165,7 @@ namespace API.Services
         {
             try
             {
-                User? user = await daoUser.getUser(UserID);
+                User? user = await _daoUser.getUser(UserID);
                 if (user == null)
                 {
                     return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
@@ -191,7 +192,7 @@ namespace API.Services
                 }
                 user.Password = UserUtil.HashPassword(DTO.NewPassword);
                 user.UpdateAt = DateTime.Now;
-                await daoUser.UpdateUser(user);
+                await _daoUser.UpdateUser(user);
                 return new ResponseDTO<bool>(true, "Change successful");
             }
             catch (Exception ex)

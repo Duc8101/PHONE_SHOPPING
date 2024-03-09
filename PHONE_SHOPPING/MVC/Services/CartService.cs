@@ -1,13 +1,16 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.CartDTO;
 using DataAccess.DTO.OrderDTO;
-using DataAccess.Entity;
 using System.Net;
 
 namespace MVC.Services
 {
     public class CartService : BaseService
     {
+        public CartService(HttpClient client) : base(client)
+        {
+        }
+
         public async Task<ResponseDTO<bool>> Create(CartCreateRemoveDTO DTO)
         {
             try

@@ -6,9 +6,13 @@ namespace DataAccess.Model.DAO
 {
     public class DAOProduct : BaseDAO
     {
+        public DAOProduct(PHONE_SHOPPINGContext context) : base(context)
+        {
+        }
+
         private IQueryable<Product> getQuery(string? name, int? CategoryID)
         {
-            IQueryable<Product> query = context.Products.Include(p => p.Category).Where(p => p.IsDeleted == false);
+            IQueryable<Product> query = _context.Products.Include(p => p.Category).Where(p => p.IsDeleted == false);
             if(name != null && name.Trim().Length > 0)
             {
                 query = query.Where(p => p.ProductName.ToLower().Contains(name.Trim().ToLower()) || p.Category.Name.ToLower().Contains(name.Trim().ToLower()));
@@ -33,25 +37,25 @@ namespace DataAccess.Model.DAO
         }
         public async Task<Product?> getProduct(Guid ProductID)
         {
-            return await context.Products.Include(p => p.Category).SingleOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+            return await _context.Products.Include(p => p.Category).SingleOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
         }
         public async Task<bool> isExist(string ProductName)
         {
-            return await context.Products.AnyAsync(p => p.ProductName == ProductName.Trim() && p.IsDeleted == false);
+            return await _context.Products.AnyAsync(p => p.ProductName == ProductName.Trim() && p.IsDeleted == false);
         }
         public async Task CreateProduct(Product product)
         {
-            await context.Products.AddAsync(product);
-            await context.SaveChangesAsync();
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
         }
         public async Task<bool> isExist(string ProductName, Guid ProductID)
         {
-            return await context.Products.AnyAsync(p => p.ProductName == ProductName.Trim() && p.IsDeleted == false && p.ProductId != ProductID);
+            return await _context.Products.AnyAsync(p => p.ProductName == ProductName.Trim() && p.IsDeleted == false && p.ProductId != ProductID);
         }
         public async Task UpdateProduct(Product product)
         {
-            context.Products.Update(product);
-            await context.SaveChangesAsync();
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
         }
         public async Task DeleteProduct(Product product)
         {
@@ -60,7 +64,7 @@ namespace DataAccess.Model.DAO
         }
         public async Task SaveChanges()
         {
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
     }
