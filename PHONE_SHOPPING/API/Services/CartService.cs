@@ -53,7 +53,7 @@ namespace API.Services
                     return new ResponseDTO<bool>(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 Cart? cart = await _daoCart.getCart(DTO);
-                if(cart == null)
+                if (cart == null)
                 {
                     cart = new Cart()
                     {
@@ -103,7 +103,7 @@ namespace API.Services
                 }
                 else
                 {
-                    if(cart.Quantity == 1)
+                    if (cart.Quantity == 1)
                     {
                         await _daoCart.DeleteCart(cart);
                     }
@@ -112,7 +112,7 @@ namespace API.Services
                         cart.Quantity--;
                         cart.UpdateAt = DateTime.Now;
                         await _daoCart.UpdateCart(cart);
-                    }     
+                    }
                 }
                 return new ResponseDTO<bool>(true, string.Empty);
             }
@@ -132,7 +132,7 @@ namespace API.Services
                     return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 List<Cart> list = await _daoCart.getList(UserID);
-                foreach(Cart cart in list)
+                foreach (Cart cart in list)
                 {
                     await _daoCart.DeleteCart(cart);
                 }
