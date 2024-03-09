@@ -63,7 +63,7 @@
                                     <td>@DTO.Quantity</td>
                                     <td>@DTO.CategoryName</td>
                                     <td> <a class="btn btn-success" href="/ManagerProduct/Update/@DTO.ProductId">Update</a></td>
-                                    <td> <a class="btn btn-danger" href="/ManagerProduct/Delete/@DTO.ProductId">Delete</a></td>
+                                    <td> <a class="btn btn-danger" href="/ManagerProduct/Delete/@DTO.ProductId" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a></td>
                                 </tr>
                             }
                         </tbody>
