@@ -17,7 +17,7 @@ namespace DataAccess.Model.DAO
             {
                 query = query.Where(p => p.ProductName.ToLower().Contains(name.Trim().ToLower()) || p.Category.Name.ToLower().Contains(name.Trim().ToLower()));
             }
-            if (CategoryID != null)
+            if (CategoryID.HasValue)
             {
                 query = query.Where(p => p.CategoryId == CategoryID);
             }

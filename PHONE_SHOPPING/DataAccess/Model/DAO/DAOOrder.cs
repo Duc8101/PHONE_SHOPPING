@@ -19,7 +19,7 @@ namespace DataAccess.Model.DAO
         private IQueryable<Order> getQuery(Guid? UserID, string? status)
         {
             IQueryable<Order> query = _context.Orders.Include(u => u.User);
-            if(UserID != null)
+            if(UserID.HasValue)
             {
                 query = query.Where(o => o.UserId == UserID);
             }
