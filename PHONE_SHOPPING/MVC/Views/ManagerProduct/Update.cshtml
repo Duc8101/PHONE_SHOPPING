@@ -18,14 +18,7 @@
 
                             @foreach (CategoryListDTO category in list)
                             {
-                                if (category.Id == product.CategoryId)
-                                {
-                                    <option value="@category.Id" selected>@category.Name</option>
-                                }
-                                else
-                                {
-                                    <option value="@category.Id">@category.Name</option>
-                                }
+                                <option value="@category.Id" selected="@(category.Id == product.CategoryId)">@category.Name</option>
                             }
                         </select>
                     </div>

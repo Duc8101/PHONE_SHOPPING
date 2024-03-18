@@ -17,14 +17,7 @@
                         <option value="@null">ALL</option>
                         @foreach (string item in list)
                         {
-                            if (item == status)
-                            {
-                                <option value="@item" selected>@item</option>
-                            }
-                            else
-                            {
-                                <option value="@item">@item</option>
-                            }
+                            <option value="@item" selected="@(item == status)">@item</option>
                         }
                     </select>
                 </form><br />
