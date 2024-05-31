@@ -1,4 +1,4 @@
-﻿using API.Services;
+﻿using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +10,16 @@ namespace API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserService service;
-        public UserController(UserService service)
+        private readonly IUserService _service;
+        public UserController(IUserService service)
         {
-            this.service = service;
+            _service = service;
         }
 
         [HttpGet("{UserID}")]
         public async Task<ResponseDTO<UserDetailDTO?>> Detail([Required] Guid UserID)
         {
-            ResponseDTO<UserDetailDTO?> response = await service.Detail(UserID);
+            ResponseDTO<UserDetailDTO?> response = await _service.Detail(UserID);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -27,7 +27,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ResponseDTO<UserDetailDTO?>> Login([Required] LoginDTO DTO)
         {
-            ResponseDTO<UserDetailDTO?> response = await service.Login(DTO);
+            ResponseDTO<UserDetailDTO?> response = await _service.Login(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -43,7 +43,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ResponseDTO<bool>> Create([Required] UserCreateDTO DTO)
         {
-            ResponseDTO<bool> response = await service.Create(DTO);
+            ResponseDTO<bool> response = await _service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -51,7 +51,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO)
         {
-            ResponseDTO<bool> response = await service.ForgotPassword(DTO);
+            ResponseDTO<bool> response = await _service.ForgotPassword(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -59,7 +59,7 @@ namespace API.Controllers
         [HttpPut("{UserID}")]
         public async Task<ResponseDTO<UserDetailDTO?>> Update([Required] Guid UserID, [Required] UserUpdateDTO DTO)
         {
-            ResponseDTO<UserDetailDTO?> response = await service.Update(UserID, DTO);
+            ResponseDTO<UserDetailDTO?> response = await _service.Update(UserID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -67,7 +67,7 @@ namespace API.Controllers
         [HttpPut("{UserID}")]
         public async Task<ResponseDTO<bool>> ChangePassword([Required] Guid UserID, [Required] ChangePasswordDTO DTO)
         {
-            ResponseDTO<bool> response = await service.ChangePassword(UserID, DTO);
+            ResponseDTO<bool> response = await _service.ChangePassword(UserID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }

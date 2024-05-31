@@ -23,18 +23,6 @@ namespace DataAccess.Model
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                ConfigurationBuilder builder = new ConfigurationBuilder();
-                IConfigurationRoot config = builder.SetBasePath(Directory.GetCurrentDirectory())
-                   .AddJsonFile("appsettings.json", true, true).Build();
-                string connection = config.GetConnectionString("DefaultConnection");
-                optionsBuilder.UseSqlServer(connection);
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cart>(entity =>

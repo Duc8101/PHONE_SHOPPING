@@ -1,4 +1,4 @@
-﻿using API.Services;
+﻿using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +10,16 @@ namespace API.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ProductService service;
-        public ProductController(ProductService service)
+        private readonly IProductService _service;
+        public ProductController(IProductService service)
         {
-            this.service = service;
+            _service = service;
         }
 
         [HttpGet]
         public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(string? name, int? CategoryID, [Required] bool isAdmin = false, [Required] int page = 1)
         {
-            ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await service.List(isAdmin, name, CategoryID, page);
+            ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await _service.List(isAdmin, name, CategoryID, page);
             Response.StatusCode = result.Code;
             return result;
         }
@@ -27,7 +27,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ResponseDTO<bool>> Create([Required] ProductCreateUpdateDTO DTO)
         {
-            ResponseDTO<bool> result = await service.Create(DTO);
+            ResponseDTO<bool> result = await _service.Create(DTO);
             Response.StatusCode = result.Code;
             return result;
         }
@@ -35,7 +35,7 @@ namespace API.Controllers
         [HttpGet("{ProductID}")]
         public async Task<ResponseDTO<ProductListDTO?>> Detail([Required] Guid ProductID)
         {
-            ResponseDTO<ProductListDTO?> response = await service.Detail(ProductID);
+            ResponseDTO<ProductListDTO?> response = await _service.Detail(ProductID);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -43,7 +43,7 @@ namespace API.Controllers
         [HttpPut("{ProductID}")]
         public async Task<ResponseDTO<ProductListDTO?>> Update([Required] Guid ProductID, [Required] ProductCreateUpdateDTO DTO)
         {
-            ResponseDTO<ProductListDTO?> response = await service.Update(ProductID, DTO);
+            ResponseDTO<ProductListDTO?> response = await _service.Update(ProductID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -51,7 +51,7 @@ namespace API.Controllers
         [HttpDelete("{ProductID}")]
         public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> Delete([Required] Guid ProductID)
         {
-            ResponseDTO<PagedResultDTO<ProductListDTO>?> response = await service.Delete(ProductID);
+            ResponseDTO<PagedResultDTO<ProductListDTO>?> response = await _service.Delete(ProductID);
             Response.StatusCode = response.Code;
             return response;
         }

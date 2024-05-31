@@ -1,10 +1,10 @@
-﻿using API.Services;
-using DataAccess.DTO.CartDTO;
-using DataAccess.DTO.OrderDTO;
+﻿using API.Services.IService;
 using DataAccess.DTO;
+using DataAccess.DTO.CartDTO;
+using DataAccess.DTO.OrderDetailDTO;
+using DataAccess.DTO.OrderDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using DataAccess.DTO.OrderDetailDTO;
 
 namespace API.Controllers
 {
@@ -12,16 +12,16 @@ namespace API.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly OrderService service;
-        public OrderController(OrderService service)
+        private readonly IOrderService _service;
+        public OrderController(IOrderService service)
         {
-            this.service = service;
+            _service = service;
         }
 
         [HttpPost]
         public async Task<ResponseDTO<List<CartListDTO>?>> Create([Required] OrderCreateDTO DTO)
         {
-            ResponseDTO<List<CartListDTO>?> response = await service.Create(DTO);
+            ResponseDTO<List<CartListDTO>?> response = await _service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -29,7 +29,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, [Required] bool isAdmin = false, [Required] int page = 1)
         {
-            ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await service.List(UserID, status,isAdmin, page);
+            ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await _service.List(UserID, status, isAdmin, page);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -37,7 +37,7 @@ namespace API.Controllers
         [HttpGet("{OrderID}")]
         public async Task<ResponseDTO<OrderDetailDTO?>> Detail([Required] Guid OrderID)
         {
-            ResponseDTO<OrderDetailDTO?> response = await service.Detail(OrderID);
+            ResponseDTO<OrderDetailDTO?> response = await _service.Detail(OrderID);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -45,7 +45,7 @@ namespace API.Controllers
         [HttpPut("{OrderID}")]
         public async Task<ResponseDTO<OrderDetailDTO?>> Update([Required] Guid OrderID, [Required] OrderUpdateDTO DTO)
         {
-            ResponseDTO<OrderDetailDTO?> response = await service.Update(OrderID, DTO);
+            ResponseDTO<OrderDetailDTO?> response = await _service.Update(OrderID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }
