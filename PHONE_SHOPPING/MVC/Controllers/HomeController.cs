@@ -1,16 +1,16 @@
 ﻿using DataAccess.Const;
 using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 
 namespace MVC.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly HomeService _service;
-        public HomeController(HomeService service) 
+        private readonly IHomeService _service;
+        public HomeController(IHomeService service)
         {
-            _service = service;    
+            _service = service;
         }
         public async Task<ActionResult> Index(string? name, int? CategoryID, int? page)
         {

@@ -1,13 +1,14 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.CartDTO;
 using DataAccess.DTO.OrderDTO;
+using MVC.Services.IService;
 using System.Net;
 
-namespace MVC.Services
+namespace MVC.Services.Service
 {
-    public class CartService : BaseService
+    public class CartService : BaseService, ICartService
     {
-        public CartService(HttpClient client) : base(client)
+        public CartService() : base()
         {
         }
 

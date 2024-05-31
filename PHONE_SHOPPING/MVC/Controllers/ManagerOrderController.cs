@@ -4,20 +4,20 @@ using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class ManagerOrderController : BaseController
     {
-        private readonly ManagerOrderService _service;
+        private readonly IManagerOrderService _service;
 
-        public ManagerOrderController(ManagerOrderService service)
+        public ManagerOrderController(IManagerOrderService service)
         {
             _service = service;
         }
-        public async Task<ActionResult> Index(string? status , int? page)
+        public async Task<ActionResult> Index(string? status, int? page)
         {
             // if session time out
             if (isSessionTimeout())
@@ -28,7 +28,7 @@ namespace MVC.Controllers
             if (role == RoleConst.ROLE_ADMIN)
             {
                 ResponseDTO<Dictionary<string, object>?> response = await _service.Index(status, page);
-                if(response.Data == null)
+                if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                 }
@@ -47,14 +47,14 @@ namespace MVC.Controllers
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
-                if(id == null)
+                if (id == null)
                 {
                     return Redirect("/ManagerOrder");
                 }
                 ResponseDTO<UserDetailDTO?> response = await _service.View(id.Value);
                 if (response.Data == null)
                 {
-                    if(response.Code == (int) HttpStatusCode.NotFound)
+                    if (response.Code == (int)HttpStatusCode.NotFound)
                     {
                         return Redirect("/ManagerOrder");
                     }
@@ -137,11 +137,11 @@ namespace MVC.Controllers
             if (role == RoleConst.ROLE_ADMIN)
             {
                 ResponseDTO<OrderDetailDTO?> response = await _service.Update(id, DTO);
-                if (response.Data == null) 
+                if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                 }
-                if(response.Code == (int)HttpStatusCode.OK)
+                if (response.Code == (int)HttpStatusCode.OK)
                 {
                     ViewData["success"] = response.Message;
                 }

@@ -1,15 +1,15 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class ChangePasswordController : BaseController
     {
-        private readonly ChangePasswordService _service;
-        public ChangePasswordController(ChangePasswordService service)
+        private readonly IChangePasswordService _service;
+        public ChangePasswordController(IChangePasswordService service)
         {
             _service = service;
         }
@@ -21,7 +21,7 @@ namespace MVC.Controllers
                 return Redirect("/Logout");
             }
             int? role = getRole();
-            if(role == null)
+            if (role == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
             }

@@ -3,17 +3,17 @@ using AutoMapper;
 using DataAccess.DTO;
 using DataAccess.DTO.CartDTO;
 using DataAccess.Entity;
-using DataAccess.Model.DAO;
+using DataAccess.Model.IDAO;
 using System.Net;
 
 namespace API.Services.Service
 {
     public class CartService : BaseService, ICartService
     {
-        private readonly DAOUser _daoUser;
-        private readonly DAOCart _daoCart;
-        private readonly DAOProduct _daoProduct;
-        public CartService(IMapper mapper, DAOUser daoUser, DAOCart daoCart, DAOProduct daoProduct) : base(mapper)
+        private readonly IDAOUser _daoUser;
+        private readonly IDAOCart _daoCart;
+        private readonly IDAOProduct _daoProduct;
+        public CartService(IMapper mapper, IDAOUser daoUser, IDAOCart daoCart, IDAOProduct daoProduct) : base(mapper)
         {
             _daoUser = daoUser;
             _daoCart = daoCart;

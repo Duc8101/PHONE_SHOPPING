@@ -1,13 +1,14 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
+using MVC.Services.IService;
 using System.Net;
 
-namespace MVC.Services
+namespace MVC.Services.Service
 {
-    public class MyOrderService : BaseService
+    public class MyOrderService : BaseService, IMyOrderService
     {
-        public MyOrderService(HttpClient client) : base(client)
+        public MyOrderService() : base()
         {
         }
 
@@ -52,7 +53,7 @@ namespace MVC.Services
                 {
                     return new ResponseDTO<OrderDetailDTO?>(null, result.Message, (int)response.StatusCode);
                 }
-                if(result.Data.UserId != UserID)
+                if (result.Data.UserId != UserID)
                 {
                     return new ResponseDTO<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
                 }

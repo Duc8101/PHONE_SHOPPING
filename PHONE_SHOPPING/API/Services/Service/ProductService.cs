@@ -4,16 +4,16 @@ using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
 using DataAccess.Entity;
-using DataAccess.Model.DAO;
+using DataAccess.Model.IDAO;
 using System.Net;
 
 namespace API.Services.Service
 {
     public class ProductService : BaseService, IProductService
     {
-        private readonly DAOProduct _daoProduct;
-        private readonly DAOCategory _daoCategory;
-        public ProductService(IMapper mapper, DAOProduct daoProduct, DAOCategory daoCategory) : base(mapper)
+        private readonly IDAOProduct _daoProduct;
+        private readonly IDAOCategory _daoCategory;
+        public ProductService(IMapper mapper, IDAOProduct daoProduct, IDAOCategory daoCategory) : base(mapper)
         {
             _daoCategory = daoCategory;
             _daoProduct = daoProduct;

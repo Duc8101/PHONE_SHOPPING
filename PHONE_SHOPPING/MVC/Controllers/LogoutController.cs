@@ -1,15 +1,15 @@
 ﻿using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class LogoutController : BaseController
     {
-        private readonly LogoutService _service;
+        private readonly ILogoutService _service;
 
-        public LogoutController(LogoutService service)
+        public LogoutController(ILogoutService service)
         {
             _service = service;
         }

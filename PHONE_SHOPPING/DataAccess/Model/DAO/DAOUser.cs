@@ -1,11 +1,12 @@
 ﻿using DataAccess.Const;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
+using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Model.DAO
 {
-    public class DAOUser : BaseDAO
+    public class DAOUser : BaseDAO, IDAOUser
     {
         public DAOUser(PHONE_SHOPPINGContext context) : base(context)
         {

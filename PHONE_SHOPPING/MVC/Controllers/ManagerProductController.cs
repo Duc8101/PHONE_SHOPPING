@@ -3,16 +3,16 @@ using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class ManagerProductController : BaseController
     {
-        private readonly ManagerProductService _service;
+        private readonly IManagerProductService _service;
 
-        public ManagerProductController(ManagerProductService service)
+        public ManagerProductController(IManagerProductService service)
         {
             _service = service;
         }

@@ -7,19 +7,19 @@ using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
-using DataAccess.Model.DAO;
+using DataAccess.Model.IDAO;
 using System.Net;
 
 namespace API.Services.Service
 {
     public class OrderService : BaseService, IOrderService
     {
-        private readonly DAOUser _daoUser;
-        private readonly DAOCart _daoCart;
-        private readonly DAOProduct _daoProduct;
-        private readonly DAOOrder _daoOrder;
-        private readonly DAOOrderDetail _daoDetail;
-        public OrderService(IMapper mapper, DAOUser daoUser, DAOCart daoCart, DAOProduct daoProduct, DAOOrder daoOrder, DAOOrderDetail daoDetail) : base(mapper)
+        private readonly IDAOUser _daoUser;
+        private readonly IDAOCart _daoCart;
+        private readonly IDAOProduct _daoProduct;
+        private readonly IDAOOrder _daoOrder;
+        private readonly IDAOOrderDetail _daoDetail;
+        public OrderService(IMapper mapper, IDAOUser daoUser, IDAOCart daoCart, IDAOProduct daoProduct, IDAOOrder daoOrder, IDAOOrderDetail daoDetail) : base(mapper)
         {
             _daoUser = daoUser;
             _daoCart = daoCart;

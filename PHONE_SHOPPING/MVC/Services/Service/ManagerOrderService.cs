@@ -3,13 +3,14 @@ using DataAccess.DTO;
 using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
 using DataAccess.DTO.UserDTO;
+using MVC.Services.IService;
 using System.Net;
 
-namespace MVC.Services
+namespace MVC.Services.Service
 {
-    public class ManagerOrderService : BaseService
+    public class ManagerOrderService : BaseService, IManagerOrderService
     {
-        public ManagerOrderService(HttpClient client) : base(client)
+        public ManagerOrderService() : base()
         {
         }
 

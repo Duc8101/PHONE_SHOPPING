@@ -1,13 +1,14 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
+using MVC.Services.IService;
 using System.Net;
 
-namespace MVC.Services
+namespace MVC.Services.Service
 {
-    public class ManagerProductService : BaseService
+    public class ManagerProductService : BaseService, IManagerProductService
     {
-        public ManagerProductService(HttpClient client) : base(client)
+        public ManagerProductService() : base()
         {
         }
 

@@ -1,10 +1,11 @@
 ﻿using DataAccess.Const;
 using DataAccess.Entity;
+using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Model.DAO
 {
-    public class DAOOrder : BaseDAO
+    public class DAOOrder : BaseDAO, IDAOOrder
     {
         public DAOOrder(PHONE_SHOPPINGContext context) : base(context)
         {

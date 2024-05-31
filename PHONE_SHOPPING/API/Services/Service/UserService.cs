@@ -5,7 +5,7 @@ using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
-using DataAccess.Model.DAO;
+using DataAccess.Model.IDAO;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -13,9 +13,9 @@ namespace API.Services.Service
 {
     public class UserService : BaseService, IUserService
     {
-        private readonly DAOUser _daoUser;
-        private readonly DAOCart _daoCart;
-        public UserService(IMapper mapper, DAOUser daoUser, DAOCart daoCart) : base(mapper)
+        private readonly IDAOUser _daoUser;
+        private readonly IDAOCart _daoCart;
+        public UserService(IMapper mapper, IDAOUser daoUser, IDAOCart daoCart) : base(mapper)
         {
             _daoUser = daoUser;
             _daoCart = daoCart;

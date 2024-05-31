@@ -1,16 +1,16 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class ForgotPasswordController : BaseController
     {
-        private readonly ForgotPasswordService _service;
-        public ForgotPasswordController(ForgotPasswordService service) 
-        { 
+        private readonly IForgotPasswordService _service;
+        public ForgotPasswordController(IForgotPasswordService service)
+        {
             _service = service;
         }
         public ActionResult Index()
@@ -27,7 +27,7 @@ namespace MVC.Controllers
         public async Task<ActionResult> Index(ForgotPasswordDTO DTO)
         {
             ResponseDTO<bool> response = await _service.ForgotPassword(DTO);
-            if(response.Code == (int)HttpStatusCode.NotFound)
+            if (response.Code == (int)HttpStatusCode.NotFound)
             {
                 ViewData["error"] = response.Message;
                 return View();

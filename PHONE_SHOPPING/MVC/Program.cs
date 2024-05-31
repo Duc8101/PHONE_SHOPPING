@@ -1,4 +1,5 @@
-using MVC.Services;
+using MVC.Services.IService;
+using MVC.Services.Service;
 
 namespace MVC
 {
@@ -12,19 +13,18 @@ namespace MVC
             builder.Services.AddSession(options =>
                 options.IdleTimeout = new TimeSpan(3, 0, 0)
             );
-            builder.Services.AddScoped<HttpClient, HttpClient>();
-            builder.Services.AddScoped<CartService, CartService>();
-            builder.Services.AddScoped<ChangePasswordService, ChangePasswordService>();
-            builder.Services.AddScoped<ForgotPasswordService, ForgotPasswordService>();
-            builder.Services.AddScoped<HomeService, HomeService>();
-            builder.Services.AddScoped<LoginService, LoginService>();
-            builder.Services.AddScoped<LogoutService, LogoutService>();
-            builder.Services.AddScoped<ManagerCategoryService, ManagerCategoryService>();
-            builder.Services.AddScoped<ManagerOrderService, ManagerOrderService>();
-            builder.Services.AddScoped<ManagerProductService, ManagerProductService>();
-            builder.Services.AddScoped<MyOrderService, MyOrderService>();
-            builder.Services.AddScoped<ProfileService, ProfileService>();
-            builder.Services.AddScoped<RegisterService, RegisterService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IChangePasswordService, ChangePasswordService>();
+            builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
+            builder.Services.AddScoped<IHomeService, HomeService>();
+            builder.Services.AddScoped<ILoginService, LoginService>();
+            builder.Services.AddScoped<ILogoutService, LogoutService>();
+            builder.Services.AddScoped<IManagerCategoryService, ManagerCategoryService>();
+            builder.Services.AddScoped<IManagerOrderService, ManagerOrderService>();
+            builder.Services.AddScoped<IManagerProductService, ManagerProductService>();
+            builder.Services.AddScoped<IMyOrderService, MyOrderService>();
+            builder.Services.AddScoped<IProfileService, ProfileService>();
+            builder.Services.AddScoped<IRegisterService, RegisterService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

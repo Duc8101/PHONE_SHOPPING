@@ -3,6 +3,7 @@ using API.Services.Service;
 using AutoMapper;
 using DataAccess.Model;
 using DataAccess.Model.DAO;
+using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
 
 namespace API
@@ -30,12 +31,12 @@ namespace API
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddTransient<DAOUser, DAOUser>();
-            builder.Services.AddTransient<DAOCart, DAOCart>();
-            builder.Services.AddTransient<DAOProduct, DAOProduct>();
-            builder.Services.AddTransient<DAOCategory, DAOCategory>();
-            builder.Services.AddTransient<DAOOrder, DAOOrder>();
-            builder.Services.AddTransient<DAOOrderDetail, DAOOrderDetail>();
+            builder.Services.AddTransient<IDAOUser, DAOUser>();
+            builder.Services.AddTransient<IDAOCart, DAOCart>();
+            builder.Services.AddTransient<IDAOProduct, DAOProduct>();
+            builder.Services.AddTransient<IDAOCategory, DAOCategory>();
+            builder.Services.AddTransient<IDAOOrder, DAOOrder>();
+            builder.Services.AddTransient<IDAOOrderDetail, DAOOrderDetail>();
             // ------------------------- config auto mapper ----------------------------
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var config = new MapperConfiguration(cfg =>

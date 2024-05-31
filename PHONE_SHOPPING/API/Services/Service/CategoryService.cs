@@ -3,15 +3,15 @@ using AutoMapper;
 using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.Entity;
-using DataAccess.Model.DAO;
+using DataAccess.Model.IDAO;
 using System.Net;
 
 namespace API.Services.Service
 {
     public class CategoryService : BaseService, ICategoryService
     {
-        private readonly DAOCategory _daoCategory;
-        public CategoryService(IMapper mapper, DAOCategory daoCategory) : base(mapper)
+        private readonly IDAOCategory _daoCategory;
+        public CategoryService(IMapper mapper, IDAOCategory daoCategory) : base(mapper)
         {
             _daoCategory = daoCategory;
         }

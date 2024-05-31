@@ -1,10 +1,11 @@
 ﻿using DataAccess.DTO.CartDTO;
 using DataAccess.Entity;
+using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Model.DAO
 {
-    public class DAOCart : BaseDAO
+    public class DAOCart : BaseDAO, IDAOCart
     {
         public DAOCart(PHONE_SHOPPINGContext context) : base(context)
         {

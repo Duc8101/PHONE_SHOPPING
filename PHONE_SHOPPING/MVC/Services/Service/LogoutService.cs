@@ -1,11 +1,12 @@
 ﻿using DataAccess.DTO;
+using MVC.Services.IService;
 using System.Net;
 
-namespace MVC.Services
+namespace MVC.Services.Service
 {
-    public class LogoutService : BaseService
+    public class LogoutService : BaseService, ILogoutService
     {
-        public LogoutService(HttpClient client) : base(client)
+        public LogoutService() : base()
         {
         }
 

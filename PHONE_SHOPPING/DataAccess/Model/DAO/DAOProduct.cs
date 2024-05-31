@@ -1,10 +1,11 @@
 ﻿using DataAccess.Const;
 using DataAccess.Entity;
+using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Model.DAO
 {
-    public class DAOProduct : BaseDAO
+    public class DAOProduct : BaseDAO, IDAOProduct
     {
         public DAOProduct(PHONE_SHOPPINGContext context) : base(context)
         {

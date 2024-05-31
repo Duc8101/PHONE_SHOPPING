@@ -1,13 +1,14 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
+using MVC.Services.IService;
 using System.Net;
 
-namespace MVC.Services
+namespace MVC.Services.Service
 {
-    public class HomeService : BaseService
+    public class HomeService : BaseService, IHomeService
     {
-        public HomeService(HttpClient client) : base(client)
+        public HomeService() : base()
         {
         }
 
@@ -59,7 +60,7 @@ namespace MVC.Services
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
                 ResponseDTO<PagedResultDTO<ProductListDTO>?>? result = Deserialize<ResponseDTO<PagedResultDTO<ProductListDTO>?>>(data);
-                if(result == null)
+                if (result == null)
                 {
                     return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, data, (int)response.StatusCode);
                 }
@@ -80,7 +81,7 @@ namespace MVC.Services
                 {
                     return new ResponseDTO<Dictionary<string, object>?>(null, resCategory.Message, resCategory.Code);
                 }
-                if(resProduct.Data == null)
+                if (resProduct.Data == null)
                 {
                     return new ResponseDTO<Dictionary<string, object>?>(null, resProduct.Message, resProduct.Code);
                 }

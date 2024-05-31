@@ -1,8 +1,9 @@
 ﻿using DataAccess.Entity;
+using DataAccess.Model.IDAO;
 
 namespace DataAccess.Model.DAO
 {
-    public class DAOOrderDetail : BaseDAO
+    public class DAOOrderDetail : BaseDAO, IDAOOrderDetail
     {
         public DAOOrderDetail(PHONE_SHOPPINGContext context) : base(context)
         {

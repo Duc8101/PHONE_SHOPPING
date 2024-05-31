@@ -3,16 +3,16 @@ using DataAccess.DTO;
 using DataAccess.DTO.CartDTO;
 using DataAccess.DTO.OrderDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class CartController : BaseController
     {
-        private readonly CartService _service;
+        private readonly ICartService _service;
 
-        public CartController(CartService service)
+        public CartController(ICartService service)
         {
             _service = service;
         }
@@ -117,18 +117,18 @@ namespace MVC.Controllers
                 DTO.UserId = Guid.Parse(UserID);
                 ViewData["address"] = DTO.Address;
                 ResponseDTO<List<CartListDTO>?> response = await _service.Checkout(DTO);
-                if(response.Data == null)
+                if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                 }
-                if(response.Code == (int) HttpStatusCode.OK)
+                if (response.Code == (int)HttpStatusCode.OK)
                 {
                     ViewData["success"] = response.Message;
                 }
                 else
                 {
                     ViewData["error"] = response.Message;
-                    ViewData["address"] = null;           
+                    ViewData["address"] = null;
                 }
                 return View(response.Data);
             }

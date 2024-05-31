@@ -1,12 +1,13 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
+using MVC.Services.IService;
 using System.Net;
 
-namespace MVC.Services
+namespace MVC.Services.Service
 {
-    public class ForgotPasswordService : BaseService
+    public class ForgotPasswordService : BaseService, IForgotPasswordService
     {
-        public ForgotPasswordService(HttpClient client) : base(client)
+        public ForgotPasswordService() : base()
         {
         }
 

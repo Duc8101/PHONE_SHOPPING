@@ -2,16 +2,16 @@
 using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class ManagerCategoryController : BaseController
     {
-        private readonly ManagerCategoryService _service;
+        private readonly IManagerCategoryService _service;
 
-        public ManagerCategoryController(ManagerCategoryService service)
+        public ManagerCategoryController(IManagerCategoryService service)
         {
             _service = service;
         }
@@ -26,7 +26,7 @@ namespace MVC.Controllers
             if (role == RoleConst.ROLE_ADMIN)
             {
                 ResponseDTO<PagedResultDTO<CategoryListDTO>?> response = await _service.Index(name, page);
-                if(response.Data == null)
+                if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                 }
@@ -65,11 +65,11 @@ namespace MVC.Controllers
             if (role == RoleConst.ROLE_ADMIN)
             {
                 ResponseDTO<bool> response = await _service.Create(DTO);
-                if(response.Data == false)
+                if (response.Data == false)
                 {
-                    if(response.Code == (int) HttpStatusCode.Conflict)
+                    if (response.Code == (int)HttpStatusCode.Conflict)
                     {
-                        ViewData["error"] = response.Message; 
+                        ViewData["error"] = response.Message;
                         return View();
                     }
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -89,14 +89,14 @@ namespace MVC.Controllers
             int? role = getRole();
             if (role == RoleConst.ROLE_ADMIN)
             {
-                if(id == null)
+                if (id == null)
                 {
                     return Redirect("/ManagerCategory");
                 }
                 ResponseDTO<CategoryListDTO?> response = await _service.Update(id.Value);
-                if(response.Data == null)
+                if (response.Data == null)
                 {
-                    if(response.Code == (int) HttpStatusCode.NotFound)
+                    if (response.Code == (int)HttpStatusCode.NotFound)
                     {
                         return Redirect("/ManagerCategory");
                     }
@@ -127,7 +127,7 @@ namespace MVC.Controllers
                     }
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                 }
-                if(response.Code == (int) HttpStatusCode.Conflict)
+                if (response.Code == (int)HttpStatusCode.Conflict)
                 {
                     ViewData["error"] = response.Message;
                 }

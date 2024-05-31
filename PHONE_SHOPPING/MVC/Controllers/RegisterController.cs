@@ -1,16 +1,16 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class RegisterController : BaseController
     {
-        private readonly RegisterService _service;
+        private readonly IRegisterService _service;
 
-        public RegisterController(RegisterService service)
+        public RegisterController(IRegisterService service)
         {
             _service = service;
         }
@@ -29,7 +29,7 @@ namespace MVC.Controllers
         public async Task<ActionResult> Index(UserCreateDTO DTO)
         {
             ResponseDTO<bool> response = await _service.Register(DTO);
-            if(response.Code == (int) HttpStatusCode.OK)
+            if (response.Code == (int)HttpStatusCode.OK)
             {
                 ViewData["success"] = response.Message;
                 return View();

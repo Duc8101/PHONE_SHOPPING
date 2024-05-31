@@ -2,18 +2,18 @@
 using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services;
+using MVC.Services.IService;
 using System.Net;
 
 namespace MVC.Controllers
 {
     public class ProfileController : BaseController
     {
-        private readonly ProfileService _service;
+        private readonly IProfileService _service;
 
-        public ProfileController(ProfileService service) 
+        public ProfileController(IProfileService service)
         {
-            _service = service;    
+            _service = service;
         }
         public async Task<ActionResult> Index()
         {
