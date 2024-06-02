@@ -1,22 +1,35 @@
 ﻿using API.Services.IService;
 using AutoMapper;
+using DataAccess.Const;
 using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
 using DataAccess.Entity;
-using DataAccess.Model.IDAO;
+using DataAccess.Model;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace API.Services.Service
 {
     public class ProductService : BaseService, IProductService
     {
-        private readonly IDAOProduct _daoProduct;
-        private readonly IDAOCategory _daoCategory;
-        public ProductService(IMapper mapper, IDAOProduct daoProduct, IDAOCategory daoCategory) : base(mapper)
+        public ProductService(IMapper mapper, PHONE_SHOPPINGContext context) : base(mapper, context)
         {
-            _daoCategory = daoCategory;
-            _daoProduct = daoProduct;
+
+        }
+
+        private IQueryable<Product> getQuery(string? name, int? CategoryID)
+        {
+            IQueryable<Product> query = _context.Products.Include(p => p.Category).Where(p => p.IsDeleted == false);
+            if (name != null && name.Trim().Length > 0)
+            {
+                query = query.Where(p => p.ProductName.ToLower().Contains(name.Trim().ToLower()) || p.Category.Name.ToLower().Contains(name.Trim().ToLower()));
+            }
+            if (CategoryID.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == CategoryID);
+            }
+            return query;
         }
 
         public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(bool isAdmin, string? name, int? CategoryID, int page)
@@ -29,8 +42,10 @@ namespace API.Services.Service
             string lastURL = isAdmin ? "/ManagerProduct" : "/Home";
             try
             {
-                int numberPage = await _daoProduct.getNumberPage(name, CategoryID);
-                // if not choose category
+                IQueryable<Product> query = getQuery(name, CategoryID);
+                int count = await query.CountAsync();
+                int numberPage = (int)Math.Ceiling((double)count / PageSizeConst.MAX_PRODUCT_IN_PAGE);
+                // if not choose category and name
                 if (CategoryID == null && (name == null || name.Trim().Length == 0))
                 {
                     preURL = preURL + "?page=" + prePage;
@@ -61,7 +76,8 @@ namespace API.Services.Service
                         lastURL = lastURL + "?name=" + name.Trim() + "&CategoryID=" + CategoryID + "&page=" + numberPage;
                     }
                 }
-                List<Product> listProduct = await _daoProduct.getList(name, CategoryID, page);
+                List<Product> listProduct = await query.OrderByDescending(p => p.UpdateAt).Skip(PageSizeConst.MAX_PRODUCT_IN_PAGE * (page - 1))
+                    .Take(PageSizeConst.MAX_PRODUCT_IN_PAGE).ToListAsync();
                 List<ProductListDTO> productDTOs = _mapper.Map<List<ProductListDTO>>(listProduct);
                 PagedResultDTO<ProductListDTO> result = new PagedResultDTO<ProductListDTO>()
                 {
@@ -85,7 +101,7 @@ namespace API.Services.Service
         {
             try
             {
-                List<Category> list = await _daoCategory.getList();
+                List<Category> list = await _context.Categories.ToListAsync();
                 List<CategoryListDTO> data = _mapper.Map<List<CategoryListDTO>>(list);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
@@ -95,7 +111,7 @@ namespace API.Services.Service
                 {
                     return new ResponseDTO<bool>(false, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
-                if (await _daoProduct.isExist(DTO.ProductName.Trim()))
+                if (await _context.Products.AnyAsync(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false))
                 {
                     return new ResponseDTO<bool>(false, "Product existed", (int)HttpStatusCode.Conflict);
                 }
@@ -104,7 +120,8 @@ namespace API.Services.Service
                 product.CreatedAt = DateTime.Now;
                 product.UpdateAt = DateTime.Now;
                 product.IsDeleted = false;
-                await _daoProduct.CreateProduct(product);
+                await _context.Products.AddAsync(product);
+                await _context.SaveChangesAsync();
                 return new ResponseDTO<bool>(true, "Create successful");
             }
             catch (Exception ex)
@@ -117,7 +134,7 @@ namespace API.Services.Service
         {
             try
             {
-                Product? product = await _daoProduct.getProduct(ProductID);
+                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseDTO<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
@@ -135,7 +152,7 @@ namespace API.Services.Service
         {
             try
             {
-                Product? product = await _daoProduct.getProduct(ProductID);
+                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseDTO<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
@@ -154,12 +171,13 @@ namespace API.Services.Service
                 {
                     return new ResponseDTO<ProductListDTO?>(data, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
-                if (await _daoProduct.isExist(DTO.ProductName.Trim(), ProductID))
+                if (await _context.Products.AnyAsync(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false))
                 {
                     return new ResponseDTO<ProductListDTO?>(data, "Product existed", (int)HttpStatusCode.Conflict);
                 }
                 product.UpdateAt = DateTime.Now;
-                await _daoProduct.UpdateProduct(product);
+                _context.Products.Update(product);
+                await _context.SaveChangesAsync();
                 return new ResponseDTO<ProductListDTO?>(data, "Update successful");
             }
             catch (Exception ex)
@@ -172,12 +190,14 @@ namespace API.Services.Service
         {
             try
             {
-                Product? product = await _daoProduct.getProduct(ProductID);
+                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, "Not found product", (int)HttpStatusCode.NotFound);
                 }
-                await _daoProduct.DeleteProduct(product);
+                product.IsDeleted = true;
+                _context.Products.Update(product);
+                await _context.SaveChangesAsync();
                 ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await List(true, null, null, 1);
                 if (result.Code == (int)HttpStatusCode.OK)
                 {

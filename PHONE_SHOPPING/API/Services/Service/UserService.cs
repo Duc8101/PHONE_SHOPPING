@@ -5,7 +5,7 @@ using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
-using DataAccess.Model.IDAO;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -13,18 +13,15 @@ namespace API.Services.Service
 {
     public class UserService : BaseService, IUserService
     {
-        private readonly IDAOUser _daoUser;
-        private readonly IDAOCart _daoCart;
-        public UserService(IMapper mapper, IDAOUser daoUser, IDAOCart daoCart) : base(mapper)
+        public UserService(IMapper mapper, PHONE_SHOPPINGContext context) : base(mapper, context)
         {
-            _daoUser = daoUser;
-            _daoCart = daoCart;
+
         }
         public async Task<ResponseDTO<UserDetailDTO?>> Detail(Guid UserID)
         {
             try
             {
-                User? user = await _daoUser.getUser(UserID);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
@@ -42,7 +39,7 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _daoUser.getUser(DTO);
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Username == DTO.Username && u.IsDeleted == false);
                 if (user == null)
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.NotFound);
@@ -83,7 +80,7 @@ namespace API.Services.Service
                 {
                     return new ResponseDTO<bool>(false, "Invalid email", (int)HttpStatusCode.Conflict);
                 }
-                if (await _daoUser.isExist(DTO.Username, DTO.Email.Trim()))
+                if (await _context.Users.AnyAsync(u => u.Username == DTO.Username || u.Email == DTO.Email.Trim()))
                 {
                     return new ResponseDTO<bool>(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
                 }
@@ -100,7 +97,8 @@ namespace API.Services.Service
                 user.CreatedAt = DateTime.Now;
                 user.UpdateAt = DateTime.Now;
                 user.IsDeleted = false;
-                await _daoUser.CreateUser(user);
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
                 return new ResponseDTO<bool>(true, "Register successful");
             }
             catch (Exception ex)
@@ -113,7 +111,7 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _daoUser.getUser(DTO.Email.Trim());
+                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == DTO.Email.Trim());
                 if (user == null)
                 {
                     return new ResponseDTO<bool>(false, "Not found email", (int)HttpStatusCode.NotFound);
@@ -126,7 +124,8 @@ namespace API.Services.Service
                 await UserUtil.sendEmail("Welcome to PHONE SHOPPING", body, DTO.Email.Trim());
                 user.Password = hashPw;
                 user.UpdateAt = DateTime.Now;
-                await _daoUser.UpdateUser(user);
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
                 return new ResponseDTO<bool>(true, "Password changed successful. Please check your email");
             }
             catch (Exception ex)
@@ -139,7 +138,7 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _daoUser.getUser(UserID);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
@@ -148,12 +147,13 @@ namespace API.Services.Service
                 user.Phone = DTO.Phone;
                 user.Email = DTO.Email.Trim();
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
-                if (await _daoUser.isExist(DTO.Email.Trim(), UserID))
+                if (await _context.Users.AnyAsync(u => u.Email == DTO.Email.Trim() && u.UserId != UserID))
                 {
                     return new ResponseDTO<UserDetailDTO?>(data, "Email has existed", (int)HttpStatusCode.Conflict);
                 }
                 user.UpdateAt = DateTime.Now;
-                await _daoUser.UpdateUser(user);
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
                 return new ResponseDTO<UserDetailDTO?>(data, "Update successful");
             }
             catch (Exception ex)
@@ -166,7 +166,7 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _daoUser.getUser(UserID);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
                     return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
@@ -193,7 +193,8 @@ namespace API.Services.Service
                 }
                 user.Password = UserUtil.HashPassword(DTO.NewPassword);
                 user.UpdateAt = DateTime.Now;
-                await _daoUser.UpdateUser(user);
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
                 return new ResponseDTO<bool>(true, "Change successful");
             }
             catch (Exception ex)

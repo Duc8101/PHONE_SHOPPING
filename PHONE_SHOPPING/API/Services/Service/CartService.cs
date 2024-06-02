@@ -3,33 +3,29 @@ using AutoMapper;
 using DataAccess.DTO;
 using DataAccess.DTO.CartDTO;
 using DataAccess.Entity;
-using DataAccess.Model.IDAO;
+using DataAccess.Model;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace API.Services.Service
 {
     public class CartService : BaseService, ICartService
     {
-        private readonly IDAOUser _daoUser;
-        private readonly IDAOCart _daoCart;
-        private readonly IDAOProduct _daoProduct;
-        public CartService(IMapper mapper, IDAOUser daoUser, IDAOCart daoCart, IDAOProduct daoProduct) : base(mapper)
+        public CartService(IMapper mapper, PHONE_SHOPPINGContext context) : base(mapper, context)
         {
-            _daoUser = daoUser;
-            _daoCart = daoCart;
-            _daoProduct = daoProduct;
+
         }
 
         public async Task<ResponseDTO<List<CartListDTO>?>> List(Guid UserID)
         {
             try
             {
-                User? user = await _daoUser.getUser(UserID);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
                     return new ResponseDTO<List<CartListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                List<Cart> list = await _daoCart.getList(UserID);
+                List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 return new ResponseDTO<List<CartListDTO>?>(data, string.Empty);
             }
@@ -43,17 +39,17 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _daoUser.getUser(DTO.UserId);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == DTO.UserId);
                 if (user == null)
                 {
                     return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                Product? product = await _daoProduct.getProduct(DTO.ProductId);
+                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == DTO.ProductId && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseDTO<bool>(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
-                Cart? cart = await _daoCart.getCart(DTO);
+                Cart? cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == DTO.UserId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
                 {
                     cart = new Cart()
@@ -67,13 +63,15 @@ namespace API.Services.Service
                         UpdateAt = DateTime.Now,
                         IsDeleted = false,
                     };
-                    await _daoCart.CreateCart(cart);
+                    await _context.Carts.AddAsync(cart);
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
                     cart.Quantity++;
                     cart.UpdateAt = DateTime.Now;
-                    await _daoCart.UpdateCart(cart);
+                    _context.Carts.Update(cart);
+                    await _context.SaveChangesAsync();
                 }
                 return new ResponseDTO<bool>(true, string.Empty);
             }
@@ -87,17 +85,17 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _daoUser.getUser(DTO.UserId);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == DTO.UserId);
                 if (user == null)
                 {
                     return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                Product? product = await _daoProduct.getProduct(DTO.ProductId);
+                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == DTO.ProductId && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseDTO<bool>(false, "Product not exist", (int)HttpStatusCode.Conflict);
                 }
-                Cart? cart = await _daoCart.getCart(DTO);
+                Cart? cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == DTO.UserId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
                 {
                     return new ResponseDTO<bool>(false, "Cart not exist", (int)HttpStatusCode.Conflict);
@@ -106,13 +104,16 @@ namespace API.Services.Service
                 {
                     if (cart.Quantity == 1)
                     {
-                        await _daoCart.DeleteCart(cart);
+                        cart.IsDeleted = true;
+                        _context.Carts.Update(cart);
+                        await _context.SaveChangesAsync();
                     }
                     else
                     {
                         cart.Quantity--;
                         cart.UpdateAt = DateTime.Now;
-                        await _daoCart.UpdateCart(cart);
+                        _context.Carts.Update(cart);
+                        await _context.SaveChangesAsync();
                     }
                 }
                 return new ResponseDTO<bool>(true, string.Empty);
@@ -127,15 +128,17 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _daoUser.getUser(UserID);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
                     return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                List<Cart> list = await _daoCart.getList(UserID);
+                List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
                 foreach (Cart cart in list)
                 {
-                    await _daoCart.DeleteCart(cart);
+                    cart.IsDeleted = true;
+                    _context.Carts.Update(cart);
+                    await _context.SaveChangesAsync();
                 }
                 return new ResponseDTO<bool>(false, string.Empty);
             }

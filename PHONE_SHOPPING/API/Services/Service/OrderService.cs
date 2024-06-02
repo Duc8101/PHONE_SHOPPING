@@ -7,37 +7,28 @@ using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
-using DataAccess.Model.IDAO;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace API.Services.Service
 {
     public class OrderService : BaseService, IOrderService
     {
-        private readonly IDAOUser _daoUser;
-        private readonly IDAOCart _daoCart;
-        private readonly IDAOProduct _daoProduct;
-        private readonly IDAOOrder _daoOrder;
-        private readonly IDAOOrderDetail _daoDetail;
-        public OrderService(IMapper mapper, IDAOUser daoUser, IDAOCart daoCart, IDAOProduct daoProduct, IDAOOrder daoOrder, IDAOOrderDetail daoDetail) : base(mapper)
+        public OrderService(IMapper mapper, PHONE_SHOPPINGContext context) : base(mapper, context)
         {
-            _daoUser = daoUser;
-            _daoCart = daoCart;
-            _daoProduct = daoProduct;
-            _daoOrder = daoOrder;
-            _daoDetail = daoDetail;
+
         }
 
         public async Task<ResponseDTO<List<CartListDTO>?>> Create(OrderCreateDTO DTO)
         {
             try
             {
-                User? user = await _daoUser.getUser(DTO.UserId);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == DTO.UserId);
                 if (user == null)
                 {
                     return new ResponseDTO<List<CartListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                List<Cart> list = await _daoCart.getList(DTO.UserId);
+                List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == DTO.UserId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 if (DTO.Address == null || DTO.Address.Trim().Length == 0)
                 {
@@ -45,7 +36,7 @@ namespace API.Services.Service
                 }
                 foreach (CartListDTO item in data)
                 {
-                    Product? product = await _daoProduct.getProduct(item.ProductId);
+                    Product? product = await _context.Products.Include(p => p.Category).SingleOrDefaultAsync(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                     if (product == null)
                     {
                         return new ResponseDTO<List<CartListDTO>?>(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
@@ -56,7 +47,7 @@ namespace API.Services.Service
                     }
                 }
                 string body = UserUtil.BodyEmailForAdminReceiveOrder();
-                List<string> emails = await _daoUser.getEmailAdmins();
+                List<string> emails = await _context.Users.Where(u => u.RoleId == RoleConst.ROLE_ADMIN).Select(u => u.Email).ToListAsync();
                 if (emails.Count > 0)
                 {
                     foreach (string email in emails)
@@ -72,7 +63,8 @@ namespace API.Services.Service
                 order.UpdateAt = DateTime.Now;
                 order.IsDeleted = false;
                 order.Note = null;
-                await _daoOrder.CreateOrder(order);
+                await _context.Orders.AddAsync(order);
+                await _context.SaveChangesAsync();
                 foreach (CartListDTO item in data)
                 {
                     OrderDetail detail = new OrderDetail()
@@ -84,12 +76,14 @@ namespace API.Services.Service
                         UpdateAt = DateTime.Now,
                         IsDeleted = false
                     };
-                    await _daoDetail.CreateOrderDetail(detail);
+                    await _context.OrderDetails.AddAsync(detail);
+                    await _context.SaveChangesAsync();
                 }
                 foreach (Cart cart in list)
                 {
                     cart.IsCheckout = true;
-                    await _daoCart.UpdateCart(cart);
+                    _context.Carts.Update(cart);
+                    await _context.SaveChangesAsync();
                 }
                 return new ResponseDTO<List<CartListDTO>?>(data, "Check out successful");
             }
@@ -98,6 +92,20 @@ namespace API.Services.Service
                 return new ResponseDTO<List<CartListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        private IQueryable<Order> getQuery(Guid? UserID, string? status)
+        {
+            IQueryable<Order> query = _context.Orders.Include(u => u.User);
+            if (UserID.HasValue)
+            {
+                query = query.Where(o => o.UserId == UserID);
+            }
+            if (status != null && status.Trim().Length > 0)
+            {
+                query = query.Where(o => o.Status == status.Trim());
+            }
+            query = query.OrderBy(o => (o.Status == OrderConst.STATUS_PENDING) ? 0 : 1).ThenByDescending(o => o.UpdateAt);
+            return query;
+        }
 
         public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, bool isAdmin, int page)
         {
@@ -105,15 +113,18 @@ namespace API.Services.Service
             {
                 if (UserID != null)
                 {
-                    User? user = await _daoUser.getUser(UserID.Value);
+                    User? user = await _context.Users.Include(u => u.Role).SingleOrDefaultAsync(u => u.UserId == UserID);
                     if (user == null)
                     {
                         return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                     }
                 }
-                List<Order> list = await _daoOrder.getList(UserID, status, page);
+                IQueryable<Order> query = getQuery(UserID, status);
+                List<Order> list = await query.Skip(PageSizeConst.MAX_ORDER_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_ORDER_IN_PAGE)
+                    .ToListAsync();
                 List<OrderListDTO> result = _mapper.Map<List<OrderListDTO>>(list);
-                int number = await _daoOrder.getNumberPage(UserID, status);
+                int count = await query.CountAsync();
+                int number = (int)Math.Ceiling((double)count / PageSizeConst.MAX_ORDER_IN_PAGE);
                 int prePage = page - 1;
                 int nextPage = page + 1;
                 string preURL;
@@ -166,7 +177,7 @@ namespace API.Services.Service
         {
             try
             {
-                Order? order = await _daoOrder.getOrder(OrderID);
+                Order? order = await _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).FirstOrDefaultAsync(o => o.OrderId == OrderID);
                 if (order == null)
                 {
                     return new ResponseDTO<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
@@ -196,7 +207,7 @@ namespace API.Services.Service
         {
             try
             {
-                Order? order = await _daoOrder.getOrder(OrderID);
+                Order? order = await _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).FirstOrDefaultAsync(o => o.OrderId == OrderID);
                 if (order == null)
                 {
                     return new ResponseDTO<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
@@ -223,7 +234,8 @@ namespace API.Services.Service
                     order.Status = DTO.Status.Trim();
                     order.UpdateAt = DateTime.Now;
                     order.Note = DTO.Note == null || DTO.Note.Trim().Length == 0 ? null : DTO.Note.Trim();
-                    await _daoOrder.UpdateOrder(order);
+                    _context.Orders.Update(order);
+                    await _context.SaveChangesAsync();
                     data.Status = order.Status;
                     data.Note = order.Note;
                     return new ResponseDTO<OrderDetailDTO?>(data, "Update successful");
@@ -236,7 +248,7 @@ namespace API.Services.Service
                     data.Note = order.Note;
                     foreach (OrderDetail item in list)
                     {
-                        Product? product = await _daoProduct.getProduct(item.ProductId);
+                        Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                         if (product == null)
                         {
                             return new ResponseDTO<OrderDetailDTO?>(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
@@ -252,10 +264,11 @@ namespace API.Services.Service
                     {
                         item.Product.Quantity = item.Product.Quantity - item.Quantity;
                         item.Product.UpdateAt = DateTime.Now;
-                        await _daoProduct.SaveChanges();
+                        await _context.SaveChangesAsync();
                     }
                     order.UpdateAt = DateTime.Now;
-                    await _daoOrder.UpdateOrder(order);
+                    _context.Orders.Update(order);
+                    await _context.SaveChangesAsync();
                     return new ResponseDTO<OrderDetailDTO?>(data, "Update successful");
                 }
                 return new ResponseDTO<OrderDetailDTO?>(data, "Status update must be " + OrderConst.STATUS_APPROVED + "," + OrderConst.STATUS_REJECTED + " or " + OrderConst.STATUS_PENDING, (int)HttpStatusCode.Conflict);
