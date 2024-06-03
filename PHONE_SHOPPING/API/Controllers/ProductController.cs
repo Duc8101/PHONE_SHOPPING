@@ -1,6 +1,8 @@
-﻿using API.Services.IService;
+﻿using API.Attributes;
+using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.ProductDTO;
+using DataAccess.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,6 +27,8 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Role(RoleEnum.Admin)]
+        [Authorize]
         public async Task<ResponseDTO<bool>> Create([Required] ProductCreateUpdateDTO DTO)
         {
             ResponseDTO<bool> result = await _service.Create(DTO);
@@ -33,6 +37,8 @@ namespace API.Controllers
         }
 
         [HttpGet("{ProductID}")]
+        [Role(RoleEnum.Admin)]
+        [Authorize]
         public async Task<ResponseDTO<ProductListDTO?>> Detail([Required] Guid ProductID)
         {
             ResponseDTO<ProductListDTO?> response = await _service.Detail(ProductID);
@@ -41,6 +47,8 @@ namespace API.Controllers
         }
 
         [HttpPut("{ProductID}")]
+        [Role(RoleEnum.Admin)]
+        [Authorize]
         public async Task<ResponseDTO<ProductListDTO?>> Update([Required] Guid ProductID, [Required] ProductCreateUpdateDTO DTO)
         {
             ResponseDTO<ProductListDTO?> response = await _service.Update(ProductID, DTO);
@@ -49,6 +57,8 @@ namespace API.Controllers
         }
 
         [HttpDelete("{ProductID}")]
+        [Role(RoleEnum.Admin)]
+        [Authorize]
         public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> Delete([Required] Guid ProductID)
         {
             ResponseDTO<PagedResultDTO<ProductListDTO>?> response = await _service.Delete(ProductID);

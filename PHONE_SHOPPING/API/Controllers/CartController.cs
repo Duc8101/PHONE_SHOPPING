@@ -1,6 +1,8 @@
-﻿using API.Services.IService;
+﻿using API.Attributes;
+using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.CartDTO;
+using DataAccess.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,6 +10,8 @@ namespace API.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
+    [Role(RoleEnum.Customer)]
+    [Authorize]
     public class CartController : ControllerBase
     {
         private readonly ICartService _service;

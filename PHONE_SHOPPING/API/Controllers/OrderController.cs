@@ -1,8 +1,10 @@
-﻿using API.Services.IService;
+﻿using API.Attributes;
+using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.CartDTO;
 using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
+using DataAccess.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,6 +12,7 @@ namespace API.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _service;
@@ -19,6 +22,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Role(RoleEnum.Customer)]
         public async Task<ResponseDTO<List<CartListDTO>?>> Create([Required] OrderCreateDTO DTO)
         {
             ResponseDTO<List<CartListDTO>?> response = await _service.Create(DTO);
@@ -43,6 +47,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{OrderID}")]
+        [Role(RoleEnum.Admin)]
         public async Task<ResponseDTO<OrderDetailDTO?>> Update([Required] Guid OrderID, [Required] OrderUpdateDTO DTO)
         {
             ResponseDTO<OrderDetailDTO?> response = await _service.Update(OrderID, DTO);

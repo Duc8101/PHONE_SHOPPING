@@ -4,9 +4,14 @@ using DataAccess.Const;
 using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
+using DataAccess.Enum;
 using DataAccess.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace API.Services.Service
@@ -39,12 +44,14 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Username == DTO.Username && u.IsDeleted == false);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Username == DTO.Username && u.IsDeleted == false);
                 if (user == null)
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.NotFound);
                 }
+                string AccessToken = getAccessToken(user);
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
+                data.Token = AccessToken;
                 return new ResponseDTO<UserDetailDTO?>(data, string.Empty);
 
             }
@@ -52,6 +59,24 @@ namespace API.Services.Service
             {
                 return new ResponseDTO<UserDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        private string getAccessToken(User user)
+        {
+            byte[] key = Encoding.UTF8.GetBytes("Yh2k7QSu4l8CZg5p6X3Pna9L0Miy4D3Bvt0JVr87UcOj69Kqw5R2Nmf4FWs03Hdx");
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
+            SigningCredentials credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            //  create list claim  to store user's information
+            List<Claim> list = new List<Claim>()
+            {
+                new Claim("id", user.UserId.ToString()),
+            };
+            JwtSecurityToken token = new JwtSecurityToken("JWTAuthenticationServer",
+                "JWTServicePostmanClient", list, expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials);
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            // get access token
+            return handler.WriteToken(token);
         }
 
         /*public async Task<ResponseDTO<bool>> Logout(Guid UserID)
@@ -93,7 +118,7 @@ namespace API.Services.Service
                 User user = _mapper.Map<User>(DTO);
                 user.UserId = Guid.NewGuid();
                 user.Password = hashPw;
-                user.RoleId = RoleConst.ROLE_CUSTOMER;
+                user.RoleId = (int) RoleEnum.Customer;
                 user.CreatedAt = DateTime.Now;
                 user.UpdateAt = DateTime.Now;
                 user.IsDeleted = false;

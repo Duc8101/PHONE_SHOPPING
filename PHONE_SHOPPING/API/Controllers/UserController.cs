@@ -1,6 +1,8 @@
-﻿using API.Services.IService;
+﻿using API.Attributes;
+using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
+using DataAccess.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,6 +19,8 @@ namespace API.Controllers
         }
 
         [HttpGet("{UserID}")]
+        [Role(RoleEnum.Customer)]
+        [Authorize]
         public async Task<ResponseDTO<UserDetailDTO?>> Detail([Required] Guid UserID)
         {
             ResponseDTO<UserDetailDTO?> response = await _service.Detail(UserID);
@@ -57,6 +61,8 @@ namespace API.Controllers
         }
 
         [HttpPut("{UserID}")]
+        [Role(RoleEnum.Customer)]
+        [Authorize]
         public async Task<ResponseDTO<UserDetailDTO?>> Update([Required] Guid UserID, [Required] UserUpdateDTO DTO)
         {
             ResponseDTO<UserDetailDTO?> response = await _service.Update(UserID, DTO);
@@ -65,6 +71,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{UserID}")]
+        [Authorize]
         public async Task<ResponseDTO<bool>> ChangePassword([Required] Guid UserID, [Required] ChangePasswordDTO DTO)
         {
             ResponseDTO<bool> response = await _service.ChangePassword(UserID, DTO);

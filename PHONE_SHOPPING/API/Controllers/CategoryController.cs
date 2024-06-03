@@ -1,6 +1,8 @@
-﻿using API.Services.IService;
+﻿using API.Attributes;
+using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
+using DataAccess.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -33,6 +35,8 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Role(RoleEnum.Admin)]
+        [Authorize]
         public async Task<ResponseDTO<bool>> Create([Required] CategoryCreateUpdateDTO DTO)
         {
             ResponseDTO<bool> response = await _service.Create(DTO);
@@ -41,6 +45,8 @@ namespace API.Controllers
         }
 
         [HttpGet("{ID}")]
+        [Role(RoleEnum.Admin)]
+        [Authorize]
         public async Task<ResponseDTO<CategoryListDTO?>> Detail([Required] int ID)
         {
             ResponseDTO<CategoryListDTO?> response = await _service.Detail(ID);
@@ -49,6 +55,8 @@ namespace API.Controllers
         }
 
         [HttpPut("{ID}")]
+        [Role(RoleEnum.Admin)]
+        [Authorize]
         public async Task<ResponseDTO<CategoryListDTO?>> Update([Required] int ID, [Required] CategoryCreateUpdateDTO DTO)
         {
             ResponseDTO<CategoryListDTO?> response = await _service.Update(ID, DTO);

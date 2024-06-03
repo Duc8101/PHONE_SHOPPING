@@ -6,6 +6,7 @@ using DataAccess.DTO.CartDTO;
 using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
 using DataAccess.Entity;
+using DataAccess.Enum;
 using DataAccess.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -47,7 +48,7 @@ namespace API.Services.Service
                     }
                 }
                 string body = UserUtil.BodyEmailForAdminReceiveOrder();
-                List<string> emails = await _context.Users.Where(u => u.RoleId == RoleConst.ROLE_ADMIN).Select(u => u.Email).ToListAsync();
+                List<string> emails = await _context.Users.Where(u => u.RoleId == (int)RoleEnum.Admin).Select(u => u.Email).ToListAsync();
                 if (emails.Count > 0)
                 {
                     foreach (string email in emails)
