@@ -1,6 +1,5 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.OrderDetailDTO;
-using DataAccess.DTO.OrderDTO;
 using MVC.Services.IService;
 using System.Net;
 
@@ -12,7 +11,7 @@ namespace MVC.Services.Service
         {
         }
 
-        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> Index(string UserID, int? page)
+        public async Task<ResponseDTO> Index(string UserID, int? page)
         {
             try
             {
@@ -20,48 +19,48 @@ namespace MVC.Services.Service
                 string URL = "https://localhost:7033/Order/List?UserID=" + UserID + "&isAdmin=false" + "&page=" + pageSelected;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<PagedResultDTO<OrderListDTO>?>? result = Deserialize<ResponseDTO<PagedResultDTO<OrderListDTO>?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 if (result.Data == null)
                 {
-                    return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, result.Message, (int)response.StatusCode);
+                    return new ResponseDTO(null, result.Message, (int)response.StatusCode);
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<OrderDetailDTO?>> Detail(Guid OrderID, Guid UserID)
+        public async Task<ResponseDTO> Detail(Guid OrderID, Guid UserID)
         {
             try
             {
                 string URL = "https://localhost:7033/Order/Detail/" + OrderID;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<OrderDetailDTO?>? result = Deserialize<ResponseDTO<OrderDetailDTO?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 if (result.Data == null)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, result.Message, (int)response.StatusCode);
+                    return new ResponseDTO(null, result.Message, (int)response.StatusCode);
                 }
-                if (result.Data.UserId != UserID)
+                if (((OrderDetailDTO)result.Data).UserId != UserID)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found order", (int)HttpStatusCode.NotFound);
                 }
-                return new ResponseDTO<OrderDetailDTO?>(result.Data, string.Empty);
+                return new ResponseDTO(result.Data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

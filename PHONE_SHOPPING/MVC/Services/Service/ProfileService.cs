@@ -11,31 +11,31 @@ namespace MVC.Services.Service
         {
         }
 
-        public async Task<ResponseDTO<UserDetailDTO?>> Index(string UserID)
+        public async Task<ResponseDTO> Index(string UserID)
         {
             try
             {
                 string URL = "https://localhost:7033/User/Detail/" + UserID;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<UserDetailDTO?>? result = Deserialize<ResponseDTO<UserDetailDTO?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 if (response.IsSuccessStatusCode)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(result.Data, string.Empty);
+                    return new ResponseDTO(result.Data, string.Empty);
                 }
-                return new ResponseDTO<UserDetailDTO?>(null, result.Message, (int)response.StatusCode);
+                return new ResponseDTO(null, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserDetailDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<UserDetailDTO?>> Index(string UserID, UserUpdateDTO DTO)
+        public async Task<ResponseDTO> Index(string UserID, UserUpdateDTO DTO)
         {
             try
             {
@@ -44,24 +44,24 @@ namespace MVC.Services.Service
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PutAsync(URL, content);
                 string responseData = await getResponseData(response);
-                ResponseDTO<UserDetailDTO?>? result = Deserialize<ResponseDTO<UserDetailDTO?>>(responseData);
+                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
                 if (result == null)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(null, responseData, (int)response.StatusCode);
+                    return new ResponseDTO(null, responseData, (int)response.StatusCode);
                 }
                 if (response.IsSuccessStatusCode)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(result.Data, result.Message);
+                    return new ResponseDTO(result.Data, result.Message);
                 }
                 if (response.StatusCode == HttpStatusCode.Conflict)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(result.Data, result.Message, (int)response.StatusCode);
+                    return new ResponseDTO(result.Data, result.Message, (int)response.StatusCode);
                 }
-                return new ResponseDTO<UserDetailDTO?>(null, result.Message, (int)response.StatusCode);
+                return new ResponseDTO(null, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserDetailDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

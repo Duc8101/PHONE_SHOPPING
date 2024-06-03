@@ -12,26 +12,26 @@ namespace MVC.Services.Service
         {
         }
 
-        private async Task<ResponseDTO<List<CategoryListDTO>?>> getListCategory()
+        private async Task<ResponseDTO> getListCategory()
         {
             try
             {
                 string URL = "https://localhost:7033/Category/List/All";
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<List<CategoryListDTO>?>? result = Deserialize<ResponseDTO<List<CategoryListDTO>?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<List<CategoryListDTO>?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<List<CategoryListDTO>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
-        private async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> getPagedResult(string? name, int? CategoryID, int? page)
+        private async Task<ResponseDTO> getPagedResult(string? name, int? CategoryID, int? page)
         {
             try
             {
@@ -59,49 +59,49 @@ namespace MVC.Services.Service
                 }
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<PagedResultDTO<ProductListDTO>?>? result = Deserialize<ResponseDTO<PagedResultDTO<ProductListDTO>?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(string? name, int? CategoryID, int? page)
+        public async Task<ResponseDTO> Index(string? name, int? CategoryID, int? page)
         {
             try
             {
-                ResponseDTO<List<CategoryListDTO>?> resCategory = await getListCategory();
-                ResponseDTO<PagedResultDTO<ProductListDTO>?> resProduct = await getPagedResult(name, CategoryID, page);
+                ResponseDTO resCategory = await getListCategory();
+                ResponseDTO resProduct = await getPagedResult(name, CategoryID, page);
                 if (resCategory.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, resCategory.Message, resCategory.Code);
+                    return new ResponseDTO(null, resCategory.Message, resCategory.Code);
                 }
                 if (resProduct.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, resProduct.Message, resProduct.Code);
+                    return new ResponseDTO(null, resProduct.Message, resProduct.Code);
                 }
                 Dictionary<string, object> result = new Dictionary<string, object>();
                 result["result"] = resProduct.Data;
                 result["list"] = resCategory.Data;
                 result["CategoryID"] = CategoryID == null ? 0 : CategoryID;
                 result["name"] = name == null ? "" : name.Trim();
-                return new ResponseDTO<Dictionary<string, object>?>(result, string.Empty);
+                return new ResponseDTO(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<List<CategoryListDTO>?>> Create()
+        public async Task<ResponseDTO> Create()
         {
             return await getListCategory();
         }
-        public async Task<ResponseDTO<List<CategoryListDTO>?>> Create(ProductCreateUpdateDTO DTO)
+        public async Task<ResponseDTO> Create(ProductCreateUpdateDTO DTO)
         {
             try
             {
@@ -112,59 +112,59 @@ namespace MVC.Services.Service
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PostAsync(URL, content);
                 string responseData = await getResponseData(response);
-                ResponseDTO<bool>? result = Deserialize<ResponseDTO<bool>>(responseData);
-                ResponseDTO<List<CategoryListDTO>?> resCat = await getListCategory();
+                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
+                ResponseDTO resCat = await getListCategory();
                 if (resCat.Data == null)
                 {
-                    return new ResponseDTO<List<CategoryListDTO>?>(null, resCat.Message, resCat.Code);
+                    return new ResponseDTO(null, resCat.Message, resCat.Code);
                 }
                 if (result == null)
                 {
-                    return new ResponseDTO<List<CategoryListDTO>?>(null, responseData, (int)response.StatusCode);
+                    return new ResponseDTO(null, responseData, (int)response.StatusCode);
                 }
                 if (result.Code == (int)HttpStatusCode.OK || result.Code == (int)HttpStatusCode.Conflict)
                 {
-                    return new ResponseDTO<List<CategoryListDTO>?>(resCat.Data, result.Message, (int)response.StatusCode);
+                    return new ResponseDTO(resCat.Data, result.Message, (int)response.StatusCode);
                 }
-                return new ResponseDTO<List<CategoryListDTO>?>(null, result.Message, (int)response.StatusCode);
+                return new ResponseDTO(null, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<List<CategoryListDTO>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Update(Guid ProductID)
+        public async Task<ResponseDTO> Update(Guid ProductID)
         {
             try
             {
                 string URL = "https://localhost:7033/Product/Detail/" + ProductID;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<ProductListDTO?>? resultPro = Deserialize<ResponseDTO<ProductListDTO?>>(data);
-                ResponseDTO<List<CategoryListDTO>?> resultCat = await getListCategory();
+                ResponseDTO? resultPro = Deserialize<ResponseDTO>(data);
+                ResponseDTO resultCat = await getListCategory();
                 if (resultCat.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, resultCat.Message, resultCat.Code);
+                    return new ResponseDTO(null, resultCat.Message, resultCat.Code);
                 }
                 if (resultPro == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 if (resultPro.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, resultPro.Message, (int)response.StatusCode);
+                    return new ResponseDTO(null, resultPro.Message, (int)response.StatusCode);
                 }
                 Dictionary<string, object> dic = new Dictionary<string, object>();
                 dic["product"] = resultPro.Data;
                 dic["list"] = resultCat.Data;
-                return new ResponseDTO<Dictionary<string, object>?>(dic, resultPro.Message, (int)response.StatusCode);
+                return new ResponseDTO(dic, resultPro.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
+        public async Task<ResponseDTO> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
         {
             try
             {
@@ -175,61 +175,61 @@ namespace MVC.Services.Service
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PutAsync(URL, content);
                 string responseData = await getResponseData(response);
-                ResponseDTO<ProductListDTO?>? resultPro = Deserialize<ResponseDTO<ProductListDTO?>>(responseData);
-                ResponseDTO<List<CategoryListDTO>?> resultCat = await getListCategory();
+                ResponseDTO? resultPro = Deserialize<ResponseDTO>(responseData);
+                ResponseDTO resultCat = await getListCategory();
                 if (resultCat.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, resultCat.Message, resultCat.Code);
+                    return new ResponseDTO(null, resultCat.Message, resultCat.Code);
                 }
                 if (resultPro == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, responseData, (int)response.StatusCode);
+                    return new ResponseDTO(null, responseData, (int)response.StatusCode);
                 }
                 if (resultPro.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, resultPro.Message, (int)response.StatusCode);
+                    return new ResponseDTO(null, resultPro.Message, (int)response.StatusCode);
                 }
                 Dictionary<string, object> dic = new Dictionary<string, object>();
                 dic["product"] = resultPro.Data;
                 dic["list"] = resultCat.Data;
-                return new ResponseDTO<Dictionary<string, object>?>(dic, resultPro.Message, (int)response.StatusCode);
+                return new ResponseDTO(dic, resultPro.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Delete(Guid ProductID)
+        public async Task<ResponseDTO> Delete(Guid ProductID)
         {
             try
             {
                 string URL = "https://localhost:7033/Product/Delete/" + ProductID;
                 HttpResponseMessage response = await DeleteAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<List<CategoryListDTO>?> resCategory = await getListCategory();
-                ResponseDTO<PagedResultDTO<ProductListDTO>?>? resPro = Deserialize<ResponseDTO<PagedResultDTO<ProductListDTO>?>>(data);
+                ResponseDTO resCategory = await getListCategory();
+                ResponseDTO? resPro = Deserialize<ResponseDTO>(data);
                 if (resCategory.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, resCategory.Message, resCategory.Code);
+                    return new ResponseDTO(null, resCategory.Message, resCategory.Code);
                 }
                 if (resPro == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 if (resPro.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, resPro.Message, (int)response.StatusCode);
+                    return new ResponseDTO(null, resPro.Message, (int)response.StatusCode);
                 }
                 Dictionary<string, object> result = new Dictionary<string, object>();
                 result["result"] = resPro.Data;
                 result["list"] = resCategory.Data;
                 result["CategoryID"] = 0;
                 result["name"] = "";
-                return new ResponseDTO<Dictionary<string, object>?>(result, resPro.Message);
+                return new ResponseDTO(result, resPro.Message);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

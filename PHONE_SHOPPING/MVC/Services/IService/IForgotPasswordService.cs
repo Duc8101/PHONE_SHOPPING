@@ -5,6 +5,6 @@ namespace MVC.Services.IService
 {
     public interface IForgotPasswordService
     {
-        Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO);
+        Task<ResponseDTO> ForgotPassword(ForgotPasswordDTO DTO);
     }
 }

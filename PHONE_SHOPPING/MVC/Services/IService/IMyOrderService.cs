@@ -1,12 +1,10 @@
-﻿using DataAccess.DTO.OrderDTO;
-using DataAccess.DTO;
-using DataAccess.DTO.OrderDetailDTO;
+﻿using DataAccess.DTO;
 
 namespace MVC.Services.IService
 {
     public interface IMyOrderService
     {
-        Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> Index(string UserID, int? page);
-        Task<ResponseDTO<OrderDetailDTO?>> Detail(Guid OrderID, Guid UserID);
+        Task<ResponseDTO> Index(string UserID, int? page);
+        Task<ResponseDTO> Detail(Guid OrderID, Guid UserID);
     }
 }

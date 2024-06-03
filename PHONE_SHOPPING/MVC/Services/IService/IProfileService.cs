@@ -5,7 +5,7 @@ namespace MVC.Services.IService
 {
     public interface IProfileService
     {
-        Task<ResponseDTO<UserDetailDTO?>> Index(string UserID);
-        Task<ResponseDTO<UserDetailDTO?>> Index(string UserID, UserUpdateDTO DTO);
+        Task<ResponseDTO> Index(string UserID);
+        Task<ResponseDTO> Index(string UserID, UserUpdateDTO DTO);
     }
 }

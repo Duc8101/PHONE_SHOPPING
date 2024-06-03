@@ -11,7 +11,7 @@ namespace MVC.Services.Service
         {
         }
 
-        public async Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO)
+        public async Task<ResponseDTO> ForgotPassword(ForgotPasswordDTO DTO)
         {
             try
             {
@@ -20,20 +20,20 @@ namespace MVC.Services.Service
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PostAsync(URL, content);
                 string responseData = await getResponseData(response);
-                ResponseDTO<bool>? result = Deserialize<ResponseDTO<bool>>(responseData);
+                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
                 if (result == null)
                 {
-                    return new ResponseDTO<bool>(false, responseData, (int)response.StatusCode);
+                    return new ResponseDTO(false, responseData, (int)response.StatusCode);
                 }
                 if (response.IsSuccessStatusCode)
                 {
-                    return new ResponseDTO<bool>(true, result.Message);
+                    return new ResponseDTO(true, result.Message);
                 }
-                return new ResponseDTO<bool>(false, result.Message, (int)response.StatusCode);
+                return new ResponseDTO(false, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

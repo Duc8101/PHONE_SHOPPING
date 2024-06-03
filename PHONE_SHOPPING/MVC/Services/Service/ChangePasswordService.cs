@@ -11,7 +11,7 @@ namespace MVC.Services.Service
         {
         }
 
-        public async Task<ResponseDTO<bool>> Index(string UserID, ChangePasswordDTO DTO)
+        public async Task<ResponseDTO> Index(string UserID, ChangePasswordDTO DTO)
         {
             try
             {
@@ -20,24 +20,24 @@ namespace MVC.Services.Service
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PutAsync(URL, content);
                 string responseData = await getResponseData(response);
-                ResponseDTO<bool>? result = Deserialize<ResponseDTO<bool>>(responseData);
+                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
                 if (result == null)
                 {
-                    return new ResponseDTO<bool>(false, responseData, (int)response.StatusCode);
+                    return new ResponseDTO(false, responseData, (int)response.StatusCode);
                 }
                 if (response.IsSuccessStatusCode)
                 {
-                    return new ResponseDTO<bool>(true, result.Message);
+                    return new ResponseDTO(true, result.Message);
                 }
                 if (response.StatusCode == HttpStatusCode.Conflict)
                 {
-                    return new ResponseDTO<bool>(result.Data, result.Message, (int)response.StatusCode);
+                    return new ResponseDTO(result.Data, result.Message, (int)response.StatusCode);
                 }
-                return new ResponseDTO<bool>(false, result.Message, (int)response.StatusCode);
+                return new ResponseDTO(false, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

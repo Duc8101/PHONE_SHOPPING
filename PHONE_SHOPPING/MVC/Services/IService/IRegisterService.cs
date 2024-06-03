@@ -5,6 +5,6 @@ namespace MVC.Services.IService
 {
     public interface IRegisterService
     {
-        Task<ResponseDTO<bool>> Register(UserCreateDTO DTO);
+        Task<ResponseDTO> Register(UserCreateDTO DTO);
     }
 }

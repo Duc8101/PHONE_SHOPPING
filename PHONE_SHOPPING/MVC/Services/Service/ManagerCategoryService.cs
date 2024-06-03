@@ -11,7 +11,7 @@ namespace MVC.Services.Service
         {
         }
 
-        public async Task<ResponseDTO<PagedResultDTO<CategoryListDTO>?>> Index(string? name, int? page)
+        public async Task<ResponseDTO> Index(string? name, int? page)
         {
             try
             {
@@ -27,19 +27,19 @@ namespace MVC.Services.Service
                 }
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<PagedResultDTO<CategoryListDTO>?>? result = Deserialize<ResponseDTO<PagedResultDTO<CategoryListDTO>?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<PagedResultDTO<CategoryListDTO>?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<CategoryListDTO>?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<bool>> Create(CategoryCreateUpdateDTO DTO)
+        public async Task<ResponseDTO> Create(CategoryCreateUpdateDTO DTO)
         {
             try
             {
@@ -48,38 +48,38 @@ namespace MVC.Services.Service
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PostAsync(URL, content);
                 string responseData = await getResponseData(response);
-                ResponseDTO<bool>? result = Deserialize<ResponseDTO<bool>>(responseData);
+                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
                 if (result == null)
                 {
-                    return new ResponseDTO<bool>(false, responseData, (int)response.StatusCode);
+                    return new ResponseDTO(false, responseData, (int)response.StatusCode);
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<CategoryListDTO?>> Update(int ID)
+        public async Task<ResponseDTO> Update(int ID)
         {
             try
             {
                 string URL = "https://localhost:7033/Category/Detail/" + ID;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<CategoryListDTO?>? result = Deserialize<ResponseDTO<CategoryListDTO?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<CategoryListDTO?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO)
+        public async Task<ResponseDTO> Update(int ID, CategoryCreateUpdateDTO DTO)
         {
             try
             {
@@ -88,16 +88,16 @@ namespace MVC.Services.Service
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PutAsync(URL, content);
                 string responseData = await getResponseData(response);
-                ResponseDTO<CategoryListDTO?>? result = Deserialize<ResponseDTO<CategoryListDTO?>>(responseData);
+                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
                 if (result == null)
                 {
-                    return new ResponseDTO<CategoryListDTO?>(null, responseData, (int)response.StatusCode);
+                    return new ResponseDTO(null, responseData, (int)response.StatusCode);
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 

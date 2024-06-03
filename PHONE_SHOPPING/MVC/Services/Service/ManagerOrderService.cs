@@ -14,7 +14,7 @@ namespace MVC.Services.Service
         {
         }
 
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(string? status, int? page)
+        public async Task<ResponseDTO> Index(string? status, int? page)
         {
             try
             {
@@ -30,14 +30,14 @@ namespace MVC.Services.Service
                 }
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<PagedResultDTO<OrderListDTO>?>? result = Deserialize<ResponseDTO<PagedResultDTO<OrderListDTO>?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 if (result.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, result.Message, (int)response.StatusCode);
+                    return new ResponseDTO(null, result.Message, (int)response.StatusCode);
                 }
                 List<string> list = new List<string>();
                 list.Add(OrderConst.STATUS_PENDING);
@@ -47,63 +47,63 @@ namespace MVC.Services.Service
                 dic["result"] = result.Data;
                 dic["list"] = list;
                 dic["status"] = status == null ? "" : status.Trim();
-                return new ResponseDTO<Dictionary<string, object>?>(dic, string.Empty);
+                return new ResponseDTO(dic, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<UserDetailDTO?>> View(Guid UserID)
+        public async Task<ResponseDTO> View(Guid UserID)
         {
             try
             {
                 string URL = "https://localhost:7033/User/Detail/" + UserID;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<UserDetailDTO?>? result = Deserialize<ResponseDTO<UserDetailDTO?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 if (response.IsSuccessStatusCode)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(result.Data, string.Empty);
+                    return new ResponseDTO(result.Data, string.Empty);
                 }
-                return new ResponseDTO<UserDetailDTO?>(null, result.Message, (int)response.StatusCode);
+                return new ResponseDTO(null, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserDetailDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<OrderDetailDTO?>> Detail(Guid OrderID)
+        public async Task<ResponseDTO> Detail(Guid OrderID)
         {
             try
             {
                 string URL = "https://localhost:7033/Order/Detail/" + OrderID;
                 HttpResponseMessage response = await GetAsync(URL);
                 string data = await getResponseData(response);
-                ResponseDTO<OrderDetailDTO?>? result = Deserialize<ResponseDTO<OrderDetailDTO?>>(data);
+                ResponseDTO? result = Deserialize<ResponseDTO>(data);
                 if (result == null)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, data, (int)response.StatusCode);
+                    return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
                 if (result.Data == null)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, result.Message, (int)response.StatusCode);
+                    return new ResponseDTO(null, result.Message, (int)response.StatusCode);
                 }
-                return new ResponseDTO<OrderDetailDTO?>(result.Data, string.Empty);
+                return new ResponseDTO(result.Data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO)
+        public async Task<ResponseDTO> Update(Guid OrderID, OrderUpdateDTO DTO)
         {
             try
             {
@@ -112,16 +112,16 @@ namespace MVC.Services.Service
                 StringContent content = getContent(requestData);
                 HttpResponseMessage response = await PutAsync(URL, content);
                 string responseData = await getResponseData(response);
-                ResponseDTO<OrderDetailDTO?>? result = Deserialize<ResponseDTO<OrderDetailDTO?>>(responseData);
+                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
                 if (result == null)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, responseData, (int)response.StatusCode);
+                    return new ResponseDTO(null, responseData, (int)response.StatusCode);
                 }
-                return new ResponseDTO<OrderDetailDTO?>(result.Data, result.Message, (int)response.StatusCode);
+                return new ResponseDTO(result.Data, result.Message, (int)response.StatusCode);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }
