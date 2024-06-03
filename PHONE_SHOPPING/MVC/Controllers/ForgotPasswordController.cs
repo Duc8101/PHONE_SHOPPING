@@ -26,7 +26,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(ForgotPasswordDTO DTO)
         {
-            ResponseDTO<bool> response = await _service.ForgotPassword(DTO);
+            ResponseDTO response = await _service.ForgotPassword(DTO);
             if (response.Code == (int)HttpStatusCode.NotFound)
             {
                 ViewData["error"] = response.Message;
@@ -37,7 +37,7 @@ namespace MVC.Controllers
                 ViewData["success"] = response.Message;
                 return View();
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
         }
     }
 }

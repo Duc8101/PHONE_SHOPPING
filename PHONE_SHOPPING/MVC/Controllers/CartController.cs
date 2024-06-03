@@ -18,27 +18,22 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index()
         {
-            // if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }
             int? role = getRole();
             if (role == RoleConst.ROLE_CUSTOMER)
             {
                 string? UserID = getUserID();
                 if (UserID == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<List<CartListDTO>?> response = await _service.Index(UserID);
+                ResponseDTO response = await _service.Index(UserID);
                 if (response.Data == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
                 }
                 return View(response.Data);
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
 
         public async Task<ActionResult> Create(Guid? ProductID)
@@ -49,7 +44,7 @@ namespace MVC.Controllers
                 string? UserID = getUserID();
                 if (UserID == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
                 if (ProductID == null)
                 {
@@ -60,14 +55,14 @@ namespace MVC.Controllers
                     ProductId = ProductID.Value,
                     UserId = Guid.Parse(UserID)
                 };
-                ResponseDTO<bool> response = await _service.Create(DTO);
-                if (response.Data)
+                ResponseDTO response = await _service.Create(DTO);
+                if ((bool?)response.Data == true)
                 {
                     return Redirect("/Cart");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
 
         public async Task<ActionResult> Remove(Guid? ProductID)
@@ -78,7 +73,7 @@ namespace MVC.Controllers
                 string? UserID = getUserID();
                 if (UserID == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
                 if (ProductID == null)
                 {
@@ -89,14 +84,14 @@ namespace MVC.Controllers
                     ProductId = ProductID.Value,
                     UserId = Guid.Parse(UserID)
                 };
-                ResponseDTO<bool> response = await _service.Remove(DTO);
-                if (response.Data || response.Code == (int)HttpStatusCode.Conflict)
+                ResponseDTO response = await _service.Remove(DTO);
+                if ((bool?)response.Data == true || response.Code == (int)HttpStatusCode.Conflict)
                 {
                     return Redirect("/Cart");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
         public async Task<ActionResult> Checkout()
         {
@@ -112,14 +107,14 @@ namespace MVC.Controllers
                 string? UserID = getUserID();
                 if (UserID == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
                 DTO.UserId = Guid.Parse(UserID);
                 ViewData["address"] = DTO.Address;
-                ResponseDTO<List<CartListDTO>?> response = await _service.Checkout(DTO);
+                ResponseDTO response = await _service.Checkout(DTO);
                 if (response.Data == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
                 }
                 if (response.Code == (int)HttpStatusCode.OK)
                 {
@@ -132,7 +127,7 @@ namespace MVC.Controllers
                 }
                 return View(response.Data);
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
     }
 }

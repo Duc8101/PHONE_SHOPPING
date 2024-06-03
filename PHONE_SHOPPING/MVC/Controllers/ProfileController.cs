@@ -17,50 +17,40 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index()
         {
-            // if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }
             int? role = getRole();
             if (role == RoleConst.ROLE_CUSTOMER)
             {
                 string? UserID = getUserID();
                 if (UserID == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<UserDetailDTO?> response = await _service.Index(UserID);
+                ResponseDTO response = await _service.Index(UserID);
                 // if get user failed
                 if (response.Data == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
                 }
                 return View(response.Data);
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(UserUpdateDTO DTO)
         {
-            // if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }
             int? role = getRole();
             if (role == RoleConst.ROLE_CUSTOMER)
             {
                 string? UserID = getUserID();
                 if (UserID == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<UserDetailDTO?> response = await _service.Index(UserID, DTO);
+                ResponseDTO response = await _service.Index(UserID, DTO);
                 if (response.Data == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
                 }
                 if (response.Code == (int)HttpStatusCode.Conflict)
                 {
@@ -72,7 +62,7 @@ namespace MVC.Controllers
                 }
                 return View(response.Data);
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
     }
 }

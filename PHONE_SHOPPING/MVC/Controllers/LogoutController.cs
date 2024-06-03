@@ -25,14 +25,13 @@ namespace MVC.Controllers
             if (UserID != null)
             {
                 Response.Cookies.Append("UserID", UserID, option);
-                ResponseDTO<bool> response = await _service.Index(Guid.Parse(UserID));
+                ResponseDTO response = await _service.Index(Guid.Parse(UserID));
                 if (response.Code == (int)HttpStatusCode.OK)
                 {
                     return Redirect("/Home");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
-            IDLogin = null;
             StaticToken.Token = null;
             return Redirect("/Home");
         }

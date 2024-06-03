@@ -1,5 +1,6 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
+using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
 using MVC.Token;
@@ -23,31 +24,23 @@ namespace MVC.Controllers
             {
                 return View();
             }
-            ResponseDTO<UserDetailDTO?> response = await _service.Index(UserID);
+            ResponseDTO response = await _service.Index(UserID);
             // if get user failed
             if (response.Data == null)
             {
-                if (response.Code == (int)HttpStatusCode.NotFound)
-                {
-                    return Redirect("/Logout");
-                }
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
             HttpContext.Session.SetString("UserID", UserID);
-            HttpContext.Session.SetString("username", response.Data.Username);
-            HttpContext.Session.SetInt32("role", response.Data.RoleId);
-            int? role = getRole();
-            if (role == null)
-            {
-                return View();
-            }
+            HttpContext.Session.SetString("username", ((UserDetailDTO)response.Data).Username);
+            HttpContext.Session.SetInt32("role", ((UserDetailDTO)response.Data).RoleId);
+            StaticToken.Token = ((UserDetailDTO)response.Data).Token;
             return Redirect("/Home");
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(LoginDTO DTO)
         {
-            ResponseDTO<UserDetailDTO?> response = await _service.Index(DTO);
+            ResponseDTO response = await _service.Index(DTO);
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)
@@ -55,19 +48,18 @@ namespace MVC.Controllers
                     ViewData["message"] = response.Message;
                     return View();
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
-            HttpContext.Session.SetString("UserID", response.Data.UserId.ToString());
-            HttpContext.Session.SetString("username", response.Data.Username);
-            HttpContext.Session.SetInt32("role", response.Data.RoleId);
-            StaticToken.Token = response.Data.Token;
-            IDLogin = response.Data.UserId;
+            HttpContext.Session.SetString("UserID", ((UserDetailDTO)response.Data).UserId.ToString());
+            HttpContext.Session.SetString("username", ((UserDetailDTO)response.Data).Username);
+            HttpContext.Session.SetInt32("role", ((UserDetailDTO)response.Data).RoleId);
+            StaticToken.Token = ((UserDetailDTO)response.Data).Token;
             CookieOptions option = new CookieOptions()
             {
                 Expires = DateTime.Now.AddDays(1)
             };
             // add cookie
-            Response.Cookies.Append("UserID", response.Data.UserId.ToString(), option);
+            Response.Cookies.Append("UserID", ((UserDetailDTO)response.Data).UserId.ToString(), option);
             return Redirect("/Home");
         }
 

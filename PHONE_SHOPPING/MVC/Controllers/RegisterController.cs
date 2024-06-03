@@ -28,7 +28,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(UserCreateDTO DTO)
         {
-            ResponseDTO<bool> response = await _service.Register(DTO);
+            ResponseDTO response = await _service.Register(DTO);
             if (response.Code == (int)HttpStatusCode.OK)
             {
                 ViewData["success"] = response.Message;
@@ -39,7 +39,7 @@ namespace MVC.Controllers
                 ViewData["error"] = response.Message;
                 return View();
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
         }
     }
 }

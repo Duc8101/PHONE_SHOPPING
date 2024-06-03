@@ -10,9 +10,7 @@ namespace MVC
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSession(options =>
-                options.IdleTimeout = new TimeSpan(3, 0, 0)
-            );
+            builder.Services.AddSession();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IChangePasswordService, ChangePasswordService>();
             builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
