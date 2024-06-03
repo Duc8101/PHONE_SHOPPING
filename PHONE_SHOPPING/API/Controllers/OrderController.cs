@@ -23,34 +23,34 @@ namespace API.Controllers
 
         [HttpPost]
         [Role(RoleEnum.Customer)]
-        public async Task<ResponseDTO<List<CartListDTO>?>> Create([Required] OrderCreateDTO DTO)
+        public async Task<ResponseDTO> Create([Required] OrderCreateDTO DTO)
         {
-            ResponseDTO<List<CartListDTO>?> response = await _service.Create(DTO);
+            ResponseDTO response = await _service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpGet]
-        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, [Required] bool isAdmin = false, [Required] int page = 1)
+        public async Task<ResponseDTO> List(Guid? UserID, string? status, [Required] bool isAdmin = false, [Required] int page = 1)
         {
-            ResponseDTO<PagedResultDTO<OrderListDTO>?> response = await _service.List(UserID, status, isAdmin, page);
+            ResponseDTO response = await _service.List(UserID, status, isAdmin, page);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpGet("{OrderID}")]
-        public async Task<ResponseDTO<OrderDetailDTO?>> Detail([Required] Guid OrderID)
+        public async Task<ResponseDTO> Detail([Required] Guid OrderID)
         {
-            ResponseDTO<OrderDetailDTO?> response = await _service.Detail(OrderID);
+            ResponseDTO response = await _service.Detail(OrderID);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPut("{OrderID}")]
         [Role(RoleEnum.Admin)]
-        public async Task<ResponseDTO<OrderDetailDTO?>> Update([Required] Guid OrderID, [Required] OrderUpdateDTO DTO)
+        public async Task<ResponseDTO> Update([Required] Guid OrderID, [Required] OrderUpdateDTO DTO)
         {
-            ResponseDTO<OrderDetailDTO?> response = await _service.Update(OrderID, DTO);
+            ResponseDTO response = await _service.Update(OrderID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }

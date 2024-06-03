@@ -17,17 +17,17 @@ namespace API.Services.Service
 
         }
 
-        public async Task<ResponseDTO<List<CategoryListDTO>?>> ListAll()
+        public async Task<ResponseDTO> ListAll()
         {
             try
             {
                 List<Category> list = await _context.Categories.ToListAsync();
                 List<CategoryListDTO> result = _mapper.Map<List<CategoryListDTO>>(list);
-                return new ResponseDTO<List<CategoryListDTO>?>(result, string.Empty);
+                return new ResponseDTO(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<List<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -40,7 +40,7 @@ namespace API.Services.Service
             }
             return query;
         }
-        public async Task<ResponseDTO<PagedResultDTO<CategoryListDTO>?>> ListPaged(string? name, int page)
+        public async Task<ResponseDTO> ListPaged(string? name, int page)
         {
             try
             {
@@ -77,20 +77,20 @@ namespace API.Services.Service
                     NumberPage = number,
                     Results = result
                 };
-                return new ResponseDTO<PagedResultDTO<CategoryListDTO>?>(data, string.Empty);
+                return new ResponseDTO(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<bool>> Create(CategoryCreateUpdateDTO DTO)
+        public async Task<ResponseDTO> Create(CategoryCreateUpdateDTO DTO)
         {
             try
             {
                 if (await _context.Categories.AnyAsync(c => c.Name == DTO.Name.Trim()))
                 {
-                    return new ResponseDTO<bool>(false, "Category existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Category existed", (int)HttpStatusCode.Conflict);
                 }
                 Category category = new Category()
                 {
@@ -101,53 +101,53 @@ namespace API.Services.Service
                 };
                 await _context.Categories.AddAsync(category);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO<bool>(true, "Create successful");
+                return new ResponseDTO(true, "Create successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<CategoryListDTO?>> Detail(int ID)
+        public async Task<ResponseDTO> Detail(int ID)
         {
             try
             {
                 Category? category = await _context.Categories.FindAsync(ID);
                 if (category == null)
                 {
-                    return new ResponseDTO<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found category", (int)HttpStatusCode.NotFound);
                 }
                 CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
-                return new ResponseDTO<CategoryListDTO?>(data, string.Empty);
+                return new ResponseDTO(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO)
+        public async Task<ResponseDTO> Update(int ID, CategoryCreateUpdateDTO DTO)
         {
             try
             {
                 Category? category = await _context.Categories.FindAsync(ID);
                 if (category == null)
                 {
-                    return new ResponseDTO<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found category", (int)HttpStatusCode.NotFound);
                 }
                 category.Name = DTO.Name.Trim();
                 CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
                 if (await _context.Categories.AnyAsync(c => c.Name == DTO.Name.Trim() && c.Id != ID))
                 {
-                    return new ResponseDTO<CategoryListDTO?>(data, "Category existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(data, "Category existed", (int)HttpStatusCode.Conflict);
                 }
                 category.UpdateAt = DateTime.Now;
                 _context.Categories.Update(category);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO<CategoryListDTO?>(data, "Update successful");
+                return new ResponseDTO(data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 

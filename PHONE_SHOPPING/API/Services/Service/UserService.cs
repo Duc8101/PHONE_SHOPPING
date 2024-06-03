@@ -22,35 +22,35 @@ namespace API.Services.Service
         {
 
         }
-        public async Task<ResponseDTO<UserDetailDTO?>> Detail(Guid UserID)
+        public async Task<ResponseDTO> Detail(Guid UserID)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 string AccessToken = getAccessToken(user);
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
                 data.Token = AccessToken;
                 UserDetailDTO DTO = _mapper.Map<UserDetailDTO>(user);
-                return new ResponseDTO<UserDetailDTO?>(DTO, string.Empty);
+                return new ResponseDTO(DTO, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<UserDetailDTO?>> Login(LoginDTO DTO)
+        public async Task<ResponseDTO> Login(LoginDTO DTO)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Username == DTO.Username && u.IsDeleted == false);
                 if (user == null)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Username or password incorrect", (int)HttpStatusCode.NotFound);
                 }
                 string AccessToken = getAccessToken(user);
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
@@ -63,12 +63,12 @@ namespace API.Services.Service
                     _context.Carts.Update(cart);
                     await _context.SaveChangesAsync();
                 }
-                return new ResponseDTO<UserDetailDTO?>(data, string.Empty);
+                return new ResponseDTO(data, string.Empty);
 
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -90,7 +90,7 @@ namespace API.Services.Service
             return handler.WriteToken(token);
         }
 
-        public async Task<ResponseDTO<bool>> Logout(Guid UserID)
+        public async Task<ResponseDTO> Logout(Guid UserID)
         {
             try
             {
@@ -101,26 +101,26 @@ namespace API.Services.Service
                     _context.Carts.Update(cart);
                     await _context.SaveChangesAsync();
                 }
-                return new ResponseDTO<bool>(true, string.Empty);
+                return new ResponseDTO(true, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<bool>> Create(UserCreateDTO DTO)
+        public async Task<ResponseDTO> Create(UserCreateDTO DTO)
         {
             try
             {
                 Regex regex = new Regex(UserConst.FORMAT_EMAIL);
                 if (!regex.IsMatch(DTO.Email.Trim()))
                 {
-                    return new ResponseDTO<bool>(false, "Invalid email", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Invalid email", (int)HttpStatusCode.Conflict);
                 }
                 if (await _context.Users.AnyAsync(u => u.Username == DTO.Username || u.Email == DTO.Email.Trim()))
                 {
-                    return new ResponseDTO<bool>(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
                 }
                 string newPw = UserUtil.RandomPassword();
                 string hashPw = UserUtil.HashPassword(newPw);
@@ -131,28 +131,28 @@ namespace API.Services.Service
                 User user = _mapper.Map<User>(DTO);
                 user.UserId = Guid.NewGuid();
                 user.Password = hashPw;
-                user.RoleId = (int) RoleEnum.Customer;
+                user.RoleId = (int)RoleEnum.Customer;
                 user.CreatedAt = DateTime.Now;
                 user.UpdateAt = DateTime.Now;
                 user.IsDeleted = false;
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO<bool>(true, "Register successful");
+                return new ResponseDTO(true, "Register successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO)
+        public async Task<ResponseDTO> ForgotPassword(ForgotPasswordDTO DTO)
         {
             try
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == DTO.Email.Trim());
                 if (user == null)
                 {
-                    return new ResponseDTO<bool>(false, "Not found email", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(false, "Not found email", (int)HttpStatusCode.NotFound);
                 }
                 string newPw = UserUtil.RandomPassword();
                 string hashPw = UserUtil.HashPassword(newPw);
@@ -164,22 +164,22 @@ namespace API.Services.Service
                 user.UpdateAt = DateTime.Now;
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO<bool>(true, "Password changed successful. Please check your email");
+                return new ResponseDTO(true, "Password changed successful. Please check your email");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<UserDetailDTO?>> Update(Guid UserID, UserUpdateDTO DTO)
+        public async Task<ResponseDTO> Update(Guid UserID, UserUpdateDTO DTO)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
-                    return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 user.FullName = DTO.FullName.Trim();
                 user.Phone = DTO.Phone;
@@ -187,57 +187,57 @@ namespace API.Services.Service
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
                 if (await _context.Users.AnyAsync(u => u.Email == DTO.Email.Trim() && u.UserId != UserID))
                 {
-                    return new ResponseDTO<UserDetailDTO?>(data, "Email has existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(data, "Email has existed", (int)HttpStatusCode.Conflict);
                 }
                 user.UpdateAt = DateTime.Now;
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO<UserDetailDTO?>(data, "Update successful");
+                return new ResponseDTO(data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<UserDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<bool>> ChangePassword(Guid UserID, ChangePasswordDTO DTO)
+        public async Task<ResponseDTO> ChangePassword(Guid UserID, ChangePasswordDTO DTO)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
-                    return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 if (DTO.CurrentPassword == null)
                 {
-                    return new ResponseDTO<bool>(false, "Current password must not contain all space", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Current password must not contain all space", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.ConfirmPassword == null)
                 {
-                    return new ResponseDTO<bool>(false, "Confirm password must not contain all space", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Confirm password must not contain all space", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.NewPassword == null)
                 {
-                    return new ResponseDTO<bool>(false, "New password must not contain all space", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "New password must not contain all space", (int)HttpStatusCode.Conflict);
                 }
                 if (user.Password != UserUtil.HashPassword(DTO.CurrentPassword))
                 {
-                    return new ResponseDTO<bool>(false, "Your old password not correct", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Your old password not correct", (int)HttpStatusCode.Conflict);
                 }
                 if (!DTO.ConfirmPassword.Equals(DTO.NewPassword))
                 {
-                    return new ResponseDTO<bool>(false, "Your confirm password not the same new password", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Your confirm password not the same new password", (int)HttpStatusCode.Conflict);
                 }
                 user.Password = UserUtil.HashPassword(DTO.NewPassword);
                 user.UpdateAt = DateTime.Now;
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO<bool>(true, "Change successful");
+                return new ResponseDTO(true, "Change successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

@@ -20,31 +20,31 @@ namespace API.Services.Service
 
         }
 
-        public async Task<ResponseDTO<List<CartListDTO>?>> Create(OrderCreateDTO DTO)
+        public async Task<ResponseDTO> Create(OrderCreateDTO DTO)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == DTO.UserId);
                 if (user == null)
                 {
-                    return new ResponseDTO<List<CartListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == DTO.UserId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 if (DTO.Address == null || DTO.Address.Trim().Length == 0)
                 {
-                    return new ResponseDTO<List<CartListDTO>?>(data, "You have to input address", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(data, "You have to input address", (int)HttpStatusCode.Conflict);
                 }
                 foreach (CartListDTO item in data)
                 {
                     Product? product = await _context.Products.Include(p => p.Category).SingleOrDefaultAsync(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                     if (product == null)
                     {
-                        return new ResponseDTO<List<CartListDTO>?>(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
+                        return new ResponseDTO(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
                     }
                     if (product.Quantity < item.Quantity)
                     {
-                        return new ResponseDTO<List<CartListDTO>?>(data, "Product " + item.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
+                        return new ResponseDTO(data, "Product " + item.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
                     }
                 }
                 string body = UserUtil.BodyEmailForAdminReceiveOrder();
@@ -86,11 +86,11 @@ namespace API.Services.Service
                     _context.Carts.Update(cart);
                     await _context.SaveChangesAsync();
                 }
-                return new ResponseDTO<List<CartListDTO>?>(data, "Check out successful");
+                return new ResponseDTO(data, "Check out successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<List<CartListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
         private IQueryable<Order> getQuery(Guid? UserID, string? status)
@@ -108,7 +108,7 @@ namespace API.Services.Service
             return query;
         }
 
-        public async Task<ResponseDTO<PagedResultDTO<OrderListDTO>?>> List(Guid? UserID, string? status, bool isAdmin, int page)
+        public async Task<ResponseDTO> List(Guid? UserID, string? status, bool isAdmin, int page)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace API.Services.Service
                     User? user = await _context.Users.Include(u => u.Role).SingleOrDefaultAsync(u => u.UserId == UserID);
                     if (user == null)
                     {
-                        return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                        return new ResponseDTO(null, "Not found user", (int)HttpStatusCode.NotFound);
                     }
                 }
                 IQueryable<Order> query = getQuery(UserID, status);
@@ -166,22 +166,22 @@ namespace API.Services.Service
                     NEXT_URL = nextURL,
                     PRE_URL = preURL,
                 };
-                return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(data, string.Empty);
+                return new ResponseDTO(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<OrderListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<OrderDetailDTO?>> Detail(Guid OrderID)
+        public async Task<ResponseDTO> Detail(Guid OrderID)
         {
             try
             {
                 Order? order = await _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).FirstOrDefaultAsync(o => o.OrderId == OrderID);
                 if (order == null)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found order", (int)HttpStatusCode.NotFound);
                 }
                 List<OrderDetail> list = order.OrderDetails.ToList();
                 List<DetailDTO> DTOs = _mapper.Map<List<DetailDTO>>(list);
@@ -196,22 +196,22 @@ namespace API.Services.Service
                     OrderDate = order.CreatedAt,
                     DetailDTOs = DTOs,
                 };
-                return new ResponseDTO<OrderDetailDTO?>(data, string.Empty);
+                return new ResponseDTO(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO)
+        public async Task<ResponseDTO> Update(Guid OrderID, OrderUpdateDTO DTO)
         {
             try
             {
                 Order? order = await _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).FirstOrDefaultAsync(o => o.OrderId == OrderID);
                 if (order == null)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found order", (int)HttpStatusCode.NotFound);
                 }
                 List<OrderDetail> list = order.OrderDetails.ToList();
                 List<DetailDTO> DTOs = _mapper.Map<List<DetailDTO>>(list);
@@ -228,7 +228,7 @@ namespace API.Services.Service
                 };
                 if (order.Status == OrderConst.STATUS_REJECTED || order.Status == OrderConst.STATUS_APPROVED)
                 {
-                    return new ResponseDTO<OrderDetailDTO?>(data, "Order was approved or rejected", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(data, "Order was approved or rejected", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Status.Trim() == OrderConst.STATUS_REJECTED || DTO.Status.Trim() == OrderConst.STATUS_PENDING)
                 {
@@ -239,7 +239,7 @@ namespace API.Services.Service
                     await _context.SaveChangesAsync();
                     data.Status = order.Status;
                     data.Note = order.Note;
-                    return new ResponseDTO<OrderDetailDTO?>(data, "Update successful");
+                    return new ResponseDTO(data, "Update successful");
                 }
                 if (DTO.Status.Trim() == OrderConst.STATUS_APPROVED)
                 {
@@ -252,11 +252,11 @@ namespace API.Services.Service
                         Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                         if (product == null)
                         {
-                            return new ResponseDTO<OrderDetailDTO?>(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
+                            return new ResponseDTO(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
                         }
                         if (product.Quantity < item.Quantity)
                         {
-                            return new ResponseDTO<OrderDetailDTO?>(data, "Product " + item.Product.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
+                            return new ResponseDTO(data, "Product " + item.Product.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
                         }
                     }
                     string body = UserUtil.BodyEmailForApproveOrder(list);
@@ -270,13 +270,13 @@ namespace API.Services.Service
                     order.UpdateAt = DateTime.Now;
                     _context.Orders.Update(order);
                     await _context.SaveChangesAsync();
-                    return new ResponseDTO<OrderDetailDTO?>(data, "Update successful");
+                    return new ResponseDTO(data, "Update successful");
                 }
-                return new ResponseDTO<OrderDetailDTO?>(data, "Status update must be " + OrderConst.STATUS_APPROVED + "," + OrderConst.STATUS_REJECTED + " or " + OrderConst.STATUS_PENDING, (int)HttpStatusCode.Conflict);
+                return new ResponseDTO(data, "Status update must be " + OrderConst.STATUS_APPROVED + "," + OrderConst.STATUS_REJECTED + " or " + OrderConst.STATUS_PENDING, (int)HttpStatusCode.Conflict);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

@@ -28,7 +28,7 @@ namespace API.Attributes
             var dbContext = accessor?.HttpContext?.RequestServices.GetService<PHONE_SHOPPINGContext>();
             if (dbContext == null)
             {
-                ResponseDTO<object?> response = new ResponseDTO<object?>(null, "Something wrong when check role", (int)HttpStatusCode.InternalServerError);
+                ResponseDTO response = new ResponseDTO(null, "Something wrong when check role", (int)HttpStatusCode.InternalServerError);
                 context.Result = new JsonResult(response)
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError,
@@ -45,15 +45,15 @@ namespace API.Attributes
                 User? user = dbContext.Users.Find(Guid.Parse(userId));
                 if (user == null)
                 {
-                    ResponseDTO<object?> response = new ResponseDTO<object?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    ResponseDTO response = new ResponseDTO(null, "Not found user", (int)HttpStatusCode.NotFound);
                     context.Result = new JsonResult(response)
                     {
                         StatusCode = (int)HttpStatusCode.NotFound,
                     };
                 }
-                else if(!Roles.Contains((RoleEnum)user.RoleId))
+                else if (!Roles.Contains((RoleEnum)user.RoleId))
                 {
-                    ResponseDTO<object?> response = new ResponseDTO<object?>(null, "You are not allowed to do this operation", (int)HttpStatusCode.Forbidden);
+                    ResponseDTO response = new ResponseDTO(null, "You are not allowed to do this operation", (int)HttpStatusCode.Forbidden);
                     context.Result = new JsonResult(response)
                     {
                         StatusCode = (int)HttpStatusCode.Forbidden,

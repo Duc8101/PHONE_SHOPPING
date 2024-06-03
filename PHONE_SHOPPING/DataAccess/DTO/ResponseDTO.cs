@@ -2,24 +2,24 @@
 
 namespace DataAccess.DTO
 {
-    public class ResponseDTO<T>
+    public class ResponseDTO
     {
         public int Code { get; set; }
         public string Message { get; set; } = null!;
-        public T? Data { get; set; }
+        public object? Data { get; set; }
 
         public ResponseDTO()
         {
 
         }
-        public ResponseDTO(T data, string message, int code)
+        public ResponseDTO(object? data, string message, int code)
         {
             Data = data;
             Message = message;
             Code = code;
         }
 
-        public ResponseDTO(T data, string message)
+        public ResponseDTO(object? data, string message)
         {
             Data = data;
             Message = message;

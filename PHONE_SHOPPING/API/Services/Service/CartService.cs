@@ -16,38 +16,38 @@ namespace API.Services.Service
 
         }
 
-        public async Task<ResponseDTO<List<CartListDTO>?>> List(Guid UserID)
+        public async Task<ResponseDTO> List(Guid UserID)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
-                    return new ResponseDTO<List<CartListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
-                return new ResponseDTO<List<CartListDTO>?>(data, string.Empty);
+                return new ResponseDTO(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<List<CartListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<bool>> Create(CartCreateRemoveDTO DTO)
+        public async Task<ResponseDTO> Create(CartCreateRemoveDTO DTO)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == DTO.UserId);
                 if (user == null)
                 {
-                    return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == DTO.ProductId && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseDTO<bool>(false, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 Cart? cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == DTO.UserId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
@@ -73,32 +73,32 @@ namespace API.Services.Service
                     _context.Carts.Update(cart);
                     await _context.SaveChangesAsync();
                 }
-                return new ResponseDTO<bool>(true, string.Empty);
+                return new ResponseDTO(true, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<bool>> Remove(CartCreateRemoveDTO DTO)
+        public async Task<ResponseDTO> Remove(CartCreateRemoveDTO DTO)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == DTO.UserId);
                 if (user == null)
                 {
-                    return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == DTO.ProductId && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseDTO<bool>(false, "Product not exist", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Product not exist", (int)HttpStatusCode.Conflict);
                 }
                 Cart? cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == DTO.UserId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
                 {
-                    return new ResponseDTO<bool>(false, "Cart not exist", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Cart not exist", (int)HttpStatusCode.Conflict);
                 }
                 else
                 {
@@ -116,22 +116,22 @@ namespace API.Services.Service
                         await _context.SaveChangesAsync();
                     }
                 }
-                return new ResponseDTO<bool>(true, string.Empty);
+                return new ResponseDTO(true, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<bool>> Delete(Guid UserID)
+        public async Task<ResponseDTO> Delete(Guid UserID)
         {
             try
             {
                 User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == UserID);
                 if (user == null)
                 {
-                    return new ResponseDTO<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
                 foreach (Cart cart in list)
@@ -140,11 +140,11 @@ namespace API.Services.Service
                     _context.Carts.Update(cart);
                     await _context.SaveChangesAsync();
                 }
-                return new ResponseDTO<bool>(false, string.Empty);
+                return new ResponseDTO(false, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

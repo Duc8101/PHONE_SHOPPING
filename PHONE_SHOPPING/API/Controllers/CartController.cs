@@ -21,33 +21,33 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ResponseDTO<List<CartListDTO>?>> List([Required] Guid UserID)
+        public async Task<ResponseDTO> List([Required] Guid UserID)
         {
-            ResponseDTO<List<CartListDTO>?> response = await _service.List(UserID);
+            ResponseDTO response = await _service.List(UserID);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<bool>> Create([Required] CartCreateRemoveDTO DTO)
+        public async Task<ResponseDTO> Create([Required] CartCreateRemoveDTO DTO)
         {
-            ResponseDTO<bool> response = await _service.Create(DTO);
+            ResponseDTO response = await _service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<bool>> Remove([Required] CartCreateRemoveDTO DTO)
+        public async Task<ResponseDTO> Remove([Required] CartCreateRemoveDTO DTO)
         {
-            ResponseDTO<bool> response = await _service.Remove(DTO);
+            ResponseDTO response = await _service.Remove(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpDelete("{UserID}")]
-        public async Task<ResponseDTO<bool>> Delete([Required] Guid UserID)
+        public async Task<ResponseDTO> Delete([Required] Guid UserID)
         {
-            ResponseDTO<bool> response = await _service.Delete(UserID);
+            ResponseDTO response = await _service.Delete(UserID);
             Response.StatusCode = response.Code;
             return response;
         }

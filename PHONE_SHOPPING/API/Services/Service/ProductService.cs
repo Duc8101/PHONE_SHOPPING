@@ -32,7 +32,7 @@ namespace API.Services.Service
             return query;
         }
 
-        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(bool isAdmin, string? name, int? CategoryID, int page)
+        public async Task<ResponseDTO> List(bool isAdmin, string? name, int? CategoryID, int page)
         {
             int prePage = page - 1;
             int nextPage = page + 1;
@@ -89,15 +89,15 @@ namespace API.Services.Service
                     FIRST_URL = firstURL,
                     NumberPage = numberPage,
                 };
-                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(result, string.Empty);
+                return new ResponseDTO(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<bool>> Create(ProductCreateUpdateDTO DTO)
+        public async Task<ResponseDTO> Create(ProductCreateUpdateDTO DTO)
         {
             try
             {
@@ -105,15 +105,15 @@ namespace API.Services.Service
                 List<CategoryListDTO> data = _mapper.Map<List<CategoryListDTO>>(list);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
-                    return new ResponseDTO<bool>(false, "You have to input product name", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "You have to input product name", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Image.Trim().Length == 0)
                 {
-                    return new ResponseDTO<bool>(false, "You have to input image link", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
                 if (await _context.Products.AnyAsync(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false))
                 {
-                    return new ResponseDTO<bool>(false, "Product existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(false, "Product existed", (int)HttpStatusCode.Conflict);
                 }
                 Product product = _mapper.Map<Product>(DTO);
                 product.ProductId = Guid.NewGuid();
@@ -122,40 +122,40 @@ namespace API.Services.Service
                 product.IsDeleted = false;
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO<bool>(true, "Create successful");
+                return new ResponseDTO(true, "Create successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<ProductListDTO?>> Detail(Guid ProductID)
+        public async Task<ResponseDTO> Detail(Guid ProductID)
         {
             try
             {
                 Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseDTO<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 ProductListDTO DTO = _mapper.Map<ProductListDTO>(product);
-                return new ResponseDTO<ProductListDTO?>(DTO, string.Empty);
+                return new ResponseDTO(DTO, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<ProductListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<ProductListDTO?>> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
+        public async Task<ResponseDTO> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
         {
             try
             {
                 Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseDTO<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 product.ProductName = DTO.ProductName.Trim();
                 product.Image = DTO.Image.Trim();
@@ -165,49 +165,49 @@ namespace API.Services.Service
                 ProductListDTO data = _mapper.Map<ProductListDTO>(product);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
-                    return new ResponseDTO<ProductListDTO?>(data, "You have to input product name", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(data, "You have to input product name", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Image.Trim().Length == 0)
                 {
-                    return new ResponseDTO<ProductListDTO?>(data, "You have to input image link", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(data, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
                 if (await _context.Products.AnyAsync(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false))
                 {
-                    return new ResponseDTO<ProductListDTO?>(data, "Product existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseDTO(data, "Product existed", (int)HttpStatusCode.Conflict);
                 }
                 product.UpdateAt = DateTime.Now;
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO<ProductListDTO?>(data, "Update successful");
+                return new ResponseDTO(data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<ProductListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> Delete(Guid ProductID)
+        public async Task<ResponseDTO> Delete(Guid ProductID)
         {
             try
             {
                 Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseDTO(null, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 product.IsDeleted = true;
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
-                ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await List(true, null, null, 1);
+                ResponseDTO result = await List(true, null, null, 1);
                 if (result.Code == (int)HttpStatusCode.OK)
                 {
-                    return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(result.Data, "Delete successful");
+                    return new ResponseDTO(result.Data, "Delete successful");
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<ProductListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

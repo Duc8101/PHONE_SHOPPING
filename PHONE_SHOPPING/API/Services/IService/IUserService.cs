@@ -5,12 +5,12 @@ namespace API.Services.IService
 {
     public interface IUserService
     {
-        Task<ResponseDTO<UserDetailDTO?>> Detail(Guid UserID);
-        Task<ResponseDTO<UserDetailDTO?>> Login(LoginDTO DTO);
-        Task<ResponseDTO<bool>> Create(UserCreateDTO DTO);
-        Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO);
-        Task<ResponseDTO<UserDetailDTO?>> Update(Guid UserID, UserUpdateDTO DTO);
-        Task<ResponseDTO<bool>> ChangePassword(Guid UserID, ChangePasswordDTO DTO);
-        Task<ResponseDTO<bool>> Logout(Guid UserID);
+        Task<ResponseDTO> Detail(Guid UserID);
+        Task<ResponseDTO> Login(LoginDTO DTO);
+        Task<ResponseDTO> Create(UserCreateDTO DTO);
+        Task<ResponseDTO> ForgotPassword(ForgotPasswordDTO DTO);
+        Task<ResponseDTO> Update(Guid UserID, UserUpdateDTO DTO);
+        Task<ResponseDTO> ChangePassword(Guid UserID, ChangePasswordDTO DTO);
+        Task<ResponseDTO> Logout(Guid UserID);
     }
 }

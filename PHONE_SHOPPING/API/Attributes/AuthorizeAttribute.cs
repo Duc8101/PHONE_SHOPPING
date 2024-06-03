@@ -13,7 +13,7 @@ namespace API.Attributes
             User? user = (User?)context.HttpContext.Items["user"];
             if (user == null)
             {
-                ResponseDTO<object?> response = new ResponseDTO<object?>(null, "Unauthorized", (int)HttpStatusCode.Unauthorized);
+                ResponseDTO response = new ResponseDTO(null, "Unauthorized", (int)HttpStatusCode.Unauthorized);
                 context.Result = new JsonResult(response)
                 {
                     StatusCode = (int)HttpStatusCode.Unauthorized,

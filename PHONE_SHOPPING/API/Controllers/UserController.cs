@@ -23,30 +23,30 @@ namespace API.Controllers
         [HttpGet("{UserID}")]
         [Role(RoleEnum.Customer)]
         [Authorize]
-        public async Task<ResponseDTO<UserDetailDTO?>> Detail([Required] Guid UserID)
+        public async Task<ResponseDTO> Detail([Required] Guid UserID)
         {
-            ResponseDTO<UserDetailDTO?> response = await _service.Detail(UserID);
+            ResponseDTO response = await _service.Detail(UserID);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<UserDetailDTO?>> Login([Required] LoginDTO DTO)
+        public async Task<ResponseDTO> Login([Required] LoginDTO DTO)
         {
-            ResponseDTO<UserDetailDTO?> response = await _service.Login(DTO);
+            ResponseDTO response = await _service.Login(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<ResponseDTO<bool>> Logout()
+        public async Task<ResponseDTO> Logout()
         {
-            ResponseDTO<bool> response;
+            ResponseDTO response;
             User? user = (User?)HttpContext.Items["user"];
             if(user == null)
             {
-                response = new ResponseDTO<bool>(false, "Not found user id", (int) HttpStatusCode.NotFound);
+                response = new ResponseDTO(false, "Not found user id", (int) HttpStatusCode.NotFound);
             }
             else
             {
@@ -57,17 +57,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<bool>> Create([Required] UserCreateDTO DTO)
+        public async Task<ResponseDTO> Create([Required] UserCreateDTO DTO)
         {
-            ResponseDTO<bool> response = await _service.Create(DTO);
+            ResponseDTO response = await _service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO)
+        public async Task<ResponseDTO> ForgotPassword(ForgotPasswordDTO DTO)
         {
-            ResponseDTO<bool> response = await _service.ForgotPassword(DTO);
+            ResponseDTO response = await _service.ForgotPassword(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -75,18 +75,18 @@ namespace API.Controllers
         [HttpPut("{UserID}")]
         [Role(RoleEnum.Customer)]
         [Authorize]
-        public async Task<ResponseDTO<UserDetailDTO?>> Update([Required] Guid UserID, [Required] UserUpdateDTO DTO)
+        public async Task<ResponseDTO> Update([Required] Guid UserID, [Required] UserUpdateDTO DTO)
         {
-            ResponseDTO<UserDetailDTO?> response = await _service.Update(UserID, DTO);
+            ResponseDTO response = await _service.Update(UserID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPut("{UserID}")]
         [Authorize]
-        public async Task<ResponseDTO<bool>> ChangePassword([Required] Guid UserID, [Required] ChangePasswordDTO DTO)
+        public async Task<ResponseDTO> ChangePassword([Required] Guid UserID, [Required] ChangePasswordDTO DTO)
         {
-            ResponseDTO<bool> response = await _service.ChangePassword(UserID, DTO);
+            ResponseDTO response = await _service.ChangePassword(UserID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }
