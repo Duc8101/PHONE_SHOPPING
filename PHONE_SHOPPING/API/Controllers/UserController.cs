@@ -2,9 +2,11 @@
 using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
+using DataAccess.Entity;
 using DataAccess.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -36,13 +38,23 @@ namespace API.Controllers
             return response;
         }
 
-        /*[HttpGet]
-        public async Task<ResponseDTO<bool>> Logout([Required] Guid UserID)
+        [HttpGet]
+        [Authorize]
+        public async Task<ResponseDTO<bool>> Logout()
         {
-            ResponseDTO<bool> response = await service.Logout(UserID);
+            ResponseDTO<bool> response;
+            User? user = (User?)HttpContext.Items["user"];
+            if(user == null)
+            {
+                response = new ResponseDTO<bool>(false, "Not found user id", (int) HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = await _service.Logout(user.UserId);
+            }
             Response.StatusCode = response.Code;
             return response;
-        }*/
+        }
 
         [HttpPost]
         public async Task<ResponseDTO<bool>> Create([Required] UserCreateDTO DTO)

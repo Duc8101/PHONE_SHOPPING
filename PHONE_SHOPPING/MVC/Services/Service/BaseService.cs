@@ -1,4 +1,5 @@
 ﻿using DataAccess.Const;
+using MVC.Token;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -12,6 +13,11 @@ namespace MVC.Services.Service
         {
             MediaTypeWithQualityHeaderValue contentType = new MediaTypeWithQualityHeaderValue(OtherConst.MEDIA_TYPE);
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            if(StaticToken.Token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", StaticToken.Token);
+            }
+           
         }
         internal async Task<HttpResponseMessage> GetAsync(string URL)
         {

@@ -11,5 +11,6 @@ namespace API.Services.IService
         Task<ResponseDTO<bool>> ForgotPassword(ForgotPasswordDTO DTO);
         Task<ResponseDTO<UserDetailDTO?>> Update(Guid UserID, UserUpdateDTO DTO);
         Task<ResponseDTO<bool>> ChangePassword(Guid UserID, ChangePasswordDTO DTO);
+        Task<ResponseDTO<bool>> Logout(Guid UserID);
     }
 }

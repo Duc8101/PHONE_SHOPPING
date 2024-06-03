@@ -5,6 +5,7 @@ namespace MVC.Services.IService
 {
     public interface ILoginService
     {
+        Task<ResponseDTO<UserDetailDTO?>> Index(string UserID);
         Task<ResponseDTO<UserDetailDTO?>> Index(LoginDTO DTO);
     }
 }

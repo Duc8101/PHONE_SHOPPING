@@ -2,6 +2,7 @@
 using API.Services.IService;
 using DataAccess.DTO;
 using DataAccess.DTO.ProductDTO;
+using DataAccess.Entity;
 using DataAccess.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -19,8 +20,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(string? name, int? CategoryID, [Required] bool isAdmin = false, [Required] int page = 1)
+        public async Task<ResponseDTO<PagedResultDTO<ProductListDTO>?>> List(string? name, int? CategoryID, [Required] int page = 1)
         {
+            User? user = (User?) HttpContext.Items["user"];
+            bool isAdmin = user != null && user.RoleId == (int) RoleEnum.Admin;
             ResponseDTO<PagedResultDTO<ProductListDTO>?> result = await _service.List(isAdmin, name, CategoryID, page);
             Response.StatusCode = result.Code;
             return result;

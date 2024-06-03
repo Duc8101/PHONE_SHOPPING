@@ -1,9 +1,8 @@
-﻿using DataAccess.DTO.CartDTO;
-using DataAccess.DTO;
+﻿using DataAccess.DTO;
 using DataAccess.Entity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API.Attributes
 {
@@ -11,7 +10,7 @@ namespace API.Attributes
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            User? user = (User?) context.HttpContext.Items["user"];
+            User? user = (User?)context.HttpContext.Items["user"];
             if (user == null)
             {
                 ResponseDTO<object?> response = new ResponseDTO<object?>(null, "Unauthorized", (int)HttpStatusCode.Unauthorized);

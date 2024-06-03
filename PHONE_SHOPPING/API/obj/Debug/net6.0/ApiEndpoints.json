@@ -458,11 +458,6 @@
         "IsRequired": false
       },
       {
-        "Name": "isAdmin",
-        "Type": "System.Boolean",
-        "IsRequired": false
-      },
-      {
         "Name": "page",
         "Type": "System.Int32",
         "IsRequired": false

@@ -11,7 +11,7 @@ namespace MVC.Services.Service
         {
         }
 
-        /*public async Task<ResponseDTO<UserDetailDTO?>> Index(string UserID)
+        public async Task<ResponseDTO<UserDetailDTO?>> Index(string UserID)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace MVC.Services.Service
             {
                 return new ResponseDTO<UserDetailDTO?>(null, ex + " " + ex.Message, (int)HttpStatusCode.InternalServerError);
             }
-        }*/
+        }
 
         public async Task<ResponseDTO<UserDetailDTO?>> Index(LoginDTO DTO)
         {

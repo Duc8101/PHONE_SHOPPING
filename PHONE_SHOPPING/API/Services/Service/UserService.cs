@@ -31,6 +31,9 @@ namespace API.Services.Service
                 {
                     return new ResponseDTO<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
+                string AccessToken = getAccessToken(user);
+                UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
+                data.Token = AccessToken;
                 UserDetailDTO DTO = _mapper.Map<UserDetailDTO>(user);
                 return new ResponseDTO<UserDetailDTO?>(DTO, string.Empty);
             }
@@ -52,6 +55,14 @@ namespace API.Services.Service
                 string AccessToken = getAccessToken(user);
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
                 data.Token = AccessToken;
+                // ------------------------- remove all cart ------------------------- 
+                List<Cart> list = await _context.Carts.Where(c => c.UserId == user.UserId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
+                foreach (Cart cart in list)
+                {
+                    cart.IsDeleted = true;
+                    _context.Carts.Update(cart);
+                    await _context.SaveChangesAsync();
+                }
                 return new ResponseDTO<UserDetailDTO?>(data, string.Empty);
 
             }
@@ -79,14 +90,16 @@ namespace API.Services.Service
             return handler.WriteToken(token);
         }
 
-        /*public async Task<ResponseDTO<bool>> Logout(Guid UserID)
+        public async Task<ResponseDTO<bool>> Logout(Guid UserID)
         {
             try
             {
-                List<Cart> list = await daoCart.getList(UserID);
+                List<Cart> list = await _context.Carts.Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
                 foreach (Cart cart in list)
                 {
-                    await daoCart.DeleteCart(cart);
+                    cart.IsDeleted = true;
+                    _context.Carts.Update(cart);
+                    await _context.SaveChangesAsync();
                 }
                 return new ResponseDTO<bool>(true, string.Empty);
             }
@@ -94,7 +107,7 @@ namespace API.Services.Service
             {
                 return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
-        }*/
+        }
 
         public async Task<ResponseDTO<bool>> Create(UserCreateDTO DTO)
         {

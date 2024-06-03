@@ -2,6 +2,7 @@
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
+using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
@@ -14,27 +15,27 @@ namespace MVC.Controllers
         {
             _service = service;
         }
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            /* string? UserID = Request.Cookies["UserID"];
-             // if not set cookie or cookie expired
-             if (UserID == null)
-             {
-                 return View();
-             }
-             ResponseDTO<UserDetailDTO?> response = await service.Index(UserID);
-             // if get user failed
-             if (response.Data == null)
-             {
-                 if (response.Code == (int)HttpStatusCode.NotFound)
-                 {
-                     return Redirect("/Logout");
-                 }
-                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
-             }
-             HttpContext.Session.SetString("UserID", UserID);
-             HttpContext.Session.SetString("username", response.Data.Username);
-             HttpContext.Session.SetInt32("role", response.Data.RoleId);*/
+            string? UserID = Request.Cookies["UserID"];
+            // if not set cookie or cookie expired
+            if (UserID == null)
+            {
+                return View();
+            }
+            ResponseDTO<UserDetailDTO?> response = await _service.Index(UserID);
+            // if get user failed
+            if (response.Data == null)
+            {
+                if (response.Code == (int)HttpStatusCode.NotFound)
+                {
+                    return Redirect("/Logout");
+                }
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+            }
+            HttpContext.Session.SetString("UserID", UserID);
+            HttpContext.Session.SetString("username", response.Data.Username);
+            HttpContext.Session.SetInt32("role", response.Data.RoleId);
             int? role = getRole();
             if (role == null)
             {
@@ -59,13 +60,14 @@ namespace MVC.Controllers
             HttpContext.Session.SetString("UserID", response.Data.UserId.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetInt32("role", response.Data.RoleId);
+            StaticToken.Token = response.Data.Token;
             IDLogin = response.Data.UserId;
-            /*            CookieOptions option = new CookieOptions()
-                        {
-                            Expires = DateTime.Now.AddDays(1)
-                        };
-                        // add cookie
-                        Response.Cookies.Append("UserID", response.Data.UserId.ToString(), option);*/
+            CookieOptions option = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(1)
+            };
+            // add cookie
+            Response.Cookies.Append("UserID", response.Data.UserId.ToString(), option);
             return Redirect("/Home");
         }
 
