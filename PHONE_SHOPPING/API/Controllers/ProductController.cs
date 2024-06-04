@@ -68,11 +68,11 @@ namespace API.Controllers
         }
 
         [HttpDelete("{ProductID}")]
-        [Role<Pagination<ProductListDTO>>(RoleEnum.Admin)]
-        [Authorize<Pagination<ProductListDTO>>]
-        public async Task<ResponseBase<Pagination<ProductListDTO>?>> Delete([Required] Guid ProductID)
+        [Role<bool>(RoleEnum.Admin)]
+        [Authorize<bool>]
+        public async Task<ResponseBase<bool>> Delete([Required] Guid ProductID)
         {
-            ResponseBase<Pagination<ProductListDTO>?> response = await _service.Delete(ProductID);
+            ResponseBase<bool> response = await _service.Delete(ProductID);
             Response.StatusCode = response.Code;
             return response;
         }

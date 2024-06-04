@@ -1,0 +1,92 @@
+﻿@using DataAccess.Const;
+@using DataAccess.DTO.OrderDTO;
+@using DataAccess.Pagination
+@model Dictionary<string, object>
+@{
+    Pagination<OrderListDTO> result = (Pagination<OrderListDTO>)Model["result"];
+    List<string> list = (List<string>)Model["list"];
+    string status = (string)Model["status"];
+    int No = 1;
+}
+<section class="products section bg-gray" style="height: 120vh">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 title">
+                <form style="margin-left:1%">
+                    <select name="status" onchange="this.form.submit()" class="form-control" style="width: 300px">
+                        <option value="@null">ALL</option>
+                        @foreach (string item in list)
+                        {
+                            <option value="@item" selected="@(item == status)">@item</option>
+                        }
+                    </select>
+                </form><br />
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>User</th>
+                            <th>Order Date</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th>Note</th>
+                            <th>View</th>
+                            <th>Detail</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (OrderListDTO order in result.Results)
+                        {
+                            <tr>
+                                <td>@No</td>
+                                @{
+                                    string color;
+                                    if (order.Status == OrderConst.STATUS_PENDING)
+                                    {
+                                        color = "gold";
+                                    }
+                                    else if (order.Status == OrderConst.STATUS_APPROVED)
+                                    {
+                                        color = "green";
+                                    }
+                                    else
+                                    {
+                                        color = "red";
+                                    }
+                                }
+                                <td>@order.Username</td>
+                                <td>@order.OrderDate</td>
+                                <td>@order.Address</td>
+                                <td style="color:@color">@order.Status</td>
+                                <td>@order.Note</td>
+                                <td><a href="/ManagerOrder/View/@order.UserId" class="btn btn-info" aria-disabled="true" role="button">View</a></td>
+                                <td><a class="btn btn-primary" href="/ManagerOrder/Detail/@order.OrderId">Detail</a></td>
+                                <td>
+                                    <a class="btn btn-success @(order.Status == OrderConst.STATUS_PENDING ? "" : "disabled")" href="/ManagerOrder/Update/@order.OrderId" aria-disabled="true" role="button">Update</a>
+                                </td>
+                            </tr>
+                            No++;
+                        }
+                    </tbody>
+                </table>
+                <p style="color:red" class="text-center">@(result.Results.Count == 0 ? "Not Found order" : "")</p>
+            </div>
+        </div>
+
+        @if (result.NumberPage > 1)
+        {
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center" style="margin-left: 40%">
+                    <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.FIRST_URL" aria-disabled="true" role="button">First</a></li>
+                    <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.PRE_URL" aria-disabled="true" role="button">Previous</a></li>
+                    <li class="page-item"><a class="page-link btn btn-primary btn-lg" href="" aria-disabled="true" role="button">@result.PageSelected/@result.NumberPage </a></li>
+                    <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.NEXT_URL" aria-disabled="true" role="button">Next</a></li>
+                    <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.LAST_URL" aria-disabled="true" role="button">Last</a></li>
+                </ul>
+            </nav>
+        }
+
+    </div>
+</section>

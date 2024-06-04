@@ -361,7 +361,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "DataAccess.Base.ResponseBase\u00601[[DataAccess.Pagination.Pagination\u00601[[DataAccess.DTO.ProductDTO.ProductListDTO, DataAccess, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], DataAccess, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "DataAccess.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

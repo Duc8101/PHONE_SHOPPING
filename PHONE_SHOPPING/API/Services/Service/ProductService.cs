@@ -187,28 +187,23 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<Pagination<ProductListDTO>?>> Delete(Guid ProductID)
+        public async Task<ResponseBase<bool>> Delete(Guid ProductID)
         {
             try
             {
                 Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseBase<Pagination<ProductListDTO>?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<bool>(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 product.IsDeleted = true;
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
-                ResponseBase<Pagination<ProductListDTO>?> result = await List(true, null, null, 1);
-                if (result.Code == (int)HttpStatusCode.OK)
-                {
-                    return new ResponseBase<Pagination<ProductListDTO>?>(result.Data, "Delete successful");
-                }
-                return result;
+                return new ResponseBase<bool>(true, "Delete successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Pagination<ProductListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

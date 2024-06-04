@@ -14,10 +14,13 @@ namespace MVC.Services.Service
         {
         }
 
+
+
         public async Task<ResponseBase<UserDetailDTO?>> Index(string UserID)
         {
             try
             {
+                //  ----------------------- remove all cart ---------------
                 string URL = "https://localhost:7178/User/Detail/" + UserID;
                 HttpResponseMessage response = await client.GetAsync(URL);
                 string data = await response.Content.ReadAsStringAsync();

@@ -78,5 +78,24 @@ namespace API.Controllers
             Response.StatusCode = response.Code;
             return response;
         }
+
+        [HttpDelete]
+        [Role<bool>(RoleEnum.Customer)]
+        [Authorize<bool>]
+        public async Task<ResponseBase<bool>> Delete()
+        {
+            User? user = (User?)HttpContext.Items["user"];
+            ResponseBase<bool> response;
+            if (user == null)
+            {
+                response = new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = await _service.Delete(user.UserId);
+            }
+            Response.StatusCode = response.Code;
+            return response;
+        }
     }
 }

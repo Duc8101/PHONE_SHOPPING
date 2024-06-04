@@ -28,7 +28,16 @@ namespace API.Controllers
         [Authorize<List<CartListDTO>>]
         public async Task<ResponseBase<List<CartListDTO>?>> Create([Required] OrderCreateDTO DTO)
         {
-            ResponseBase<List<CartListDTO>?> response = await _service.Create(DTO);
+            User? user = (User?)HttpContext.Items["user"];
+            ResponseBase<List<CartListDTO>?> response;
+            if (user == null)
+            {
+                response = new ResponseBase<List<CartListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = await _service.Create(DTO, user.UserId);
+            }
             Response.StatusCode = response.Code;
             return response;
         }
@@ -46,7 +55,7 @@ namespace API.Controllers
             else
             {
                 bool isAdmin = user.RoleId == (int)RoleEnum.Admin;
-                response = await _service.List(isAdmin ? null : user.UserId, isAdmin ? status : null, isAdmin, page);
+                response = await _service.List(isAdmin ? null : user.UserId, status, isAdmin, page);
                 Response.StatusCode = response.Code;
             }
             return response;

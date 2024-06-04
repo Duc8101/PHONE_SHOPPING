@@ -10,6 +10,6 @@ namespace API.Services.IService
         Task<ResponseBase<bool>> Create(ProductCreateUpdateDTO DTO);
         Task<ResponseBase<ProductListDTO?>> Detail(Guid ProductID);
         Task<ResponseBase<ProductListDTO?>> Update(Guid ProductID, ProductCreateUpdateDTO DTO);
-        Task<ResponseBase<Pagination<ProductListDTO>?>> Delete(Guid ProductID);
+        Task<ResponseBase<bool>> Delete(Guid ProductID);
     }
 }

@@ -111,5 +111,24 @@ namespace API.Services.Service
                 return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
+        public async Task<ResponseBase<bool>> Delete(Guid userId)
+        {
+            try
+            {
+                List<Cart> list = await _context.Carts.Where(c => c.UserId == userId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
+                foreach (Cart cart in list)
+                {
+                    cart.IsDeleted = true;
+                    _context.Carts.Update(cart);
+                    await _context.SaveChangesAsync();
+                }
+                return new ResponseBase<bool>(true, "Delete successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

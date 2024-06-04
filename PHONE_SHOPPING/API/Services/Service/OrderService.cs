@@ -21,16 +21,11 @@ namespace API.Services.Service
 
         }
 
-        public async Task<ResponseBase<List<CartListDTO>?>> Create(OrderCreateDTO DTO)
+        public async Task<ResponseBase<List<CartListDTO>?>> Create(OrderCreateDTO DTO, Guid userId)
         {
             try
             {
-                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == DTO.UserId);
-                if (user == null)
-                {
-                    return new ResponseBase<List<CartListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
-                }
-                List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == DTO.UserId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
+                List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == userId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 if (DTO.Address == null || DTO.Address.Trim().Length == 0)
                 {
@@ -65,6 +60,7 @@ namespace API.Services.Service
                 order.UpdateAt = DateTime.Now;
                 order.IsDeleted = false;
                 order.Note = null;
+                order.UserId = userId;
                 await _context.Orders.AddAsync(order);
                 await _context.SaveChangesAsync();
                 foreach (CartListDTO item in data)

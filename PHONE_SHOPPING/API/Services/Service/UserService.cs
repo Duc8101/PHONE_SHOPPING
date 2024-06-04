@@ -1,6 +1,5 @@
 ﻿using API.Services.IService;
 using AutoMapper;
-using Azure;
 using DataAccess.Base;
 using DataAccess.Const;
 using DataAccess.DTO.UserDTO;
@@ -35,8 +34,7 @@ namespace API.Services.Service
                 string AccessToken = getAccessToken(user);
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
                 data.Token = AccessToken;
-                UserDetailDTO DTO = _mapper.Map<UserDetailDTO>(user);
-                return new ResponseBase<UserDetailDTO?>(DTO, string.Empty);
+                return new ResponseBase<UserDetailDTO?>(data, string.Empty);
             }
             catch (Exception ex)
             {
