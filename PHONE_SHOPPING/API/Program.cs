@@ -48,20 +48,20 @@ namespace API
             }
            );
             /* builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-             {
-                 options.RequireHttpsMetadata = false;
-                 options.SaveToken = true;
-                 options.TokenValidationParameters = new TokenValidationParameters()
-                 {
-                     ValidateIssuer = true,
-                     ValidateAudience = true,
-                     ValidateLifetime = true,
-                     ValidateIssuerSigningKey = true,
-                     ValidAudience = builder.Configuration["Jwt:Audience"],
-                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                 };
-             });*/
+ {
+     options.RequireHttpsMetadata = false;
+     options.SaveToken = true;
+     options.TokenValidationParameters = new TokenValidationParameters()
+     {
+         ValidateIssuer = true,
+         ValidateAudience = true,
+         ValidateLifetime = true,
+         ValidateIssuerSigningKey = true,
+         ValidAudience = builder.Configuration["Jwt:Audience"],
+         ValidIssuer = builder.Configuration["Jwt:Issuer"],
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+     };
+ });*/
             builder.Services.AddCors(o => o.AddPolicy("AllowOrigin", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -69,16 +69,16 @@ namespace API
                     .AllowAnyHeader();
             }));
             // ------------------------- register dbcontext ----------------------------
-            string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<PHONE_SHOPPINGContext>(options =>
+            string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<PhoneShoppingContext>(options =>
                 options.UseSqlServer(connection)
             );
             // ------------------------- register service ----------------------------
             builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // ------------------------- config auto mapper ----------------------------
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

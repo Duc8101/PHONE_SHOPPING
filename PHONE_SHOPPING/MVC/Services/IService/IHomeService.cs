@@ -1,9 +1,9 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 
 namespace MVC.Services.IService
 {
     public interface IHomeService
     {
-        Task<ResponseDTO> Index(string? name, int? CategoryID, int? page);
+        Task<ResponseBase> Index(string? name, int? CategoryID, int? page);
     }
 }

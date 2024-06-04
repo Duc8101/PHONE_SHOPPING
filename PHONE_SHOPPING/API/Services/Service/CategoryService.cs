@@ -1,10 +1,11 @@
 ﻿using API.Services.IService;
 using AutoMapper;
+using DataAccess.Base;
 using DataAccess.Const;
-using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
+using DataAccess.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -12,22 +13,22 @@ namespace API.Services.Service
 {
     public class CategoryService : BaseService, ICategoryService
     {
-        public CategoryService(IMapper mapper, PHONE_SHOPPINGContext context) : base(mapper, context)
+        public CategoryService(IMapper mapper, PhoneShoppingContext context) : base(mapper, context)
         {
 
         }
 
-        public async Task<ResponseDTO> ListAll()
+        public async Task<ResponseBase<List<CategoryListDTO>?>> ListAll()
         {
             try
             {
                 List<Category> list = await _context.Categories.ToListAsync();
                 List<CategoryListDTO> result = _mapper.Map<List<CategoryListDTO>>(list);
-                return new ResponseDTO(result, string.Empty);
+                return new ResponseBase<List<CategoryListDTO>?>(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<List<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -40,7 +41,7 @@ namespace API.Services.Service
             }
             return query;
         }
-        public async Task<ResponseDTO> ListPaged(string? name, int page)
+        public async Task<ResponseBase<Pagination<CategoryListDTO>?>> ListPaged(string? name, int page)
         {
             try
             {
@@ -67,7 +68,7 @@ namespace API.Services.Service
                     firstURL = firstURL + "?name=" + name.Trim();
                     lastURL = lastURL + "?name=" + name.Trim() + "&page=" + number;
                 }
-                PagedResultDTO<CategoryListDTO> data = new PagedResultDTO<CategoryListDTO>()
+                Pagination<CategoryListDTO> data = new Pagination<CategoryListDTO>()
                 {
                     PageSelected = page,
                     NEXT_URL = nextURL,
@@ -77,20 +78,20 @@ namespace API.Services.Service
                     NumberPage = number,
                     Results = result
                 };
-                return new ResponseDTO(data, string.Empty);
+                return new ResponseBase<Pagination<CategoryListDTO>?>(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Pagination<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO> Create(CategoryCreateUpdateDTO DTO)
+        public async Task<ResponseBase<bool>> Create(CategoryCreateUpdateDTO DTO)
         {
             try
             {
                 if (await _context.Categories.AnyAsync(c => c.Name == DTO.Name.Trim()))
                 {
-                    return new ResponseDTO(false, "Category existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<bool>(false, "Category existed", (int)HttpStatusCode.Conflict);
                 }
                 Category category = new Category()
                 {
@@ -101,53 +102,53 @@ namespace API.Services.Service
                 };
                 await _context.Categories.AddAsync(category);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO(true, "Create successful");
+                return new ResponseBase<bool>(true, "Create successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO> Detail(int ID)
+        public async Task<ResponseBase<CategoryListDTO?>> Detail(int ID)
         {
             try
             {
                 Category? category = await _context.Categories.FindAsync(ID);
                 if (category == null)
                 {
-                    return new ResponseDTO(null, "Not found category", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
                 }
                 CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
-                return new ResponseDTO(data, string.Empty);
+                return new ResponseBase<CategoryListDTO?>(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO> Update(int ID, CategoryCreateUpdateDTO DTO)
+        public async Task<ResponseBase<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO)
         {
             try
             {
                 Category? category = await _context.Categories.FindAsync(ID);
                 if (category == null)
                 {
-                    return new ResponseDTO(null, "Not found category", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
                 }
                 category.Name = DTO.Name.Trim();
                 CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
                 if (await _context.Categories.AnyAsync(c => c.Name == DTO.Name.Trim() && c.Id != ID))
                 {
-                    return new ResponseDTO(data, "Category existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<CategoryListDTO?>(data, "Category existed", (int)HttpStatusCode.Conflict);
                 }
                 category.UpdateAt = DateTime.Now;
                 _context.Categories.Update(category);
                 await _context.SaveChangesAsync();
-                return new ResponseDTO(data, "Update successful");
+                return new ResponseBase<CategoryListDTO?>(data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 

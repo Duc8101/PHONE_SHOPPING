@@ -1,5 +1,5 @@
 ﻿using API.Providers;
-using DataAccess.DTO;
+using DataAccess.Base;
 using DataAccess.Entity;
 using DataAccess.Enum;
 using DataAccess.Model;
@@ -10,7 +10,7 @@ using System.Net;
 
 namespace API.Attributes
 {
-    public class RoleAttribute : Attribute, IActionFilter
+    public class RoleAttribute<T> : Attribute, IActionFilter
     {
         private RoleEnum[] Roles { get; set; }
         public RoleAttribute(params RoleEnum[] roles)
@@ -25,10 +25,10 @@ namespace API.Attributes
         public void OnActionExecuting(ActionExecutingContext context)
         {
             var accessor = StaticServiceProvider.Provider.GetService<IHttpContextAccessor>();
-            var dbContext = accessor?.HttpContext?.RequestServices.GetService<PHONE_SHOPPINGContext>();
+            var dbContext = accessor?.HttpContext?.RequestServices.GetService<PhoneShoppingContext>();
             if (dbContext == null)
             {
-                ResponseDTO response = new ResponseDTO(null, "Something wrong when check role", (int)HttpStatusCode.InternalServerError);
+                ResponseBase<T> response = new ResponseBase<T>("Something wrong when check role", (int)HttpStatusCode.InternalServerError);
                 context.Result = new JsonResult(response)
                 {
                     StatusCode = (int)HttpStatusCode.InternalServerError,
@@ -45,7 +45,7 @@ namespace API.Attributes
                 User? user = dbContext.Users.Find(Guid.Parse(userId));
                 if (user == null)
                 {
-                    ResponseDTO response = new ResponseDTO(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    ResponseBase<T> response = new ResponseBase<T>("Not found user", (int)HttpStatusCode.NotFound);
                     context.Result = new JsonResult(response)
                     {
                         StatusCode = (int)HttpStatusCode.NotFound,
@@ -53,7 +53,7 @@ namespace API.Attributes
                 }
                 else if (!Roles.Contains((RoleEnum)user.RoleId))
                 {
-                    ResponseDTO response = new ResponseDTO(null, "You are not allowed to do this operation", (int)HttpStatusCode.Forbidden);
+                    ResponseBase<T> response = new ResponseBase<T>("You are not allowed to access", (int)HttpStatusCode.Forbidden);
                     context.Result = new JsonResult(response)
                     {
                         StatusCode = (int)HttpStatusCode.Forbidden,

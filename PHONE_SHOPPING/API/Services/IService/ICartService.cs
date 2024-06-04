@@ -1,12 +1,12 @@
-﻿using DataAccess.DTO.CartDTO;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.DTO.CartDTO;
 
 namespace API.Services.IService
 {
     public interface ICartService
     {
-        Task<ResponseDTO> List(Guid UserID);
-        Task<ResponseDTO> Create(CartCreateRemoveDTO DTO);
-        Task<ResponseDTO> Remove(CartCreateRemoveDTO DTO);
+        Task<ResponseBase<List<CartListDTO>?>> List(Guid UserID);
+        Task<ResponseBase<bool>> Create(CartCreateRemoveDTO DTO, Guid userId);
+        Task<ResponseBase<bool>> Remove(CartCreateRemoveDTO DTO, Guid userId);
     }
 }

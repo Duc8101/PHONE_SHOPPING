@@ -1,6 +1,6 @@
 ﻿using API.Attributes;
 using API.Services.IService;
-using DataAccess.DTO;
+using DataAccess.Base;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using DataAccess.Enum;
@@ -20,33 +20,41 @@ namespace API.Controllers
             _service = service;
         }
 
-        [HttpGet("{UserID}")]
-        [Role(RoleEnum.Customer)]
-        [Authorize]
-        public async Task<ResponseDTO> Detail([Required] Guid UserID)
+        [HttpGet]
+        [Authorize<UserDetailDTO>]
+        public ResponseBase<UserDetailDTO?> Detail()
         {
-            ResponseDTO response = await _service.Detail(UserID);
+            User? user = (User?)HttpContext.Items["user"];
+            ResponseBase<UserDetailDTO?> response;
+            if (user == null)
+            {
+                response = new ResponseBase<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = _service.Detail(user);
+            }
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO> Login([Required] LoginDTO DTO)
+        public async Task<ResponseBase<UserDetailDTO?>> Login([Required] LoginDTO DTO)
         {
-            ResponseDTO response = await _service.Login(DTO);
+            ResponseBase<UserDetailDTO?> response = await _service.Login(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<ResponseDTO> Logout()
+        [Authorize<bool>]
+        public async Task<ResponseBase<bool>> Logout()
         {
-            ResponseDTO response;
+            ResponseBase<bool> response;
             User? user = (User?)HttpContext.Items["user"];
-            if(user == null)
+            if (user == null)
             {
-                response = new ResponseDTO(false, "Not found user id", (int) HttpStatusCode.NotFound);
+                response = new ResponseBase<bool>(false, "Not found user id", (int)HttpStatusCode.NotFound);
             }
             else
             {
@@ -57,38 +65,58 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ResponseDTO> Create([Required] UserCreateDTO DTO)
+        public async Task<ResponseBase<bool>> Create([Required] UserCreateDTO DTO)
         {
-            ResponseDTO response = await _service.Create(DTO);
+            ResponseBase<bool> response = await _service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO> ForgotPassword(ForgotPasswordDTO DTO)
+        public async Task<ResponseBase<bool>> ForgotPassword(ForgotPasswordDTO DTO)
         {
-            ResponseDTO response = await _service.ForgotPassword(DTO);
+            ResponseBase<bool> response = await _service.ForgotPassword(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
-        [HttpPut("{UserID}")]
-        [Role(RoleEnum.Customer)]
-        [Authorize]
-        public async Task<ResponseDTO> Update([Required] Guid UserID, [Required] UserUpdateDTO DTO)
+        [HttpPut]
+        [Role<UserDetailDTO>(RoleEnum.Customer)]
+        [Authorize<UserDetailDTO>]
+        public async Task<ResponseBase<UserDetailDTO?>> Update([Required] UserUpdateDTO DTO)
         {
-            ResponseDTO response = await _service.Update(UserID, DTO);
+            User? user = (User?) HttpContext.Items["user"];
+            ResponseBase<UserDetailDTO?> response;
+            if (user == null)
+            {
+                response = new ResponseBase<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = await _service.Update(user, DTO);
+            }   
             Response.StatusCode = response.Code;
             return response;
         }
 
-        [HttpPut("{UserID}")]
-        [Authorize]
-        public async Task<ResponseDTO> ChangePassword([Required] Guid UserID, [Required] ChangePasswordDTO DTO)
+
+        [HttpPut]
+        [Authorize<bool>]
+        public async Task<ResponseBase<bool>> ChangePassword([Required] ChangePasswordDTO DTO)
         {
-            ResponseDTO response = await _service.ChangePassword(UserID, DTO);
+            User? user = (User?)HttpContext.Items["user"];
+            ResponseBase<bool> response;
+            if (user == null)
+            {
+                response = new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                 response = await _service.ChangePassword(user, DTO);
+            }            
             Response.StatusCode = response.Code;
             return response;
         }
+
     }
 }

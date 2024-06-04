@@ -1,14 +1,15 @@
-﻿using DataAccess.DTO.CategoryDTO;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.DTO.CategoryDTO;
+using DataAccess.Pagination;
 
 namespace API.Services.IService
 {
     public interface ICategoryService
     {
-        Task<ResponseDTO> ListAll();
-        Task<ResponseDTO> ListPaged(string? name, int page);
-        Task<ResponseDTO> Create(CategoryCreateUpdateDTO DTO);
-        Task<ResponseDTO> Detail(int ID);
-        Task<ResponseDTO> Update(int ID, CategoryCreateUpdateDTO DTO);
+        Task<ResponseBase<List<CategoryListDTO>?>> ListAll();
+        Task<ResponseBase<Pagination<CategoryListDTO>?>> ListPaged(string? name, int page);
+        Task<ResponseBase<bool>> Create(CategoryCreateUpdateDTO DTO);
+        Task<ResponseBase<CategoryListDTO?>> Detail(int ID);
+        Task<ResponseBase<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO);
     }
 }

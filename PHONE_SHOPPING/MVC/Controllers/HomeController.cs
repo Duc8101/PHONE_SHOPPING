@@ -1,30 +1,23 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+using DataAccess.Base;
+using DataAccess.DTO.CategoryDTO;
+using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace MVC.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         private readonly IHomeService _service;
         public HomeController(IHomeService service)
         {
             _service = service;
         }
-        public async Task<ActionResult> Index(string? name, int? CategoryID, int? page)
+        public async Task<bool> Index()
         {
-            int? role = getRole();
-            if (role == RoleConst.ROLE_ADMIN)
-            {
-                return Redirect("/ManagerProduct");
-            }
-            ResponseDTO result = await _service.Index(name, CategoryID, page);
-            if (result.Data == null)
-            {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, result.Message, result.Code));
-            }
-            return View(result.Data);
+            ResponseBase result = await _service.Index(null, null, null);
+            return ((List<CategoryListDTO>?) result.Data) == null;
         }
 
     }

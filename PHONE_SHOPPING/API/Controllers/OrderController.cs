@@ -1,9 +1,12 @@
 ﻿using API.Attributes;
 using API.Services.IService;
-using DataAccess.DTO;
+using DataAccess.Base;
+using DataAccess.DTO.CartDTO;
+using DataAccess.DTO.OrderDetailDTO;
 using DataAccess.DTO.OrderDTO;
 using DataAccess.Entity;
 using DataAccess.Enum;
+using DataAccess.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -12,7 +15,6 @@ namespace API.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _service;
@@ -22,45 +24,49 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Role(RoleEnum.Customer)]
-        public async Task<ResponseDTO> Create([Required] OrderCreateDTO DTO)
+        [Role<List<CartListDTO>>(RoleEnum.Customer)]
+        [Authorize<List<CartListDTO>>]
+        public async Task<ResponseBase<List<CartListDTO>?>> Create([Required] OrderCreateDTO DTO)
         {
-            ResponseDTO response = await _service.Create(DTO);
+            ResponseBase<List<CartListDTO>?> response = await _service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpGet]
-        public async Task<ResponseDTO> List(string? status, [Required] int page = 1)
+        [Authorize<Pagination<OrderListDTO>>]
+        public async Task<ResponseBase<Pagination<OrderListDTO>?>> List(string? status, [Required] int page = 1)
         {
-            ResponseDTO response;
+            ResponseBase<Pagination<OrderListDTO>?> response;
             User? user = (User?)HttpContext.Items["user"];
             if (user == null)
             {
-                response = new ResponseDTO(false, "Not found user id", (int)HttpStatusCode.NotFound);
+                response = new ResponseBase<Pagination<OrderListDTO>?>(null, "Not found user id", (int)HttpStatusCode.NotFound);
             }
             else
             {
                 bool isAdmin = user.RoleId == (int)RoleEnum.Admin;
-                response = await _service.List(isAdmin ? null : user.UserId, status, isAdmin, page);
+                response = await _service.List(isAdmin ? null : user.UserId, isAdmin ? status : null, isAdmin, page);
                 Response.StatusCode = response.Code;
             }
             return response;
         }
 
         [HttpGet("{OrderID}")]
-        public async Task<ResponseDTO> Detail([Required] Guid OrderID)
+        [Authorize<OrderDetailDTO>]
+        public async Task<ResponseBase<OrderDetailDTO?>> Detail([Required] Guid OrderID)
         {
-            ResponseDTO response = await _service.Detail(OrderID);
+            ResponseBase<OrderDetailDTO?> response = await _service.Detail(OrderID);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPut("{OrderID}")]
-        [Role(RoleEnum.Admin)]
-        public async Task<ResponseDTO> Update([Required] Guid OrderID, [Required] OrderUpdateDTO DTO)
+        [Role<OrderDetailDTO>(RoleEnum.Admin)]
+        [Authorize<OrderDetailDTO>]
+        public async Task<ResponseBase<OrderDetailDTO?>> Update([Required] Guid OrderID, [Required] OrderUpdateDTO DTO)
         {
-            ResponseDTO response = await _service.Update(OrderID, DTO);
+            ResponseBase<OrderDetailDTO?> response = await _service.Update(OrderID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }

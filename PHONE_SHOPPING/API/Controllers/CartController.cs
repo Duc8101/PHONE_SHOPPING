@@ -1,17 +1,17 @@
 ﻿using API.Attributes;
 using API.Services.IService;
-using DataAccess.DTO;
+using DataAccess.Base;
 using DataAccess.DTO.CartDTO;
+using DataAccess.Entity;
 using DataAccess.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace API.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    [Role(RoleEnum.Customer)]
-    [Authorize]
     public class CartController : ControllerBase
     {
         private readonly ICartService _service;
@@ -21,25 +21,60 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ResponseDTO> List([Required] Guid UserID)
+        [Role<List<CartListDTO>>(RoleEnum.Customer)]
+        [Authorize<List<CartListDTO>>]
+        public async Task<ResponseBase<List<CartListDTO>?>> List()
         {
-            ResponseDTO response = await _service.List(UserID);
+            User? user = (User?)HttpContext.Items["user"];
+            ResponseBase<List<CartListDTO>?> response;
+            if (user == null)
+            {
+                response = new ResponseBase<List<CartListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = await _service.List(user.UserId);
+            }
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO> Create([Required] CartCreateRemoveDTO DTO)
+        [Role<bool>(RoleEnum.Customer)]
+        [Authorize<bool>]
+
+        public async Task<ResponseBase<bool>> Create([Required] CartCreateRemoveDTO DTO)
         {
-            ResponseDTO response = await _service.Create(DTO);
+            User? user = (User?)HttpContext.Items["user"];
+            ResponseBase<bool> response;
+            if (user == null)
+            {
+                response = new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = await _service.Create(DTO, user.UserId);
+            }
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseDTO> Remove([Required] CartCreateRemoveDTO DTO)
+        [Role<bool>(RoleEnum.Customer)]
+        [Authorize<bool>]
+
+        public async Task<ResponseBase<bool>> Remove([Required] CartCreateRemoveDTO DTO)
         {
-            ResponseDTO response = await _service.Remove(DTO);
+            User? user = (User?)HttpContext.Items["user"];
+            ResponseBase<bool> response;
+            if (user == null)
+            {
+                response = new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = await _service.Remove(DTO, user.UserId);
+            }
             Response.StatusCode = response.Code;
             return response;
         }

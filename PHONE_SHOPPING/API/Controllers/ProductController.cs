@@ -1,9 +1,9 @@
 ﻿using API.Attributes;
 using API.Services.IService;
-using DataAccess.DTO;
+using DataAccess.Base;
 using DataAccess.DTO.ProductDTO;
-using DataAccess.Entity;
 using DataAccess.Enum;
+using DataAccess.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -19,54 +19,64 @@ namespace API.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public async Task<ResponseDTO> List(string? name, int? CategoryID, [Required] int page = 1)
+        [HttpGet("List")]
+        public async Task<ResponseBase<Pagination<ProductListDTO>?>> Home(string? name, int? CategoryID, [Required] int page = 1)
         {
-            User? user = (User?) HttpContext.Items["user"];
-            bool isAdmin = user != null && user.RoleId == (int) RoleEnum.Admin;
-            ResponseDTO result = await _service.List(isAdmin, name, CategoryID, page);
+            ResponseBase<Pagination<ProductListDTO>?> result = await _service.List(false, name, CategoryID, page);
+            Response.StatusCode = result.Code;
+            return result;
+        }
+
+        [HttpGet("List")]
+        [Role<Pagination<ProductListDTO>>(RoleEnum.Admin)]
+        [Authorize<Pagination<ProductListDTO>>]
+        public async Task<ResponseBase<Pagination<ProductListDTO>?>> Manager(string? name, int? CategoryID, [Required] int page = 1)
+        {
+            ResponseBase<Pagination<ProductListDTO>?> result = await _service.List(true, name, CategoryID, page);
             Response.StatusCode = result.Code;
             return result;
         }
 
         [HttpPost]
-        [Role(RoleEnum.Admin)]
-        [Authorize]
-        public async Task<ResponseDTO> Create([Required] ProductCreateUpdateDTO DTO)
+        [Role<bool>(RoleEnum.Admin)]
+        [Authorize<bool>]
+        public async Task<ResponseBase<bool>> Create([Required] ProductCreateUpdateDTO DTO)
         {
-            ResponseDTO result = await _service.Create(DTO);
+            ResponseBase<bool> result = await _service.Create(DTO);
             Response.StatusCode = result.Code;
             return result;
         }
 
         [HttpGet("{ProductID}")]
-        [Role(RoleEnum.Admin)]
-        [Authorize]
-        public async Task<ResponseDTO> Detail([Required] Guid ProductID)
+        [Role<ProductListDTO>(RoleEnum.Admin)]
+        [Authorize<ProductListDTO>]
+        public async Task<ResponseBase<ProductListDTO?>> Detail([Required] Guid ProductID)
         {
-            ResponseDTO response = await _service.Detail(ProductID);
+            ResponseBase<ProductListDTO?> response = await _service.Detail(ProductID);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPut("{ProductID}")]
-        [Role(RoleEnum.Admin)]
-        [Authorize]
-        public async Task<ResponseDTO> Update([Required] Guid ProductID, [Required] ProductCreateUpdateDTO DTO)
+        [Role<ProductListDTO>(RoleEnum.Admin)]
+        [Authorize<ProductListDTO>]
+        public async Task<ResponseBase<ProductListDTO?>> Update([Required] Guid ProductID, [Required] ProductCreateUpdateDTO DTO)
         {
-            ResponseDTO response = await _service.Update(ProductID, DTO);
+            ResponseBase<ProductListDTO?> response = await _service.Update(ProductID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpDelete("{ProductID}")]
-        [Role(RoleEnum.Admin)]
-        [Authorize]
-        public async Task<ResponseDTO> Delete([Required] Guid ProductID)
+        [Role<Pagination<ProductListDTO>>(RoleEnum.Admin)]
+        [Authorize<Pagination<ProductListDTO>>]
+        public async Task<ResponseBase<Pagination<ProductListDTO>?>> Delete([Required] Guid ProductID)
         {
-            ResponseDTO response = await _service.Delete(ProductID);
+            ResponseBase<Pagination<ProductListDTO>?> response = await _service.Delete(ProductID);
             Response.StatusCode = response.Code;
             return response;
         }
+
+
     }
 }
