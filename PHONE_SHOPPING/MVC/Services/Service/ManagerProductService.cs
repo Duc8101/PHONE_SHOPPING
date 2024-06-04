@@ -1,8 +1,11 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Const;
+using DataAccess.DTO;
 using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
 using MVC.Services.IService;
 using System.Net;
+using System.Text;
+using System.Text.Json;
 
 namespace MVC.Services.Service
 {
@@ -17,9 +20,9 @@ namespace MVC.Services.Service
             try
             {
                 string URL = "https://localhost:7033/Category/List/All";
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);
@@ -39,7 +42,7 @@ namespace MVC.Services.Service
                 string URL = "https://localhost:7033/Product/List";
                 if (CategoryID == null && name == null)
                 {
-                    URL = URL + "?isAdmin=true&page=" + pageSelected;
+                    URL = URL + "?page=" + pageSelected;
                 }
                 else
                 {
@@ -55,11 +58,11 @@ namespace MVC.Services.Service
                     {
                         URL = URL + "?name=" + name + "&CategoryID=" + CategoryID;
                     }
-                    URL = URL + "&isAdmin=true&page=" + pageSelected;
+                    URL = URL + "&page=" + pageSelected;
                 }
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);
@@ -108,11 +111,11 @@ namespace MVC.Services.Service
                 DTO.ProductName = DTO.ProductName == null ? "" : DTO.ProductName.Trim();
                 DTO.Image = DTO.Image == null ? "" : DTO.Image.Trim();
                 string URL = "https://localhost:7033/Product/Create";
-                string requestData = getRequestData<ProductCreateUpdateDTO?>(DTO);
-                StringContent content = getContent(requestData);
-                HttpResponseMessage response = await PostAsync(URL, content);
-                string responseData = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
+                string requestData = JsonSerializer.Serialize(DTO);
+                StringContent content = new StringContent(requestData, Encoding.UTF8, OtherConst.MEDIA_TYPE);
+                HttpResponseMessage response = await client.PostAsync(URL, content);
+                string responseData = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(responseData);
                 ResponseDTO resCat = await getListCategory();
                 if (resCat.Data == null)
                 {
@@ -138,9 +141,9 @@ namespace MVC.Services.Service
             try
             {
                 string URL = "https://localhost:7033/Product/Detail/" + ProductID;
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? resultPro = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? resultPro = Deserialize(data);
                 ResponseDTO resultCat = await getListCategory();
                 if (resultCat.Data == null)
                 {
@@ -171,11 +174,11 @@ namespace MVC.Services.Service
                 DTO.ProductName = DTO.ProductName == null ? "" : DTO.ProductName.Trim();
                 DTO.Image = DTO.Image == null ? "" : DTO.Image.Trim();
                 string URL = "https://localhost:7033/Product/Update/" + ProductID;
-                string requestData = getRequestData<ProductCreateUpdateDTO?>(DTO);
-                StringContent content = getContent(requestData);
-                HttpResponseMessage response = await PutAsync(URL, content);
-                string responseData = await getResponseData(response);
-                ResponseDTO? resultPro = Deserialize<ResponseDTO>(responseData);
+                string requestData = JsonSerializer.Serialize(DTO);
+                StringContent content = new StringContent(requestData, Encoding.UTF8, OtherConst.MEDIA_TYPE);
+                HttpResponseMessage response = await client.PutAsync(URL, content);
+                string responseData = await response.Content.ReadAsStringAsync();
+                ResponseDTO? resultPro = Deserialize(responseData);
                 ResponseDTO resultCat = await getListCategory();
                 if (resultCat.Data == null)
                 {
@@ -204,10 +207,10 @@ namespace MVC.Services.Service
             try
             {
                 string URL = "https://localhost:7033/Product/Delete/" + ProductID;
-                HttpResponseMessage response = await DeleteAsync(URL);
-                string data = await getResponseData(response);
+                HttpResponseMessage response = await client.DeleteAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
                 ResponseDTO resCategory = await getListCategory();
-                ResponseDTO? resPro = Deserialize<ResponseDTO>(data);
+                ResponseDTO? resPro = Deserialize(data);
                 if (resCategory.Data == null)
                 {
                     return new ResponseDTO(null, resCategory.Message, resCategory.Code);

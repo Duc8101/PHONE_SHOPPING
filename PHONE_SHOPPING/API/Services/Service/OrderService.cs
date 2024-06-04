@@ -252,7 +252,7 @@ namespace API.Services.Service
                         Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                         if (product == null)
                         {
-                            return new ResponseDTO(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
+                            return new ResponseDTO(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.Conflict);
                         }
                         if (product.Quantity < item.Quantity)
                         {

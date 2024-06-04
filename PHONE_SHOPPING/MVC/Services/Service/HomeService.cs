@@ -17,9 +17,9 @@ namespace MVC.Services.Service
             try
             {
                 string URL = "https://localhost:7033/Category/List/All";
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);
@@ -39,7 +39,7 @@ namespace MVC.Services.Service
                 string URL = "https://localhost:7033/Product/List";
                 if (CategoryID == null && name == null)
                 {
-                    URL = URL + "?isAdmin=false&page=" + pageSelected;
+                    URL = URL + "?page=" + pageSelected;
                 }
                 else
                 {
@@ -55,11 +55,11 @@ namespace MVC.Services.Service
                     {
                         URL = URL + "?name=" + name + "&CategoryID=" + CategoryID;
                     }
-                    URL = URL + "&isAdmin=false&page=" + pageSelected;
+                    URL = URL + "&page=" + pageSelected;
                 }
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);

@@ -105,7 +105,7 @@ namespace API.Services.Service
             }
             catch (Exception ex)
             {
-                return new ResponseDTO(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseDTO(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
         public async Task<ResponseDTO> Detail(int ID)

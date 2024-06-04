@@ -18,63 +18,48 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index(string? status, int? page)
         {
-            int? role = getRole();
-            if (role == RoleConst.ROLE_ADMIN)
+            ResponseDTO response = await _service.Index(status, page);
+            if (response.Data == null)
             {
-                ResponseDTO response = await _service.Index(status, page);
-                if (response.Data == null)
-                {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
-                }
-                return View(response.Data);
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View(response.Data);
         }
 
         public async Task<ActionResult> View(Guid? id)
         {
-            int? role = getRole();
-            if (role == RoleConst.ROLE_ADMIN)
+            if (id == null)
             {
-                if (id == null)
+                return Redirect("/ManagerOrder");
+            }
+            ResponseDTO response = await _service.View(id.Value);
+            if (response.Data == null)
+            {
+                if (response.Code == (int)HttpStatusCode.NotFound)
                 {
                     return Redirect("/ManagerOrder");
                 }
-                ResponseDTO response = await _service.View(id.Value);
-                if (response.Data == null)
-                {
-                    if (response.Code == (int)HttpStatusCode.NotFound)
-                    {
-                        return Redirect("/ManagerOrder");
-                    }
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
-                }
-                return View(response.Data);
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View(response.Data);
         }
 
         public async Task<ActionResult> Detail(Guid? id)
         {
-            int? role = getRole();
-            if (role == RoleConst.ROLE_ADMIN)
+            if (id == null)
             {
-                if (id == null)
+                return Redirect("/ManagerOrder");
+            }
+            ResponseDTO response = await _service.Detail(id.Value);
+            if (response.Data == null)
+            {
+                if (response.Code == (int)HttpStatusCode.NotFound)
                 {
                     return Redirect("/ManagerOrder");
                 }
-                ResponseDTO response = await _service.Detail(id.Value);
-                if (response.Data == null)
-                {
-                    if (response.Code == (int)HttpStatusCode.NotFound)
-                    {
-                        return Redirect("/ManagerOrder");
-                    }
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
-                }
-                return View(response.Data);
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            return View(response.Data);
         }
 
         public async Task<ActionResult> Update(Guid? id)
@@ -107,25 +92,20 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, OrderUpdateDTO DTO)
         {
-            int? role = getRole();
-            if (role == RoleConst.ROLE_ADMIN)
+            ResponseDTO response = await _service.Update(id, DTO);
+            if (response.Data == null)
             {
-                ResponseDTO response = await _service.Update(id, DTO);
-                if (response.Data == null)
-                {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
-                }
-                if (response.Code == (int)HttpStatusCode.OK)
-                {
-                    ViewData["success"] = response.Message;
-                }
-                else
-                {
-                    ViewData["error"] = response.Message;
-                }
-                return View(response.Data);
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, response.Message, response.Code));
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+            if (response.Code == (int)HttpStatusCode.OK)
+            {
+                ViewData["success"] = response.Message;
+            }
+            else
+            {
+                ViewData["error"] = response.Message;
+            }
+            return View(response.Data);
         }
     }
 }

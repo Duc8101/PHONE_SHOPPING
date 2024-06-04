@@ -8,6 +8,5 @@ namespace API.Services.IService
         Task<ResponseDTO> List(Guid UserID);
         Task<ResponseDTO> Create(CartCreateRemoveDTO DTO);
         Task<ResponseDTO> Remove(CartCreateRemoveDTO DTO);
-        Task<ResponseDTO> Delete(Guid UserID);
     }
 }

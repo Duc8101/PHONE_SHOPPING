@@ -5,6 +5,8 @@ using DataAccess.DTO.OrderDTO;
 using DataAccess.DTO.UserDTO;
 using MVC.Services.IService;
 using System.Net;
+using System.Text;
+using System.Text.Json;
 
 namespace MVC.Services.Service
 {
@@ -22,15 +24,15 @@ namespace MVC.Services.Service
                 string URL = "https://localhost:7033/Order/List";
                 if (status == null || status.Trim().Length == 0)
                 {
-                    URL = URL + "?isAdmin=true&page=" + pageSelected;
+                    URL = URL + "?page=" + pageSelected;
                 }
                 else
                 {
-                    URL = URL + "?status=" + status.Trim() + "&isAdmin=true&page=" + pageSelected;
+                    URL = URL + "?status=" + status.Trim() + "&page=" + pageSelected;
                 }
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);
@@ -60,18 +62,14 @@ namespace MVC.Services.Service
             try
             {
                 string URL = "https://localhost:7033/User/Detail/" + UserID;
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
-                if (response.IsSuccessStatusCode)
-                {
-                    return new ResponseDTO(result.Data, string.Empty);
-                }
-                return new ResponseDTO(null, result.Message, (int)response.StatusCode);
+                return result;
             }
             catch (Exception ex)
             {
@@ -84,18 +82,14 @@ namespace MVC.Services.Service
             try
             {
                 string URL = "https://localhost:7033/Order/Detail/" + OrderID;
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);
                 }
-                if (result.Data == null)
-                {
-                    return new ResponseDTO(null, result.Message, (int)response.StatusCode);
-                }
-                return new ResponseDTO(result.Data, string.Empty);
+                return result;
             }
             catch (Exception ex)
             {
@@ -108,16 +102,16 @@ namespace MVC.Services.Service
             try
             {
                 string URL = "https://localhost:7033/Order/Update/" + OrderID;
-                string requestData = getRequestData<OrderUpdateDTO?>(DTO);
-                StringContent content = getContent(requestData);
-                HttpResponseMessage response = await PutAsync(URL, content);
-                string responseData = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(responseData);
+                string requestData = JsonSerializer.Serialize(DTO);
+                StringContent content = new StringContent(requestData, Encoding.UTF8, OtherConst.MEDIA_TYPE); ;
+                HttpResponseMessage response = await client.PutAsync(URL, content);
+                string responseData = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(responseData);
                 if (result == null)
                 {
                     return new ResponseDTO(null, responseData, (int)response.StatusCode);
                 }
-                return new ResponseDTO(result.Data, result.Message, (int)response.StatusCode);
+                return result;
             }
             catch (Exception ex)
             {

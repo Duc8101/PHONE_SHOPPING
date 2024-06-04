@@ -16,17 +16,13 @@ namespace MVC.Services.Service
             try
             {
                 int pageSelected = page == null ? 1 : page.Value;
-                string URL = "https://localhost:7033/Order/List?UserID=" + UserID + "&isAdmin=false" + "&page=" + pageSelected;
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                string URL = "https://localhost:7033/Order/List?page=" + pageSelected;
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);
-                }
-                if (result.Data == null)
-                {
-                    return new ResponseDTO(null, result.Message, (int)response.StatusCode);
                 }
                 return result;
             }
@@ -41,9 +37,9 @@ namespace MVC.Services.Service
             try
             {
                 string URL = "https://localhost:7033/Order/Detail/" + OrderID;
-                HttpResponseMessage response = await GetAsync(URL);
-                string data = await getResponseData(response);
-                ResponseDTO? result = Deserialize<ResponseDTO>(data);
+                HttpResponseMessage response = await client.GetAsync(URL);
+                string data = await response.Content.ReadAsStringAsync();
+                ResponseDTO? result = Deserialize(data);
                 if (result == null)
                 {
                     return new ResponseDTO(null, data, (int)response.StatusCode);
