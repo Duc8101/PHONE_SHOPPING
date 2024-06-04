@@ -12,12 +12,14 @@ namespace MVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
             builder.Services.AddScoped<IHomeService, HomeService>();
+            builder.Services.AddScoped<ILoginService, LoginService>();
+            builder.Services.AddScoped<ILogoutService, LogoutService>();
             /*            builder.Services.AddScoped<ICartService, CartService>();
                         builder.Services.AddScoped<IChangePasswordService, ChangePasswordService>();
                         builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
             */            //builder.Services.AddScoped<IHomeService, HomeService>();
-            /*            builder.Services.AddScoped<ILoginService, LoginService>();
-                        builder.Services.AddScoped<ILogoutService, LogoutService>();
+            /*            
+                        
                         builder.Services.AddScoped<IManagerCategoryService, ManagerCategoryService>();
                         builder.Services.AddScoped<IManagerOrderService, ManagerOrderService>();
                         builder.Services.AddScoped<IManagerProductService, ManagerProductService>();

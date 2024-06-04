@@ -6,7 +6,7 @@ namespace API.Services.IService
 {
     public interface IUserService
     {
-        ResponseBase<UserDetailDTO?> Detail(User user);
+        Task<ResponseBase<UserDetailDTO?>> Detail(Guid userId);
         Task<ResponseBase<UserDetailDTO?>> Login(LoginDTO DTO);
         Task<ResponseBase<bool>> Create(UserCreateDTO DTO);
         Task<ResponseBase<bool>> ForgotPassword(ForgotPasswordDTO DTO);

@@ -1,0 +1,44 @@
+﻿<section class="signin-page account">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="block text-center">
+                    <h2 class="text-center">Welcome Back</h2>
+                    <form class="text-left clearfix" action="/Login" method="post">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Username" id="username" name="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Password" id="password" name="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <a href="/ForgotPassword" class="mt-20">Forgot Password</a>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-main text-center" onclick="myFunction()">Login</button>
+                        </div>
+                    </form>
+                    <p class="mt-20">New in this site ?<a href="/Register">Create New Account</a></p>
+                    <p style="color: red" id="message">@ViewData["message"]</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function myFunction() {
+        const regexUsername = new RegExp("^[a-zA-Z0-9]*$");
+        var username = document.getElementById("username");
+        if (!regexUsername.test(username.value.toString()) || username.value.toString().length > 50 || username.value.toString().length < 6 || regexNumber.test(username.value.toString())) {
+            document.getElementById("message").innerHTML = "The username starts with alphabet , contains only alphabet and numbers, at least 6 characters, max 50 characters";
+            handleSubmit(event);
+        }
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+    }
+</script>
+

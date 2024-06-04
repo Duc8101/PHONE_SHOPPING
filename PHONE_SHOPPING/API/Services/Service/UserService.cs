@@ -1,5 +1,6 @@
 ﻿using API.Services.IService;
 using AutoMapper;
+using Azure;
 using DataAccess.Base;
 using DataAccess.Const;
 using DataAccess.DTO.UserDTO;
@@ -22,10 +23,15 @@ namespace API.Services.Service
         {
 
         }
-        public ResponseBase<UserDetailDTO?> Detail(User user)
+        public async Task<ResponseBase<UserDetailDTO?>> Detail(Guid userId)
         {
             try
             {
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == userId);
+                if (user == null)
+                {
+                    return new ResponseBase<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                }
                 string AccessToken = getAccessToken(user);
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
                 data.Token = AccessToken;

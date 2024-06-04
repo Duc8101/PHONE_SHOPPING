@@ -20,20 +20,10 @@ namespace API.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        [Authorize<UserDetailDTO>]
-        public ResponseBase<UserDetailDTO?> Detail()
+        [HttpGet("{userId}")]
+        public async Task<ResponseBase<UserDetailDTO?>> Detail([Required] Guid userId)
         {
-            User? user = (User?)HttpContext.Items["user"];
-            ResponseBase<UserDetailDTO?> response;
-            if (user == null)
-            {
-                response = new ResponseBase<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
-            }
-            else
-            {
-                response = _service.Detail(user);
-            }
+            ResponseBase<UserDetailDTO?> response = await _service.Detail(userId);
             Response.StatusCode = response.Code;
             return response;
         }

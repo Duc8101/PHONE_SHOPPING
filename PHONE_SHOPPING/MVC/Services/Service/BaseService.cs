@@ -19,13 +19,13 @@ namespace MVC.Services.Service
             }
         }
 
-        internal ResponseBase? Deserialize(string responseData)
+        internal ResponseBase<T>? Deserialize<T>(string responseData)
         {
             var options = new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true,
             };
-            return JsonSerializer.Deserialize<ResponseBase>(responseData, options);
+            return JsonSerializer.Deserialize<ResponseBase<T>>(responseData, options);
         }
     }
 }

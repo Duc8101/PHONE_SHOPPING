@@ -75,7 +75,7 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == DTO.UserId);
+                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == userId);
                 if (user == null)
                 {
                     return new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
