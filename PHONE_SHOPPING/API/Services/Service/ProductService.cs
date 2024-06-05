@@ -102,8 +102,6 @@ namespace API.Services.Service
         {
             try
             {
-                List<Category> list = await _context.Categories.ToListAsync();
-                List<CategoryListDTO> data = _mapper.Map<List<CategoryListDTO>>(list);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
                     return new ResponseBase<bool>(false, "You have to input product name", (int)HttpStatusCode.Conflict);
