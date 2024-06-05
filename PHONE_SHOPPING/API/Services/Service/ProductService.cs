@@ -2,7 +2,6 @@
 using AutoMapper;
 using DataAccess.Base;
 using DataAccess.Const;
-using DataAccess.DTO.CategoryDTO;
 using DataAccess.DTO.ProductDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
