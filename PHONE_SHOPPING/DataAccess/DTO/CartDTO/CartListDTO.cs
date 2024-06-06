@@ -1,8 +1,7 @@
 ﻿namespace DataAccess.DTO.CartDTO
 {
-    public class CartListDTO
+    public class CartListDTO : CartCreateDTO
     {
-        public Guid ProductId { get; set; }
         public string ProductName { get; set; } = null!;
         public string Image { get; set; } = null!;
         public decimal Price { get; set; }

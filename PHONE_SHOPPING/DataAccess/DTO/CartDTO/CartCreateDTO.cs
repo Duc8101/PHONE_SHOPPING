@@ -1,6 +1,6 @@
 ﻿namespace DataAccess.DTO.CartDTO
 {
-    public class CartCreateRemoveDTO
+    public class CartCreateDTO
     {
         public Guid ProductId { get; set; }
     }

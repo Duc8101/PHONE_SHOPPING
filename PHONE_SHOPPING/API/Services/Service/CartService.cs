@@ -30,7 +30,7 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<bool>> Create(CartCreateRemoveDTO DTO, Guid userId)
+        public async Task<ResponseBase<bool>> Create(CartCreateDTO DTO, Guid userId)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<bool>> Remove(CartCreateRemoveDTO DTO, Guid userId)
+        public async Task<ResponseBase<bool>> Delete(Guid productId, Guid userId)
         {
             try
             {
@@ -80,12 +80,12 @@ namespace API.Services.Service
                 {
                     return new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == DTO.ProductId && p.IsDeleted == false);
+                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == productId && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase<bool>(false, "Product not exist", (int)HttpStatusCode.NotFound);
                 }
-                Cart? cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
+                Cart? cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
                 {
                     return new ResponseBase<bool>(false, "Cart not exist", (int)HttpStatusCode.NotFound);
@@ -105,25 +105,6 @@ namespace API.Services.Service
                     await _context.SaveChangesAsync();
                 }
                 return new ResponseBase<bool>(true, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
-            }
-        }
-
-        public async Task<ResponseBase<bool>> Delete(Guid userId)
-        {
-            try
-            {
-                List<Cart> list = await _context.Carts.Where(c => c.UserId == userId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
-                foreach (Cart cart in list)
-                {
-                    cart.IsDeleted = true;
-                    _context.Carts.Update(cart);
-                    await _context.SaveChangesAsync();
-                }
-                return new ResponseBase<bool>(true, "Delete successful");
             }
             catch (Exception ex)
             {

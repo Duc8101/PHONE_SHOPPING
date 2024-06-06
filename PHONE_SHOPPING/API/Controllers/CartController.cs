@@ -43,7 +43,7 @@ namespace API.Controllers
         [Role<bool>(RoleEnum.Customer)]
         [Authorize<bool>]
 
-        public async Task<ResponseBase<bool>> Create([Required] CartCreateRemoveDTO DTO)
+        public async Task<ResponseBase<bool>> Create([Required] CartCreateDTO DTO)
         {
             User? user = (User?)HttpContext.Items["user"];
             ResponseBase<bool> response;
@@ -59,30 +59,11 @@ namespace API.Controllers
             return response;
         }
 
-        [HttpPost]
-        [Role<bool>(RoleEnum.Customer)]
-        [Authorize<bool>]
-
-        public async Task<ResponseBase<bool>> Remove([Required] CartCreateRemoveDTO DTO)
-        {
-            User? user = (User?)HttpContext.Items["user"];
-            ResponseBase<bool> response;
-            if (user == null)
-            {
-                response = new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
-            }
-            else
-            {
-                response = await _service.Remove(DTO, user.UserId);
-            }
-            Response.StatusCode = response.Code;
-            return response;
-        }
-
         [HttpDelete]
         [Role<bool>(RoleEnum.Customer)]
         [Authorize<bool>]
-        public async Task<ResponseBase<bool>> Delete()
+
+        public async Task<ResponseBase<bool>> Delete([Required] Guid productId)
         {
             User? user = (User?)HttpContext.Items["user"];
             ResponseBase<bool> response;
@@ -92,7 +73,7 @@ namespace API.Controllers
             }
             else
             {
-                response = await _service.Delete(user.UserId);
+                response = await _service.Delete(productId, user.UserId);
             }
             Response.StatusCode = response.Code;
             return response;

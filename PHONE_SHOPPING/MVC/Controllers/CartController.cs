@@ -31,7 +31,7 @@ namespace MVC.Controllers
             {
                 return Redirect("/Home");
             }
-            CartCreateRemoveDTO DTO = new CartCreateRemoveDTO()
+            CartCreateDTO DTO = new CartCreateDTO()
             {
                 ProductId = ProductID.Value,
             };
@@ -49,11 +49,7 @@ namespace MVC.Controllers
             {
                 return Redirect("/Home");
             }
-            CartCreateRemoveDTO DTO = new CartCreateRemoveDTO()
-            {
-                ProductId = ProductID.Value,
-            };
-            ResponseBase<bool> response = await _service.Remove(DTO);
+            ResponseBase<bool> response = await _service.Remove(ProductID.Value);
             if (response.Data == true)
             {
                 return Redirect("/Cart");

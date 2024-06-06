@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "DTO",
-        "Type": "DataAccess.DTO.CartDTO.CartCreateRemoveDTO",
+        "Type": "DataAccess.DTO.CartDTO.CartCreateDTO",
         "IsRequired": true
       }
     ],
@@ -32,7 +32,13 @@
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "productId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
         "Type": "DataAccess.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
@@ -56,32 +62,6 @@
     "ReturnTypes": [
       {
         "Type": "DataAccess.Base.ResponseBase\u00601[[System.Collections.Generic.List\u00601[[DataAccess.DTO.CartDTO.CartListDTO, DataAccess, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "API.Controllers.CartController",
-    "Method": "Remove",
-    "RelativePath": "Cart/Remove",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "DTO",
-        "Type": "DataAccess.DTO.CartDTO.CartCreateRemoveDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "DataAccess.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
