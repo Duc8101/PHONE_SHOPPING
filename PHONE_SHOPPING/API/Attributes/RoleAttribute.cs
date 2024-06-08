@@ -1,5 +1,4 @@
 ﻿using API.Providers;
-using DataAccess;
 using Common.Base;
 using Common.Entity;
 using Common.Enum;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using DataAccess.DBContext;
 
 namespace API.Attributes
 {

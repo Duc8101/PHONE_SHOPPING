@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DataAccess;
+using DataAccess.DBContext;
 
 namespace API.Services.Service
 {
