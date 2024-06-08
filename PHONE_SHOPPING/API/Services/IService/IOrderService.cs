@@ -1,8 +1,8 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.CartDTO;
-using DataAccess.DTO.OrderDetailDTO;
-using DataAccess.DTO.OrderDTO;
-using DataAccess.Pagination;
+﻿using Common.Base;
+using Common.DTO.CartDTO;
+using Common.DTO.OrderDetailDTO;
+using Common.DTO.OrderDTO;
+using Common.Pagination;
 
 namespace API.Services.IService
 {

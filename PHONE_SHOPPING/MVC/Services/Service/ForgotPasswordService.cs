@@ -1,5 +1,5 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.UserDTO;
+﻿using Common.Base;
+using Common.DTO.UserDTO;
 using MVC.Services.IService;
 
 namespace MVC.Services.Service

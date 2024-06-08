@@ -1,5 +1,5 @@
-using DataAccess.Base;
-using DataAccess.Enum;
+using Common.Base;
+using Common.Enum;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
 

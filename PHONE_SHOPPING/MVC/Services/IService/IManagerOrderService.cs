@@ -1,7 +1,7 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.OrderDetailDTO;
-using DataAccess.DTO.OrderDTO;
-using DataAccess.DTO.UserDTO;
+﻿using Common.Base;
+using Common.DTO.OrderDetailDTO;
+using Common.DTO.OrderDTO;
+using Common.DTO.UserDTO;
 
 namespace MVC.Services.IService
 {

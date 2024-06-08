@@ -1,9 +1,9 @@
 ﻿using API.Attributes;
 using API.Services.IService;
-using DataAccess.Base;
-using DataAccess.DTO.ProductDTO;
-using DataAccess.Enum;
-using DataAccess.Pagination;
+using Common.Base;
+using Common.DTO.ProductDTO;
+using Common.Enum;
+using Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 

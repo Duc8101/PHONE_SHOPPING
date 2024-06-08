@@ -1,9 +1,9 @@
 ﻿using API.Services.IService;
 using AutoMapper;
-using DataAccess.Base;
-using DataAccess.DTO.CartDTO;
-using DataAccess.Entity;
-using DataAccess.Model;
+using Common.Base;
+using Common.DTO.CartDTO;
+using Common.Entity;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 

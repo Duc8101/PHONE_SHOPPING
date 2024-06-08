@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using DataAccess.DTO.CartDTO;
-using DataAccess.DTO.CategoryDTO;
-using DataAccess.DTO.OrderDetailDTO;
-using DataAccess.DTO.OrderDTO;
-using DataAccess.DTO.ProductDTO;
-using DataAccess.DTO.UserDTO;
-using DataAccess.Entity;
+using Common.DTO.CartDTO;
+using Common.DTO.CategoryDTO;
+using Common.DTO.OrderDetailDTO;
+using Common.DTO.OrderDTO;
+using Common.DTO.ProductDTO;
+using Common.DTO.UserDTO;
+using Common.Entity;
 
 namespace API
 {

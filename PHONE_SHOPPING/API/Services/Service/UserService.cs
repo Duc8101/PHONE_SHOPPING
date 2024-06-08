@@ -1,11 +1,11 @@
 ﻿using API.Services.IService;
 using AutoMapper;
-using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.DTO.UserDTO;
-using DataAccess.Entity;
-using DataAccess.Enum;
-using DataAccess.Model;
+using Common.Base;
+using Common.Const;
+using Common.DTO.UserDTO;
+using Common.Entity;
+using Common.Enum;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

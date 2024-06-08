@@ -75,3 +75,5 @@ D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\obj\Debug\net8.0\refint\API.dll
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\obj\Debug\net8.0\API.pdb
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\obj\Debug\net8.0\API.genruntimeconfig.cache
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\obj\Debug\net8.0\ref\API.dll
+D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\bin\Debug\net8.0\Common.dll
+D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\bin\Debug\net8.0\Common.pdb

@@ -1,6 +1,6 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.CategoryDTO;
-using DataAccess.Pagination;
+﻿using Common.Base;
+using Common.DTO.CategoryDTO;
+using Common.Pagination;
 using MVC.Services.IService;
 
 namespace MVC.Services.Service

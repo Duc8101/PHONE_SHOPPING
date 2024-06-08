@@ -13,3 +13,6 @@ D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\DataAccess\obj\Debug\net8.0\refint\DataA
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\DataAccess\obj\Debug\net8.0\DataAccess.pdb
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\DataAccess\obj\Debug\net8.0\DataAccess.genruntimeconfig.cache
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\DataAccess\obj\Debug\net8.0\ref\DataAccess.dll
+D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\DataAccess\bin\Debug\net8.0\Common.dll
+D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\DataAccess\bin\Debug\net8.0\Common.pdb
+D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\DataAccess\obj\Debug\net8.0\DataAccess.csproj.Up2Date

@@ -1,6 +1,6 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.CategoryDTO;
-using DataAccess.DTO.ProductDTO;
+﻿using Common.Base;
+using Common.DTO.CategoryDTO;
+using Common.DTO.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
 using System.Net;

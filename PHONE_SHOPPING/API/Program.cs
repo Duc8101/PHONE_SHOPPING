@@ -3,7 +3,7 @@ using API.Providers;
 using API.Services.IService;
 using API.Services.Service;
 using AutoMapper;
-using DataAccess.Model;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 

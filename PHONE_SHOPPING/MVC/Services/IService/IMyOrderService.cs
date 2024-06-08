@@ -1,7 +1,7 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.OrderDetailDTO;
-using DataAccess.DTO.OrderDTO;
-using DataAccess.Pagination;
+﻿using Common.Base;
+using Common.DTO.OrderDetailDTO;
+using Common.DTO.OrderDTO;
+using Common.Pagination;
 
 namespace MVC.Services.IService
 {

@@ -1,4 +1,4 @@
-﻿using DataAccess.Model;
+﻿using DataAccess;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace API.Middleware

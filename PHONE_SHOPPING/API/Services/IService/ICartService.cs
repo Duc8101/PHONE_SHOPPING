@@ -1,5 +1,5 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.CartDTO;
+﻿using Common.Base;
+using Common.DTO.CartDTO;
 
 namespace API.Services.IService
 {

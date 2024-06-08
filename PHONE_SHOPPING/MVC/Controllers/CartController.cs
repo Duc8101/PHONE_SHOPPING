@@ -1,6 +1,6 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.CartDTO;
-using DataAccess.DTO.OrderDTO;
+﻿using Common.Base;
+using Common.DTO.CartDTO;
+using Common.DTO.OrderDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
 using System.Net;

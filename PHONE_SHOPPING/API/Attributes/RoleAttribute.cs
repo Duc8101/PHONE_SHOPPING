@@ -1,8 +1,8 @@
 ﻿using API.Providers;
-using DataAccess.Base;
-using DataAccess.Entity;
-using DataAccess.Enum;
-using DataAccess.Model;
+using DataAccess;
+using Common.Base;
+using Common.Entity;
+using Common.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.IdentityModel.Tokens.Jwt;

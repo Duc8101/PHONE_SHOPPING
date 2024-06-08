@@ -1,11 +1,11 @@
 ﻿using API.Services.IService;
 using AutoMapper;
-using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.DTO.ProductDTO;
-using DataAccess.Entity;
-using DataAccess.Model;
-using DataAccess.Pagination;
+using Common.Base;
+using Common.Const;
+using Common.DTO.ProductDTO;
+using Common.Entity;
+using Common.Pagination;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 

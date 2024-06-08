@@ -1,9 +1,9 @@
 ﻿using API.Attributes;
 using API.Services.IService;
-using DataAccess.Base;
-using DataAccess.DTO.CartDTO;
-using DataAccess.Entity;
-using DataAccess.Enum;
+using Common.Base;
+using Common.DTO.CartDTO;
+using Common.Entity;
+using Common.Enum;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;

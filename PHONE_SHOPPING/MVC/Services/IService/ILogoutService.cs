@@ -1,4 +1,4 @@
-﻿using DataAccess.Base;
+﻿using Common.Base;
 
 namespace MVC.Services.IService
 {

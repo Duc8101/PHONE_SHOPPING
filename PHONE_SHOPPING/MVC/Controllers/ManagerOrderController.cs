@@ -1,8 +1,8 @@
-﻿using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.DTO.OrderDetailDTO;
-using DataAccess.DTO.OrderDTO;
-using DataAccess.DTO.UserDTO;
+﻿using Common.Base;
+using Common.Const;
+using Common.DTO.OrderDetailDTO;
+using Common.DTO.OrderDTO;
+using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
 using System.Net;

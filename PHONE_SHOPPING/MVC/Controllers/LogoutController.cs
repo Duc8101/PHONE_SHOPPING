@@ -1,4 +1,4 @@
-﻿using DataAccess.Base;
+﻿using Common.Base;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
 using MVC.Token;

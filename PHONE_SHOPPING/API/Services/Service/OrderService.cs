@@ -1,14 +1,14 @@
 ﻿using API.Services.IService;
 using AutoMapper;
-using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.DTO.CartDTO;
-using DataAccess.DTO.OrderDetailDTO;
-using DataAccess.DTO.OrderDTO;
-using DataAccess.Entity;
-using DataAccess.Enum;
-using DataAccess.Model;
-using DataAccess.Pagination;
+using Common.Base;
+using Common.Const;
+using Common.DTO.CartDTO;
+using Common.DTO.OrderDetailDTO;
+using Common.DTO.OrderDTO;
+using Common.Entity;
+using Common.Enum;
+using Common.Pagination;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 

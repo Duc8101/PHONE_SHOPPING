@@ -1,6 +1,6 @@
-﻿using DataAccess.Base;
-using DataAccess.DTO.ProductDTO;
-using DataAccess.Pagination;
+﻿using Common.Base;
+using Common.DTO.ProductDTO;
+using Common.Pagination;
 
 namespace API.Services.IService
 {
