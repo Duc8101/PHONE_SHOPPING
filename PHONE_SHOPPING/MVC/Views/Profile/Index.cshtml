@@ -40,9 +40,11 @@
         const regexNumber = new RegExp("^[0-9]");
         if (FullName.value.toString().trim().length === 0) {
             document.getElementById("error").innerHTML = "You have to input your name";
+            document.getElementById("success").innerHTML = "";
             handleSubmit(event);
         } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @UserConst.PHONE_LENGTH) {
             document.getElementById("error").innerHTML = "Phone must be " + @UserConst.PHONE_LENGTH +" numbers";
+            document.getElementById("success").innerHTML = "";
             handleSubmit(event);
         }
     }

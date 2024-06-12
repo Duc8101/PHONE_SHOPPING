@@ -25,6 +25,7 @@
         var name = document.getElementById("Name");
         if (name.value.toString().trim().length === 0) {
             document.getElementById("error").innerHTML = "You have to input category name";
+            document.getElementById("success").innerHTML = "";
             handleSubmit(event);
         }
     }

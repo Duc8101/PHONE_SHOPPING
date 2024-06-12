@@ -17,7 +17,7 @@
                         <option value="@null">ALL</option>
                         @foreach (string item in list)
                         {
-                            <option value="@item" selected="@(item == status)">@item</option>
+                            <option value="@item" selected="@(string.Compare(item,status,false) == 0)">@item</option>
                         }
                     </select>
                 </form><br />
