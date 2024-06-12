@@ -222,6 +222,10 @@ namespace API.Services.Service
                 }
                 if (DTO.Status.Trim() == OrderConst.STATUS_REJECTED || DTO.Status.Trim() == OrderConst.STATUS_PENDING)
                 {
+                    if (DTO.Status.Trim() == OrderConst.STATUS_REJECTED && (DTO.Note == null || DTO.Note.Trim().Length == 0))
+                    {
+                        return new ResponseBase<OrderDetailDTO?>(data, "When status is " + OrderConst.STATUS_REJECTED + ", you have to note the reason why rejected", (int)HttpStatusCode.Conflict);
+                    }
                     order.Status = DTO.Status.Trim();
                     order.UpdateAt = DateTime.Now;
                     order.Note = DTO.Note == null || DTO.Note.Trim().Length == 0 ? null : DTO.Note.Trim();

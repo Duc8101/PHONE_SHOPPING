@@ -150,17 +150,27 @@ namespace API.Services.Service
         {
             try
             {
-                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+                Product? product = await _context.Products.Include(p => p.Category).Include(p => p.OrderDetails)
+                    .ThenInclude(p => p.Order).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                }
+                List<OrderDetail> list = product.OrderDetails.ToList();
+                ProductListDTO data = _mapper.Map<ProductListDTO>(product);
+                foreach (OrderDetail detail in list)
+                {
+                    if (detail.Order.Status == OrderConst.STATUS_PENDING)
+                    {
+                        return new ResponseBase<ProductListDTO?>(data, "You can't update this product because it's orders are " + OrderConst.STATUS_PENDING + " status", (int)HttpStatusCode.Conflict);
+                    }
                 }
                 product.ProductName = DTO.ProductName.Trim();
                 product.Image = DTO.Image.Trim();
                 product.Price = DTO.Price;
                 product.CategoryId = DTO.CategoryId;
                 product.Quantity = DTO.Quantity;
-                ProductListDTO data = _mapper.Map<ProductListDTO>(product);
+                data = _mapper.Map<ProductListDTO>(product);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
                     return new ResponseBase<ProductListDTO?>(data, "You have to input product name", (int)HttpStatusCode.Conflict);
