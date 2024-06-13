@@ -2,10 +2,12 @@
 using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
+using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
 {
+    [ResponseCache(NoStore = true)]
     public class ChangePasswordController : BaseController
     {
         private readonly IChangePasswordService _service;
@@ -13,8 +15,13 @@ namespace MVC.Controllers
         {
             _service = service;
         }
+
         public ActionResult Index()
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             return View();
         }
 

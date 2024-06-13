@@ -176,7 +176,7 @@ namespace API.Services.Service
                 {
                     return new ResponseBase<ProductListDTO?>(data, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
-                if (await _context.Products.AnyAsync(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false))
+                if (await _context.Products.AnyAsync(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false && p.ProductId != ProductID))
                 {
                     return new ResponseBase<ProductListDTO?>(data, "Product existed", (int)HttpStatusCode.Conflict);
                 }

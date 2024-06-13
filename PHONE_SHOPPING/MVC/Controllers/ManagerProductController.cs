@@ -3,10 +3,12 @@ using Common.DTO.CategoryDTO;
 using Common.DTO.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
+using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
 {
+    [ResponseCache(NoStore = true)]
     public class ManagerProductController : BaseController
     {
         private readonly IManagerProductService _service;
@@ -15,8 +17,13 @@ namespace MVC.Controllers
         {
             _service = service;
         }
+ 
         public async Task<ActionResult> Index(string? name, int? CategoryID, int? page)
         {
+            if(StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<Dictionary<string, object>?> result = await _service.Index(name, CategoryID, page);
             if (result.Data == null)
             {
@@ -27,6 +34,10 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Create()
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<List<CategoryListDTO>?> response = await _service.Create();
             if (response.Data == null)
             {
@@ -38,6 +49,10 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ProductCreateUpdateDTO DTO)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<List<CategoryListDTO>?> response = await _service.Create(DTO);
             if (response.Data == null)
             {
@@ -56,6 +71,10 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Update(Guid? id)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             if (id == null)
             {
                 return Redirect("/ManagerProduct");
@@ -75,6 +94,10 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, ProductCreateUpdateDTO DTO)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<Dictionary<string, object>?> response = await _service.Update(id, DTO);
             if (response.Data == null)
             {
@@ -97,6 +120,10 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Delete(Guid? id)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             if (id == null)
             {
                 return Redirect("/ManagerProduct");

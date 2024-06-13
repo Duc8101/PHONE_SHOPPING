@@ -2,10 +2,12 @@
 using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
+using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
 {
+    [ResponseCache(NoStore = true)]
     public class ProfileController : BaseController
     {
         private readonly IProfileService _service;
@@ -16,6 +18,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index()
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             string? UserID = getUserID();
             if (UserID == null)
             {
@@ -33,6 +39,10 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(UserUpdateDTO DTO)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<UserDetailDTO?> response = await _service.Index(DTO);
             if (response.Data == null)
             {

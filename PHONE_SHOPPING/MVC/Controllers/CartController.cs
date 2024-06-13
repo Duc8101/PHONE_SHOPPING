@@ -3,10 +3,12 @@ using Common.DTO.CartDTO;
 using Common.DTO.OrderDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
+using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
 {
+    [ResponseCache(NoStore = true)]
     public class CartController : BaseController
     {
         private readonly ICartService _service;
@@ -17,6 +19,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index()
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<List<CartListDTO>?> response = await _service.Index();
             if (response.Data == null)
             {
@@ -24,9 +30,12 @@ namespace MVC.Controllers
             }
             return View(response.Data);
         }
-
         public async Task<ActionResult> Create(Guid? ProductID)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             if (ProductID == null)
             {
                 return Redirect("/Home");
@@ -45,6 +54,10 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Remove(Guid? ProductID)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             if (ProductID == null)
             {
                 return Redirect("/Home");
@@ -58,12 +71,20 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Checkout()
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             return await Index();
         }
 
         [HttpPost]
         public async Task<ActionResult> Checkout(OrderCreateDTO DTO)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             ViewData["address"] = DTO.Address;
             ResponseBase<List<CartListDTO>?> response = await _service.Checkout(DTO);
             if (response.Data == null)

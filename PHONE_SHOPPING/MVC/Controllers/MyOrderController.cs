@@ -4,10 +4,12 @@ using Common.DTO.OrderDTO;
 using Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.IService;
+using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
 {
+    [ResponseCache(NoStore = true)]
     public class MyOrderController : BaseController
     {
         private readonly IMyOrderService _service;
@@ -17,6 +19,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index(int? page)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<Pagination<OrderListDTO>?> response = await _service.Index(page);
             if (response.Data == null)
             {
@@ -27,6 +33,10 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Detail(Guid? id)
         {
+            if (StaticToken.Token == null)
+            {
+                return Redirect("/Home");
+            }
             string? UserID = getUserID();
             if (UserID == null)
             {
