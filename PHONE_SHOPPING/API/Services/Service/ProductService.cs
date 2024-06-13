@@ -151,7 +151,7 @@ namespace API.Services.Service
             try
             {
                 Product? product = await _context.Products.Include(p => p.Category).Include(p => p.OrderDetails)
-                    .ThenInclude(p => p.Order).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+                    .FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
@@ -160,13 +160,7 @@ namespace API.Services.Service
                 ProductListDTO data = _mapper.Map<ProductListDTO>(product);
                 if(list.Count > 0)
                 {
-                    foreach (OrderDetail detail in list)
-                    {
-                        if (detail.Order.Status == OrderConst.STATUS_PENDING)
-                        {
-                            return new ResponseBase<ProductListDTO?>(data, "You can't update this product because it's orders are " + OrderConst.STATUS_PENDING + " status", (int)HttpStatusCode.Conflict);
-                        }
-                    }
+                    return new ResponseBase<ProductListDTO?>(data, "You can't update this product because it is being or has been ordered", (int)HttpStatusCode.Conflict);
                 }
                 product.ProductName = DTO.ProductName.Trim();
                 product.Image = DTO.Image.Trim();
