@@ -17,23 +17,14 @@ namespace MVC.Controllers
         public async Task<ActionResult> Index()
         {
             HttpContext.Session.Clear();
-            string? UserID = Request.Cookies["UserID"];
-            CookieOptions option = new CookieOptions
+            Response.Cookies.Delete("UserID");
+            ResponseBase<bool> response = await _service.Index();
+            if (response.Code == (int)HttpStatusCode.OK)
             {
-                Expires = DateTime.Now.AddDays(-1)
-            };
-            if (UserID != null)
-            {
-                Response.Cookies.Append("UserID", UserID, option);
-                ResponseBase<bool> response = await _service.Index();
-                if (response.Code == (int)HttpStatusCode.OK)
-                {
-                    return Redirect("/Home");
-                }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                StaticToken.Token = null;
+                return Redirect("/Home");
             }
-            StaticToken.Token = null;
-            return Redirect("/Home");
+            return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
         }
     }
 }
