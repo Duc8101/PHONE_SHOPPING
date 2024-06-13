@@ -158,11 +158,14 @@ namespace API.Services.Service
                 }
                 List<OrderDetail> list = product.OrderDetails.ToList();
                 ProductListDTO data = _mapper.Map<ProductListDTO>(product);
-                foreach (OrderDetail detail in list)
+                if(list.Count > 0)
                 {
-                    if (detail.Order.Status == OrderConst.STATUS_PENDING)
+                    foreach (OrderDetail detail in list)
                     {
-                        return new ResponseBase<ProductListDTO?>(data, "You can't update this product because it's orders are " + OrderConst.STATUS_PENDING + " status", (int)HttpStatusCode.Conflict);
+                        if (detail.Order.Status == OrderConst.STATUS_PENDING)
+                        {
+                            return new ResponseBase<ProductListDTO?>(data, "You can't update this product because it's orders are " + OrderConst.STATUS_PENDING + " status", (int)HttpStatusCode.Conflict);
+                        }
                     }
                 }
                 product.ProductName = DTO.ProductName.Trim();
