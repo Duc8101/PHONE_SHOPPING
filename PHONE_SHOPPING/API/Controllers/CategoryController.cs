@@ -20,9 +20,9 @@ namespace API.Controllers
         }
 
         [HttpGet("All")]
-        public async Task<ResponseBase<List<CategoryListDTO>?>> List()
+        public ResponseBase<List<CategoryListDTO>?> List()
         {
-            ResponseBase<List<CategoryListDTO>?> response = await _service.ListAll();
+            ResponseBase<List<CategoryListDTO>?> response = _service.ListAll();
             Response.StatusCode = response.Code;
             return response;
         }
@@ -30,9 +30,9 @@ namespace API.Controllers
         [HttpGet("Paged")]
         [Role<Pagination<CategoryListDTO>>(RoleEnum.Admin)]
         [Authorize<Pagination<CategoryListDTO>>]
-        public async Task<ResponseBase<Pagination<CategoryListDTO>?>> List(string? name, [Required] int page = 1)
+        public ResponseBase<Pagination<CategoryListDTO>?> List(string? name, [Required] int page = 1)
         {
-            ResponseBase<Pagination<CategoryListDTO>?> response = await _service.ListPaged(name, page);
+            ResponseBase<Pagination<CategoryListDTO>?> response = _service.ListPaged(name, page);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -40,9 +40,9 @@ namespace API.Controllers
         [HttpPost]
         [Role<bool>(RoleEnum.Admin)]
         [Authorize<bool>]
-        public async Task<ResponseBase<bool>> Create([Required] CategoryCreateUpdateDTO DTO)
+        public ResponseBase<bool> Create([Required] CategoryCreateUpdateDTO DTO)
         {
-            ResponseBase<bool> response = await _service.Create(DTO);
+            ResponseBase<bool> response = _service.Create(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -50,9 +50,9 @@ namespace API.Controllers
         [HttpGet("{ID}")]
         [Role<CategoryListDTO>(RoleEnum.Admin)]
         [Authorize<CategoryListDTO>]
-        public async Task<ResponseBase<CategoryListDTO?>> Detail([Required] int ID)
+        public ResponseBase<CategoryListDTO?> Detail([Required] int ID)
         {
-            ResponseBase<CategoryListDTO?> response = await _service.Detail(ID);
+            ResponseBase<CategoryListDTO?> response = _service.Detail(ID);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -60,9 +60,9 @@ namespace API.Controllers
         [HttpPut("{ID}")]
         [Role<CategoryListDTO>(RoleEnum.Admin)]
         [Authorize<CategoryListDTO>]
-        public async Task<ResponseBase<CategoryListDTO?>> Update([Required] int ID, [Required] CategoryCreateUpdateDTO DTO)
+        public ResponseBase<CategoryListDTO?> Update([Required] int ID, [Required] CategoryCreateUpdateDTO DTO)
         {
-            ResponseBase<CategoryListDTO?> response = await _service.Update(ID, DTO);
+            ResponseBase<CategoryListDTO?> response = _service.Update(ID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }

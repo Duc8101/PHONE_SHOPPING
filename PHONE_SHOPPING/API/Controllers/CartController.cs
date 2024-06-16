@@ -23,7 +23,7 @@ namespace API.Controllers
         [HttpGet]
         [Role<List<CartListDTO>>(RoleEnum.Customer)]
         [Authorize<List<CartListDTO>>]
-        public async Task<ResponseBase<List<CartListDTO>?>> List()
+        public ResponseBase<List<CartListDTO>?> List()
         {
             User? user = (User?)HttpContext.Items["user"];
             ResponseBase<List<CartListDTO>?> response;
@@ -33,7 +33,7 @@ namespace API.Controllers
             }
             else
             {
-                response = await _service.List(user.UserId);
+                response = _service.List(user.UserId);
             }
             Response.StatusCode = response.Code;
             return response;
@@ -43,7 +43,7 @@ namespace API.Controllers
         [Role<bool>(RoleEnum.Customer)]
         [Authorize<bool>]
 
-        public async Task<ResponseBase<bool>> Create([Required] CartCreateDTO DTO)
+        public ResponseBase<bool> Create([Required] CartCreateDTO DTO)
         {
             User? user = (User?)HttpContext.Items["user"];
             ResponseBase<bool> response;
@@ -53,7 +53,7 @@ namespace API.Controllers
             }
             else
             {
-                response = await _service.Create(DTO, user.UserId);
+                response = _service.Create(DTO, user.UserId);
             }
             Response.StatusCode = response.Code;
             return response;
@@ -63,7 +63,7 @@ namespace API.Controllers
         [Role<bool>(RoleEnum.Customer)]
         [Authorize<bool>]
 
-        public async Task<ResponseBase<bool>> Delete([Required] Guid productId)
+        public ResponseBase<bool> Delete([Required] Guid productId)
         {
             User? user = (User?)HttpContext.Items["user"];
             ResponseBase<bool> response;
@@ -73,7 +73,7 @@ namespace API.Controllers
             }
             else
             {
-                response = await _service.Delete(productId, user.UserId);
+                response = _service.Delete(productId, user.UserId);
             }
             Response.StatusCode = response.Code;
             return response;

@@ -32,7 +32,7 @@ namespace API.Services.Service
             return query;
         }
 
-        public async Task<ResponseBase<Pagination<ProductListDTO>?>> List(bool isAdmin, string? name, int? CategoryID, int page)
+        public ResponseBase<Pagination<ProductListDTO>?> List(bool isAdmin, string? name, int? CategoryID, int page)
         {
             int prePage = page - 1;
             int nextPage = page + 1;
@@ -43,7 +43,7 @@ namespace API.Services.Service
             try
             {
                 IQueryable<Product> query = getQuery(name, CategoryID);
-                int count = await query.CountAsync();
+                int count = query.Count();
                 int numberPage = (int)Math.Ceiling((double)count / PageSizeConst.MAX_PRODUCT_IN_PAGE);
                 // if not choose category and name
                 if (CategoryID == null && (name == null || name.Trim().Length == 0))
@@ -76,8 +76,8 @@ namespace API.Services.Service
                         lastURL = lastURL + "?name=" + name.Trim() + "&CategoryID=" + CategoryID + "&page=" + numberPage;
                     }
                 }
-                List<Product> listProduct = await query.OrderByDescending(p => p.UpdateAt).Skip(PageSizeConst.MAX_PRODUCT_IN_PAGE * (page - 1))
-                    .Take(PageSizeConst.MAX_PRODUCT_IN_PAGE).ToListAsync();
+                List<Product> listProduct = query.OrderByDescending(p => p.UpdateAt).Skip(PageSizeConst.MAX_PRODUCT_IN_PAGE * (page - 1))
+                    .Take(PageSizeConst.MAX_PRODUCT_IN_PAGE).ToList();
                 List<ProductListDTO> productDTOs = _mapper.Map<List<ProductListDTO>>(listProduct);
                 Pagination<ProductListDTO> result = new Pagination<ProductListDTO>()
                 {
@@ -97,7 +97,7 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<bool>> Create(ProductCreateUpdateDTO DTO)
+        public ResponseBase<bool> Create(ProductCreateUpdateDTO DTO)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace API.Services.Service
                 {
                     return new ResponseBase<bool>(false, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
-                if (await _context.Products.AnyAsync(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false))
+                if (_context.Products.Any(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false))
                 {
                     return new ResponseBase<bool>(false, "Product existed", (int)HttpStatusCode.Conflict);
                 }
@@ -118,8 +118,8 @@ namespace API.Services.Service
                 product.CreatedAt = DateTime.Now;
                 product.UpdateAt = DateTime.Now;
                 product.IsDeleted = false;
-                await _context.Products.AddAsync(product);
-                await _context.SaveChangesAsync();
+                _context.Products.Add(product);
+                _context.SaveChanges();
                 return new ResponseBase<bool>(true, "Create successful");
             }
             catch (Exception ex)
@@ -128,11 +128,11 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<ProductListDTO?>> Detail(Guid ProductID)
+        public ResponseBase<ProductListDTO?> Detail(Guid ProductID)
         {
             try
             {
-                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+                Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
@@ -146,12 +146,12 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<ProductListDTO?>> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
+        public ResponseBase<ProductListDTO?> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
         {
             try
             {
-                Product? product = await _context.Products.Include(p => p.Category).Include(p => p.OrderDetails)
-                    .FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+                Product? product = _context.Products.Include(p => p.Category).Include(p => p.OrderDetails)
+                    .FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
@@ -176,13 +176,13 @@ namespace API.Services.Service
                 {
                     return new ResponseBase<ProductListDTO?>(data, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
-                if (await _context.Products.AnyAsync(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false && p.ProductId != ProductID))
+                if (_context.Products.Any(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false && p.ProductId != ProductID))
                 {
                     return new ResponseBase<ProductListDTO?>(data, "Product existed", (int)HttpStatusCode.Conflict);
                 }
                 product.UpdateAt = DateTime.Now;
                 _context.Products.Update(product);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return new ResponseBase<ProductListDTO?>(data, "Update successful");
             }
             catch (Exception ex)
@@ -191,18 +191,18 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<bool>> Delete(Guid ProductID)
+        public ResponseBase<bool> Delete(Guid ProductID)
         {
             try
             {
-                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == ProductID && p.IsDeleted == false);
+                Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase<bool>(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 product.IsDeleted = true;
                 _context.Products.Update(product);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return new ResponseBase<bool>(true, "Delete successful");
             }
             catch (Exception ex)

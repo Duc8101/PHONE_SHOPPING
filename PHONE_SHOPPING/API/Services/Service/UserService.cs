@@ -23,11 +23,11 @@ namespace API.Services.Service
         {
 
         }
-        public async Task<ResponseBase<UserDetailDTO?>> Detail(Guid userId)
+        public ResponseBase<UserDetailDTO?> Detail(Guid userId)
         {
             try
             {
-                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == userId);
+                User? user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.UserId == userId);
                 if (user == null)
                 {
                     return new ResponseBase<UserDetailDTO?>(null, "Not found user", (int)HttpStatusCode.NotFound);
@@ -43,11 +43,11 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<UserDetailDTO?>> Login(LoginDTO DTO)
+        public ResponseBase<UserDetailDTO?> Login(LoginDTO DTO)
         {
             try
             {
-                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Username == DTO.Username && u.IsDeleted == false);
+                User? user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Username == DTO.Username && u.IsDeleted == false);
                 if (user == null)
                 {
                     return new ResponseBase<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.NotFound);
@@ -56,12 +56,12 @@ namespace API.Services.Service
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
                 data.Token = AccessToken;
                 // ------------------------- remove all cart ------------------------- 
-                List<Cart> list = await _context.Carts.Where(c => c.UserId == user.UserId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
+                List<Cart> list = _context.Carts.Where(c => c.UserId == user.UserId && c.IsCheckout == false && c.IsDeleted == false).ToList();
                 foreach (Cart cart in list)
                 {
                     cart.IsDeleted = true;
                     _context.Carts.Update(cart);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 return new ResponseBase<UserDetailDTO?>(data, string.Empty);
 
@@ -90,16 +90,16 @@ namespace API.Services.Service
             return handler.WriteToken(token);
         }
 
-        public async Task<ResponseBase<bool>> Logout(Guid UserID)
+        public ResponseBase<bool> Logout(Guid UserID)
         {
             try
             {
-                List<Cart> list = await _context.Carts.Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
+                List<Cart> list = _context.Carts.Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToList();
                 foreach (Cart cart in list)
                 {
                     cart.IsDeleted = true;
                     _context.Carts.Update(cart);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 return new ResponseBase<bool>(true, "Logout successful");
             }
@@ -118,7 +118,7 @@ namespace API.Services.Service
                 {
                     return new ResponseBase<bool>(false, "Invalid email", (int)HttpStatusCode.Conflict);
                 }
-                if (await _context.Users.AnyAsync(u => u.Username == DTO.Username || u.Email == DTO.Email.Trim()))
+                if (_context.Users.Any(u => u.Username == DTO.Username || u.Email == DTO.Email.Trim()))
                 {
                     return new ResponseBase<bool>(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
                 }
@@ -135,8 +135,8 @@ namespace API.Services.Service
                 user.CreatedAt = DateTime.Now;
                 user.UpdateAt = DateTime.Now;
                 user.IsDeleted = false;
-                await _context.Users.AddAsync(user);
-                await _context.SaveChangesAsync();
+                _context.Users.Add(user);
+                _context.SaveChanges();
                 return new ResponseBase<bool>(true, "Register successful");
             }
             catch (Exception ex)
@@ -149,7 +149,7 @@ namespace API.Services.Service
         {
             try
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == DTO.Email.Trim());
+                User? user = _context.Users.FirstOrDefault(u => u.Email == DTO.Email.Trim());
                 if (user == null)
                 {
                     return new ResponseBase<bool>(false, "Not found email", (int)HttpStatusCode.NotFound);
@@ -163,7 +163,7 @@ namespace API.Services.Service
                 user.Password = hashPw;
                 user.UpdateAt = DateTime.Now;
                 _context.Users.Update(user);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return new ResponseBase<bool>(true, "Password changed successful. Please check your email");
             }
             catch (Exception ex)
@@ -172,7 +172,7 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<UserDetailDTO?>> Update(User user, UserUpdateDTO DTO)
+        public ResponseBase<UserDetailDTO?> Update(User user, UserUpdateDTO DTO)
         {
             try
             {
@@ -180,13 +180,13 @@ namespace API.Services.Service
                 user.Phone = DTO.Phone;
                 user.Email = DTO.Email.Trim();
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
-                if (await _context.Users.AnyAsync(u => u.Email == DTO.Email.Trim() && u.UserId != user.UserId))
+                if (_context.Users.Any(u => u.Email == DTO.Email.Trim() && u.UserId != user.UserId))
                 {
                     return new ResponseBase<UserDetailDTO?>(data, "Email has existed", (int)HttpStatusCode.Conflict);
                 }
                 user.UpdateAt = DateTime.Now;
                 _context.Users.Update(user);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return new ResponseBase<UserDetailDTO?>(data, "Update successful");
             }
             catch (Exception ex)
@@ -195,7 +195,7 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<bool>> ChangePassword(User user, ChangePasswordDTO DTO)
+        public ResponseBase<bool> ChangePassword(User user, ChangePasswordDTO DTO)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace API.Services.Service
                 user.Password = UserUtil.HashPassword(DTO.NewPassword);
                 user.UpdateAt = DateTime.Now;
                 _context.Users.Update(user);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return new ResponseBase<bool>(true, "Change successful");
             }
             catch (Exception ex)

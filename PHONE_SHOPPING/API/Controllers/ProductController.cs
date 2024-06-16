@@ -20,9 +20,9 @@ namespace API.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<ResponseBase<Pagination<ProductListDTO>?>> Home(string? name, int? CategoryID, [Required] int page = 1)
+        public ResponseBase<Pagination<ProductListDTO>?> Home(string? name, int? CategoryID, [Required] int page = 1)
         {
-            ResponseBase<Pagination<ProductListDTO>?> result = await _service.List(false, name, CategoryID, page);
+            ResponseBase<Pagination<ProductListDTO>?> result = _service.List(false, name, CategoryID, page);
             Response.StatusCode = result.Code;
             return result;
         }
@@ -30,9 +30,9 @@ namespace API.Controllers
         [HttpGet("List")]
         [Role<Pagination<ProductListDTO>>(RoleEnum.Admin)]
         [Authorize<Pagination<ProductListDTO>>]
-        public async Task<ResponseBase<Pagination<ProductListDTO>?>> Manager(string? name, int? CategoryID, [Required] int page = 1)
+        public ResponseBase<Pagination<ProductListDTO>?> Manager(string? name, int? CategoryID, [Required] int page = 1)
         {
-            ResponseBase<Pagination<ProductListDTO>?> result = await _service.List(true, name, CategoryID, page);
+            ResponseBase<Pagination<ProductListDTO>?> result = _service.List(true, name, CategoryID, page);
             Response.StatusCode = result.Code;
             return result;
         }
@@ -40,9 +40,9 @@ namespace API.Controllers
         [HttpPost]
         [Role<bool>(RoleEnum.Admin)]
         [Authorize<bool>]
-        public async Task<ResponseBase<bool>> Create([Required] ProductCreateUpdateDTO DTO)
+        public ResponseBase<bool> Create([Required] ProductCreateUpdateDTO DTO)
         {
-            ResponseBase<bool> result = await _service.Create(DTO);
+            ResponseBase<bool> result = _service.Create(DTO);
             Response.StatusCode = result.Code;
             return result;
         }
@@ -50,9 +50,9 @@ namespace API.Controllers
         [HttpGet("{ProductID}")]
         [Role<ProductListDTO>(RoleEnum.Admin)]
         [Authorize<ProductListDTO>]
-        public async Task<ResponseBase<ProductListDTO?>> Detail([Required] Guid ProductID)
+        public ResponseBase<ProductListDTO?> Detail([Required] Guid ProductID)
         {
-            ResponseBase<ProductListDTO?> response = await _service.Detail(ProductID);
+            ResponseBase<ProductListDTO?> response = _service.Detail(ProductID);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -60,9 +60,9 @@ namespace API.Controllers
         [HttpPut("{ProductID}")]
         [Role<ProductListDTO>(RoleEnum.Admin)]
         [Authorize<ProductListDTO>]
-        public async Task<ResponseBase<ProductListDTO?>> Update([Required] Guid ProductID, [Required] ProductCreateUpdateDTO DTO)
+        public ResponseBase<ProductListDTO?> Update([Required] Guid ProductID, [Required] ProductCreateUpdateDTO DTO)
         {
-            ResponseBase<ProductListDTO?> response = await _service.Update(ProductID, DTO);
+            ResponseBase<ProductListDTO?> response = _service.Update(ProductID, DTO);
             Response.StatusCode = response.Code;
             return response;
         }
@@ -70,9 +70,9 @@ namespace API.Controllers
         [HttpDelete("{ProductID}")]
         [Role<bool>(RoleEnum.Admin)]
         [Authorize<bool>]
-        public async Task<ResponseBase<bool>> Delete([Required] Guid ProductID)
+        public ResponseBase<bool> Delete([Required] Guid ProductID)
         {
-            ResponseBase<bool> response = await _service.Delete(ProductID);
+            ResponseBase<bool> response = _service.Delete(ProductID);
             Response.StatusCode = response.Code;
             return response;
         }

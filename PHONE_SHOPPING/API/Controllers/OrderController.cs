@@ -44,7 +44,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Authorize<Pagination<OrderListDTO>>]
-        public async Task<ResponseBase<Pagination<OrderListDTO>?>> List(string? status, [Required] int page = 1)
+        public ResponseBase<Pagination<OrderListDTO>?> List(string? status, [Required] int page = 1)
         {
             ResponseBase<Pagination<OrderListDTO>?> response;
             User? user = (User?)HttpContext.Items["user"];
@@ -55,7 +55,7 @@ namespace API.Controllers
             else
             {
                 bool isAdmin = user.RoleId == (int)RoleEnum.Admin;
-                response = await _service.List(isAdmin ? null : user.UserId, status, isAdmin, page);
+                response = _service.List(isAdmin ? null : user.UserId, status, isAdmin, page);
                 Response.StatusCode = response.Code;
             }
             return response;
@@ -63,9 +63,9 @@ namespace API.Controllers
 
         [HttpGet("{OrderID}")]
         [Authorize<OrderDetailDTO>]
-        public async Task<ResponseBase<OrderDetailDTO?>> Detail([Required] Guid OrderID)
+        public ResponseBase<OrderDetailDTO?> Detail([Required] Guid OrderID)
         {
-            ResponseBase<OrderDetailDTO?> response = await _service.Detail(OrderID);
+            ResponseBase<OrderDetailDTO?> response = _service.Detail(OrderID);
             Response.StatusCode = response.Code;
             return response;
         }

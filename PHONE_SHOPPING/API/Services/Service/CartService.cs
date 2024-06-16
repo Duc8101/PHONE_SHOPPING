@@ -16,11 +16,11 @@ namespace API.Services.Service
 
         }
 
-        public async Task<ResponseBase<List<CartListDTO>?>> List(Guid UserID)
+        public ResponseBase<List<CartListDTO>?> List(Guid UserID)
         {
             try
             {
-                List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
+                List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToList();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 return new ResponseBase<List<CartListDTO>?>(data, string.Empty);
             }
@@ -30,16 +30,16 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<bool>> Create(CartCreateDTO DTO, Guid userId)
+        public ResponseBase<bool> Create(CartCreateDTO DTO, Guid userId)
         {
             try
             {
-                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == DTO.ProductId && p.IsDeleted == false);
+                Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == DTO.ProductId && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase<bool>(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
-                Cart? cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
+                Cart? cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
                 {
                     cart = new Cart()
@@ -53,15 +53,15 @@ namespace API.Services.Service
                         UpdateAt = DateTime.Now,
                         IsDeleted = false,
                     };
-                    await _context.Carts.AddAsync(cart);
-                    await _context.SaveChangesAsync();
+                    _context.Carts.Add(cart);
+                    _context.SaveChanges();
                 }
                 else
                 {
                     cart.Quantity++;
                     cart.UpdateAt = DateTime.Now;
                     _context.Carts.Update(cart);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 return new ResponseBase<bool>(true, string.Empty);
             }
@@ -71,21 +71,21 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<bool>> Delete(Guid productId, Guid userId)
+        public ResponseBase<bool> Delete(Guid productId, Guid userId)
         {
             try
             {
-                User? user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == userId);
+                User? user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.UserId == userId);
                 if (user == null)
                 {
                     return new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == productId && p.IsDeleted == false);
+                Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == productId && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase<bool>(false, "Product not exist", (int)HttpStatusCode.NotFound);
                 }
-                Cart? cart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId && c.IsCheckout == false && c.IsDeleted == false);
+                Cart? cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
                 {
                     return new ResponseBase<bool>(false, "Cart not exist", (int)HttpStatusCode.NotFound);
@@ -102,7 +102,7 @@ namespace API.Services.Service
                         cart.UpdateAt = DateTime.Now;
                     }
                     _context.Carts.Update(cart);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 return new ResponseBase<bool>(true, string.Empty);
             }

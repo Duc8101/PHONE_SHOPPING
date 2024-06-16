@@ -21,24 +21,24 @@ namespace API.Controllers
         }
 
         [HttpGet("{userId}")]
-        public async Task<ResponseBase<UserDetailDTO?>> Detail([Required] Guid userId)
+        public ResponseBase<UserDetailDTO?> Detail([Required] Guid userId)
         {
-            ResponseBase<UserDetailDTO?> response = await _service.Detail(userId);
+            ResponseBase<UserDetailDTO?> response = _service.Detail(userId);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpPost]
-        public async Task<ResponseBase<UserDetailDTO?>> Login([Required] LoginDTO DTO)
+        public ResponseBase<UserDetailDTO?> Login([Required] LoginDTO DTO)
         {
-            ResponseBase<UserDetailDTO?> response = await _service.Login(DTO);
+            ResponseBase<UserDetailDTO?> response = _service.Login(DTO);
             Response.StatusCode = response.Code;
             return response;
         }
 
         [HttpGet]
         [Authorize<bool>]
-        public async Task<ResponseBase<bool>> Logout()
+        public ResponseBase<bool> Logout()
         {
             ResponseBase<bool> response;
             User? user = (User?)HttpContext.Items["user"];
@@ -48,7 +48,7 @@ namespace API.Controllers
             }
             else
             {
-                response = await _service.Logout(user.UserId);
+                response = _service.Logout(user.UserId);
             }
             Response.StatusCode = response.Code;
             return response;
@@ -73,7 +73,7 @@ namespace API.Controllers
         [HttpPut]
         [Role<UserDetailDTO>(RoleEnum.Customer)]
         [Authorize<UserDetailDTO>]
-        public async Task<ResponseBase<UserDetailDTO?>> Update([Required] UserUpdateDTO DTO)
+        public ResponseBase<UserDetailDTO?> Update([Required] UserUpdateDTO DTO)
         {
             User? user = (User?) HttpContext.Items["user"];
             ResponseBase<UserDetailDTO?> response;
@@ -83,7 +83,7 @@ namespace API.Controllers
             }
             else
             {
-                response = await _service.Update(user, DTO);
+                response = _service.Update(user, DTO);
             }   
             Response.StatusCode = response.Code;
             return response;
@@ -92,7 +92,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Authorize<bool>]
-        public async Task<ResponseBase<bool>> ChangePassword([Required] ChangePasswordDTO DTO)
+        public ResponseBase<bool> ChangePassword([Required] ChangePasswordDTO DTO)
         {
             User? user = (User?)HttpContext.Items["user"];
             ResponseBase<bool> response;
@@ -102,7 +102,7 @@ namespace API.Controllers
             }
             else
             {
-                 response = await _service.ChangePassword(user, DTO);
+                 response = _service.ChangePassword(user, DTO);
             }            
             Response.StatusCode = response.Code;
             return response;

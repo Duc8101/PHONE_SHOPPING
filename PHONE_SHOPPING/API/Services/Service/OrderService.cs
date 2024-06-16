@@ -26,7 +26,7 @@ namespace API.Services.Service
         {
             try
             {
-                List<Cart> list = await _context.Carts.Include(c => c.Product).Where(c => c.UserId == userId && c.IsCheckout == false && c.IsDeleted == false).ToListAsync();
+                List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == userId && c.IsCheckout == false && c.IsDeleted == false).ToList();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 if (DTO.Address == null || DTO.Address.Trim().Length == 0)
                 {
@@ -34,7 +34,7 @@ namespace API.Services.Service
                 }
                 foreach (CartListDTO item in data)
                 {
-                    Product? product = await _context.Products.Include(p => p.Category).SingleOrDefaultAsync(p => p.ProductId == item.ProductId && p.IsDeleted == false);
+                    Product? product = _context.Products.Include(p => p.Category).SingleOrDefault(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                     if (product == null)
                     {
                         return new ResponseBase<List<CartListDTO>?>(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
@@ -45,7 +45,7 @@ namespace API.Services.Service
                     }
                 }
                 string body = UserUtil.BodyEmailForAdminReceiveOrder();
-                List<string> emails = await _context.Users.Where(u => u.RoleId == (int)RoleEnum.Admin).Select(u => u.Email).ToListAsync();
+                List<string> emails = _context.Users.Where(u => u.RoleId == (int)RoleEnum.Admin).Select(u => u.Email).ToList();
                 if (emails.Count > 0)
                 {
                     foreach (string email in emails)
@@ -62,8 +62,8 @@ namespace API.Services.Service
                 order.IsDeleted = false;
                 order.Note = null;
                 order.UserId = userId;
-                await _context.Orders.AddAsync(order);
-                await _context.SaveChangesAsync();
+                _context.Orders.Add(order);
+                _context.SaveChanges();
                 foreach (CartListDTO item in data)
                 {
                     OrderDetail detail = new OrderDetail()
@@ -75,14 +75,14 @@ namespace API.Services.Service
                         UpdateAt = DateTime.Now,
                         IsDeleted = false
                     };
-                    await _context.OrderDetails.AddAsync(detail);
-                    await _context.SaveChangesAsync();
+                    _context.OrderDetails.Add(detail);
+                    _context.SaveChanges();
                 }
                 foreach (Cart cart in list)
                 {
                     cart.IsCheckout = true;
                     _context.Carts.Update(cart);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 return new ResponseBase<List<CartListDTO>?>(data, "Check out successful");
             }
@@ -106,15 +106,15 @@ namespace API.Services.Service
             return query;
         }
 
-        public async Task<ResponseBase<Pagination<OrderListDTO>?>> List(Guid? UserID, string? status, bool isAdmin, int page)
+        public ResponseBase<Pagination<OrderListDTO>?> List(Guid? UserID, string? status, bool isAdmin, int page)
         {
             try
             {
                 IQueryable<Order> query = getQuery(UserID, status);
-                List<Order> list = await query.Skip(PageSizeConst.MAX_ORDER_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_ORDER_IN_PAGE)
-                    .ToListAsync();
+                List<Order> list = query.Skip(PageSizeConst.MAX_ORDER_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_ORDER_IN_PAGE)
+                    .ToList();
                 List<OrderListDTO> result = _mapper.Map<List<OrderListDTO>>(list);
-                int count = await query.CountAsync();
+                int count = query.Count();
                 int number = (int)Math.Ceiling((double)count / PageSizeConst.MAX_ORDER_IN_PAGE);
                 int prePage = page - 1;
                 int nextPage = page + 1;
@@ -164,11 +164,12 @@ namespace API.Services.Service
             }
         }
 
-        public async Task<ResponseBase<OrderDetailDTO?>> Detail(Guid OrderID)
+        public ResponseBase<OrderDetailDTO?> Detail(Guid OrderID)
         {
             try
             {
-                Order? order = await _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).FirstOrDefaultAsync(o => o.OrderId == OrderID);
+                Order? order = _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product)
+                    .ThenInclude(o => o.Category).FirstOrDefault(o => o.OrderId == OrderID);
                 if (order == null)
                 {
                     return new ResponseBase<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
@@ -198,7 +199,8 @@ namespace API.Services.Service
         {
             try
             {
-                Order? order = await _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product).ThenInclude(o => o.Category).FirstOrDefaultAsync(o => o.OrderId == OrderID);
+                Order? order = _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product)
+                    .ThenInclude(o => o.Category).FirstOrDefault(o => o.OrderId == OrderID);
                 if (order == null)
                 {
                     return new ResponseBase<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
@@ -230,7 +232,7 @@ namespace API.Services.Service
                     order.UpdateAt = DateTime.Now;
                     order.Note = DTO.Note == null || DTO.Note.Trim().Length == 0 ? null : DTO.Note.Trim();
                     _context.Orders.Update(order);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                     data.Status = order.Status;
                     data.Note = order.Note;
                     return new ResponseBase<OrderDetailDTO?>(data, "Update successful");
@@ -243,7 +245,7 @@ namespace API.Services.Service
                     data.Note = order.Note;
                     foreach (OrderDetail item in list)
                     {
-                        Product? product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == item.ProductId && p.IsDeleted == false);
+                        Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                         if (product == null)
                         {
                             return new ResponseBase<OrderDetailDTO?>(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.Conflict);
@@ -259,11 +261,11 @@ namespace API.Services.Service
                     {
                         item.Product.Quantity = item.Product.Quantity - item.Quantity;
                         item.Product.UpdateAt = DateTime.Now;
-                        await _context.SaveChangesAsync();
+                        _context.SaveChanges();
                     }
                     order.UpdateAt = DateTime.Now;
                     _context.Orders.Update(order);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                     return new ResponseBase<OrderDetailDTO?>(data, "Update successful");
                 }
                 return new ResponseBase<OrderDetailDTO?>(data, "Status update must be " + OrderConst.STATUS_APPROVED + "," + OrderConst.STATUS_REJECTED + " or " + OrderConst.STATUS_PENDING, (int)HttpStatusCode.Conflict);
