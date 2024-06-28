@@ -2,7 +2,7 @@
 using Common.DTO.CategoryDTO;
 using Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services.IService;
+using MVC.Services.ManagerCategory;
 using MVC.Token;
 using System.Net;
 

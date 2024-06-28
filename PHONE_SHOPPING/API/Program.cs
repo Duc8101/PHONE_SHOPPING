@@ -1,7 +1,10 @@
 using API.Middleware;
 using API.Providers;
-using API.Services.IService;
-using API.Services.Service;
+using API.Services.Carts;
+using API.Services.Categories;
+using API.Services.Orders;
+using API.Services.Products;
+using API.Services.Users;
 using AutoMapper;
 using DataAccess.DBContext;
 using Microsoft.EntityFrameworkCore;

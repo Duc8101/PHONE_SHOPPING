@@ -1,5 +1,15 @@
-using MVC.Services.IService;
-using MVC.Services.Service;
+using MVC.Services.Cart;
+using MVC.Services.ChangePassword;
+using MVC.Services.ForgotPassword;
+using MVC.Services.Home;
+using MVC.Services.Login;
+using MVC.Services.Logout;
+using MVC.Services.ManagerCategory;
+using MVC.Services.ManagerOrder;
+using MVC.Services.ManagerProduct;
+using MVC.Services.MyOrder;
+using MVC.Services.Profile;
+using MVC.Services.Register;
 
 namespace MVC
 {

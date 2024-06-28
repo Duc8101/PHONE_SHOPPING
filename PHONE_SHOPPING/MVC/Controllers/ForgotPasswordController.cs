@@ -1,7 +1,7 @@
 ﻿using Common.Base;
 using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services.IService;
+using MVC.Services.ForgotPassword;
 using System.Net;
 
 namespace MVC.Controllers

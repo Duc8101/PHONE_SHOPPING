@@ -3,7 +3,7 @@ using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
 using Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services.IService;
+using MVC.Services.MyOrder;
 using MVC.Token;
 using System.Net;
 

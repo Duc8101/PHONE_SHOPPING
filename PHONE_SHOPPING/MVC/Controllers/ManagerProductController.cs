@@ -2,7 +2,7 @@
 using Common.DTO.CategoryDTO;
 using Common.DTO.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Services.IService;
+using MVC.Services.ManagerProduct;
 using MVC.Token;
 using System.Net;
 
