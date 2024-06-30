@@ -8,7 +8,7 @@ using System.Net;
 
 namespace MVC.Controllers
 {
-    [ResponseCache(NoStore = true)]
+    //[ResponseCache(NoStore = true)]
     public class CartController : BaseController
     {
         private readonly ICartService _service;
@@ -19,10 +19,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index()
         {
-            if (StaticToken.Token == null)
+           /* if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             ResponseBase<List<CartListDTO>?> response = await _service.Index();
             if (response.Data == null)
             {
@@ -32,10 +32,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Create(Guid? ProductID)
         {
-            if (StaticToken.Token == null)
+            /*if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             if (ProductID == null)
             {
                 return Redirect("/Home");
@@ -44,7 +44,7 @@ namespace MVC.Controllers
             {
                 ProductId = ProductID.Value,
             };
-            ResponseBase<bool> response = await _service.Create(DTO);
+            ResponseBase<bool?> response = await _service.Create(DTO);
             if (response.Data == true)
             {
                 return Redirect("/Cart");
@@ -54,15 +54,15 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Remove(Guid? ProductID)
         {
-            if (StaticToken.Token == null)
+            /*if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             if (ProductID == null)
             {
                 return Redirect("/Home");
             }
-            ResponseBase<bool> response = await _service.Remove(ProductID.Value);
+            ResponseBase<bool?> response = await _service.Remove(ProductID.Value);
             if (response.Data == true)
             {
                 return Redirect("/Cart");
@@ -71,20 +71,20 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Checkout()
         {
-            if (StaticToken.Token == null)
+           /* if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             return await Index();
         }
 
         [HttpPost]
         public async Task<ActionResult> Checkout(OrderCreateDTO DTO)
         {
-            if (StaticToken.Token == null)
+            /*if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             ViewData["address"] = DTO.Address;
             ResponseBase<List<CartListDTO>?> response = await _service.Checkout(DTO);
             if (response.Data == null)

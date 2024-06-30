@@ -17,17 +17,17 @@ namespace API.Services.Categories
 
         }
 
-        public ResponseBase<List<CategoryListDTO>?> ListAll()
+        public ResponseBase ListAll()
         {
             try
             {
                 List<Category> list = _context.Categories.ToList();
                 List<CategoryListDTO> result = _mapper.Map<List<CategoryListDTO>>(list);
-                return new ResponseBase<List<CategoryListDTO>?>(result, string.Empty);
+                return new ResponseBase(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<List<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -40,7 +40,7 @@ namespace API.Services.Categories
             }
             return query;
         }
-        public ResponseBase<Pagination<CategoryListDTO>?> ListPaged(string? name, int page)
+        public ResponseBase ListPaged(string? name, int page)
         {
             try
             {
@@ -77,20 +77,20 @@ namespace API.Services.Categories
                     NumberPage = number,
                     Results = result
                 };
-                return new ResponseBase<Pagination<CategoryListDTO>?>(data, string.Empty);
+                return new ResponseBase(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Pagination<CategoryListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public ResponseBase<bool> Create(CategoryCreateUpdateDTO DTO)
+        public ResponseBase Create(CategoryCreateUpdateDTO DTO)
         {
             try
             {
                 if (_context.Categories.Any(c => c.Name == DTO.Name.Trim()))
                 {
-                    return new ResponseBase<bool>(false, "Category existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(false, "Category existed", (int)HttpStatusCode.Conflict);
                 }
                 Category category = new Category()
                 {
@@ -101,53 +101,53 @@ namespace API.Services.Categories
                 };
                 _context.Categories.Add(category);
                 _context.SaveChanges();
-                return new ResponseBase<bool>(true, "Create successful");
+                return new ResponseBase(true, "Create successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public ResponseBase<CategoryListDTO?> Detail(int ID)
+        public ResponseBase Detail(int ID)
         {
             try
             {
                 Category? category = _context.Categories.Find(ID);
                 if (category == null)
                 {
-                    return new ResponseBase<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase("Not found category", (int)HttpStatusCode.NotFound);
                 }
                 CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
-                return new ResponseBase<CategoryListDTO?>(data, string.Empty);
+                return new ResponseBase(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public ResponseBase<CategoryListDTO?> Update(int ID, CategoryCreateUpdateDTO DTO)
+        public ResponseBase Update(int ID, CategoryCreateUpdateDTO DTO)
         {
             try
             {
                 Category? category = _context.Categories.Find(ID);
                 if (category == null)
                 {
-                    return new ResponseBase<CategoryListDTO?>(null, "Not found category", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase("Not found category", (int)HttpStatusCode.NotFound);
                 }
                 category.Name = DTO.Name.Trim();
                 CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
                 if (_context.Categories.Any(c => c.Name == DTO.Name.Trim() && c.Id != ID))
                 {
-                    return new ResponseBase<CategoryListDTO?>(data, "Category existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(data, "Category existed", (int)HttpStatusCode.Conflict);
                 }
                 category.UpdateAt = DateTime.Now;
                 _context.Categories.Update(category);
                 _context.SaveChanges();
-                return new ResponseBase<CategoryListDTO?>(data, "Update successful");
+                return new ResponseBase(data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<CategoryListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 

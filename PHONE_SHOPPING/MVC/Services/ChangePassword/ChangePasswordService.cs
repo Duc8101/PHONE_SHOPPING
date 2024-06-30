@@ -10,10 +10,10 @@ namespace MVC.Services.ChangePassword
         {
         }
 
-        public async Task<ResponseBase<bool>> Index(ChangePasswordDTO DTO)
+        public async Task<ResponseBase<bool?>> Index(ChangePasswordDTO DTO)
         {
             string URL = "https://localhost:7178/User/ChangePassword";
-            return await Put<ChangePasswordDTO, bool>(URL, DTO);
+            return await Put<ChangePasswordDTO, bool?>(URL, DTO);
         }
     }
 }

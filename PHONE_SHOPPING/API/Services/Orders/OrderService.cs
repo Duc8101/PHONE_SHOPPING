@@ -22,7 +22,7 @@ namespace API.Services.Orders
 
         }
 
-        public async Task<ResponseBase<List<CartListDTO>?>> Create(OrderCreateDTO DTO, Guid userId)
+        public async Task<ResponseBase> Create(OrderCreateDTO DTO, Guid userId)
         {
             try
             {
@@ -30,18 +30,18 @@ namespace API.Services.Orders
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 if (DTO.Address == null || DTO.Address.Trim().Length == 0)
                 {
-                    return new ResponseBase<List<CartListDTO>?>(data, "You have to input address", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(data, "You have to input address", (int)HttpStatusCode.Conflict);
                 }
                 foreach (CartListDTO item in data)
                 {
                     Product? product = _context.Products.Include(p => p.Category).SingleOrDefault(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                     if (product == null)
                     {
-                        return new ResponseBase<List<CartListDTO>?>(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
+                        return new ResponseBase(data, "Product " + item.ProductName + " not exist!!!", (int)HttpStatusCode.NotFound);
                     }
                     if (product.Quantity < item.Quantity)
                     {
-                        return new ResponseBase<List<CartListDTO>?>(data, "Product " + item.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
+                        return new ResponseBase(data, "Product " + item.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
                     }
                 }
                 string body = UserUtil.BodyEmailForAdminReceiveOrder();
@@ -84,11 +84,11 @@ namespace API.Services.Orders
                     _context.Carts.Update(cart);
                     _context.SaveChanges();
                 }
-                return new ResponseBase<List<CartListDTO>?>(data, "Check out successful");
+                return new ResponseBase(data, "Check out successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<List<CartListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
         private IQueryable<Order> getQuery(Guid? UserID, string? status)
@@ -106,7 +106,7 @@ namespace API.Services.Orders
             return query;
         }
 
-        public ResponseBase<Pagination<OrderListDTO>?> List(Guid? UserID, string? status, bool isAdmin, int page)
+        public ResponseBase List(Guid? UserID, string? status, bool isAdmin, int page)
         {
             try
             {
@@ -156,46 +156,46 @@ namespace API.Services.Orders
                     NEXT_URL = nextURL,
                     PRE_URL = preURL,
                 };
-                return new ResponseBase<Pagination<OrderListDTO>?>(data, string.Empty);
+                return new ResponseBase(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Pagination<OrderListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public ResponseBase<OrderDetailDTO?> Detail(Guid OrderID)
+        public ResponseBase Detail(Guid OrderID, Guid? userId)
         {
             try
             {
-                Order? order = _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product)
-                    .ThenInclude(o => o.Category).FirstOrDefault(o => o.OrderId == OrderID);
+                IQueryable<Order> query = _context.Orders.Include(o => o.User);
+                Order? order;
+                if (userId == null)
+                {
+                    order = query.SingleOrDefault(o => o.OrderId == OrderID);
+                }
+                else
+                {
+                    order = query.SingleOrDefault(o => o.OrderId == OrderID && o.UserId == userId);
+                }
                 if (order == null)
                 {
-                    return new ResponseBase<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase("Not found order", (int)HttpStatusCode.NotFound);
                 }
                 List<OrderDetail> list = order.OrderDetails.ToList();
                 List<DetailDTO> DTOs = _mapper.Map<List<DetailDTO>>(list);
-                OrderDetailDTO data = new OrderDetailDTO()
-                {
-                    OrderId = OrderID,
-                    UserId = order.UserId,
-                    Username = order.User.Username,
-                    Status = order.Status,
-                    Address = order.Address,
-                    Note = order.Note,
-                    OrderDate = order.CreatedAt,
-                    DetailDTOs = DTOs,
-                };
-                return new ResponseBase<OrderDetailDTO?>(data, string.Empty);
+                OrderDetailDTO data = _mapper.Map<OrderDetailDTO>(order);
+                data.OrderId = OrderID;
+                data.DetailDTOs = DTOs;
+                return new ResponseBase(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseBase<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO)
+        public async Task<ResponseBase> Update(Guid OrderID, OrderUpdateDTO DTO)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace API.Services.Orders
                     .ThenInclude(o => o.Category).FirstOrDefault(o => o.OrderId == OrderID);
                 if (order == null)
                 {
-                    return new ResponseBase<OrderDetailDTO?>(null, "Not found order", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase("Not found order", (int)HttpStatusCode.NotFound);
                 }
                 List<OrderDetail> list = order.OrderDetails.ToList();
                 List<DetailDTO> DTOs = _mapper.Map<List<DetailDTO>>(list);
@@ -220,13 +220,13 @@ namespace API.Services.Orders
                 };
                 if (order.Status == OrderConst.STATUS_REJECTED || order.Status == OrderConst.STATUS_APPROVED)
                 {
-                    return new ResponseBase<OrderDetailDTO?>(data, "Order was approved or rejected", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(data, "Order was approved or rejected", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Status.Trim() == OrderConst.STATUS_REJECTED || DTO.Status.Trim() == OrderConst.STATUS_PENDING)
                 {
                     if (DTO.Status.Trim() == OrderConst.STATUS_REJECTED && (DTO.Note == null || DTO.Note.Trim().Length == 0))
                     {
-                        return new ResponseBase<OrderDetailDTO?>(data, "When status is " + OrderConst.STATUS_REJECTED + ", you have to note the reason why rejected", (int)HttpStatusCode.Conflict);
+                        return new ResponseBase(data, "When status is " + OrderConst.STATUS_REJECTED + ", you have to note the reason why rejected", (int)HttpStatusCode.Conflict);
                     }
                     order.Status = DTO.Status.Trim();
                     order.UpdateAt = DateTime.Now;
@@ -235,7 +235,7 @@ namespace API.Services.Orders
                     _context.SaveChanges();
                     data.Status = order.Status;
                     data.Note = order.Note;
-                    return new ResponseBase<OrderDetailDTO?>(data, "Update successful");
+                    return new ResponseBase(data, "Update successful");
                 }
                 if (DTO.Status.Trim() == OrderConst.STATUS_APPROVED)
                 {
@@ -248,11 +248,11 @@ namespace API.Services.Orders
                         Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == item.ProductId && p.IsDeleted == false);
                         if (product == null)
                         {
-                            return new ResponseBase<OrderDetailDTO?>(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.Conflict);
+                            return new ResponseBase(data, "Product " + item.Product.ProductName + " not exist!!!", (int)HttpStatusCode.Conflict);
                         }
                         if (product.Quantity < item.Quantity)
                         {
-                            return new ResponseBase<OrderDetailDTO?>(data, "Product " + item.Product.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
+                            return new ResponseBase(data, "Product " + item.Product.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
                         }
                     }
                     string body = UserUtil.BodyEmailForApproveOrder(list);
@@ -266,13 +266,13 @@ namespace API.Services.Orders
                     order.UpdateAt = DateTime.Now;
                     _context.Orders.Update(order);
                     _context.SaveChanges();
-                    return new ResponseBase<OrderDetailDTO?>(data, "Update successful");
+                    return new ResponseBase(data, "Update successful");
                 }
-                return new ResponseBase<OrderDetailDTO?>(data, "Status update must be " + OrderConst.STATUS_APPROVED + "," + OrderConst.STATUS_REJECTED + " or " + OrderConst.STATUS_PENDING, (int)HttpStatusCode.Conflict);
+                return new ResponseBase(data, "Status update must be " + OrderConst.STATUS_APPROVED + "," + OrderConst.STATUS_REJECTED + " or " + OrderConst.STATUS_PENDING, (int)HttpStatusCode.Conflict);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<OrderDetailDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

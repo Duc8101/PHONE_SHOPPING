@@ -4,6 +4,6 @@ namespace MVC.Services.Logout
 {
     public interface ILogoutService
     {
-        Task<ResponseBase<bool>> Index();
+        Task<ResponseBase<bool?>> Index();
     }
 }

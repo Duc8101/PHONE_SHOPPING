@@ -6,12 +6,12 @@ namespace API.Services.Users
 {
     public interface IUserService
     {
-        ResponseBase<UserDetailDTO?> Detail(Guid userId);
-        ResponseBase<UserDetailDTO?> Login(LoginDTO DTO);
-        Task<ResponseBase<bool>> Create(UserCreateDTO DTO);
-        Task<ResponseBase<bool>> ForgotPassword(ForgotPasswordDTO DTO);
-        ResponseBase<UserDetailDTO?> Update(User user, UserUpdateDTO DTO);
-        ResponseBase<bool> ChangePassword(User user, ChangePasswordDTO DTO);
-        ResponseBase<bool> Logout(Guid UserID);
+        ResponseBase Detail(Guid userId);
+        ResponseBase Login(LoginDTO DTO);
+        Task<ResponseBase> Create(UserCreateDTO DTO);
+        Task<ResponseBase> ForgotPassword(ForgotPasswordDTO DTO);
+        ResponseBase Update(User user, UserUpdateDTO DTO);
+        ResponseBase ChangePassword(User user, ChangePasswordDTO DTO);
+        ResponseBase Logout(Guid UserID);
     }
 }

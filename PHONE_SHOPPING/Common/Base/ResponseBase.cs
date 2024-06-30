@@ -31,6 +31,23 @@ namespace Common.Base
             Message = message;
             Code = code;
         }
+    }
 
+    public class ResponseBase : ResponseBase<object>
+    {
+        public ResponseBase(string message, int code) : base(message, code)
+        {
+            
+        }
+
+        public ResponseBase(object data, string message, int code) : base(data, message, code)
+        {
+
+        }
+
+        public ResponseBase(object data, string message) : base(data, message)
+        {
+         
+        }
     }
 }

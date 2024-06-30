@@ -5,6 +5,6 @@ namespace MVC.Services.ChangePassword
 {
     public interface IChangePasswordService
     {
-        Task<ResponseBase<bool>> Index(ChangePasswordDTO DTO);
+        Task<ResponseBase<bool?>> Index(ChangePasswordDTO DTO);
     }
 }

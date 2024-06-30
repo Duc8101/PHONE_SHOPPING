@@ -10,7 +10,7 @@ using System.Net;
 
 namespace MVC.Controllers
 {
-    [ResponseCache(NoStore = true)]
+    //[ResponseCache(NoStore = true)]
     public class ManagerOrderController : BaseController
     {
         private readonly IManagerOrderService _service;
@@ -21,10 +21,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index(string? status, int? page)
         {
-            if (StaticToken.Token == null)
+            /*if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             ResponseBase<Dictionary<string, object>?> response = await _service.Index(status, page);
             if (response.Data == null)
             {
@@ -34,10 +34,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> View(Guid? id)
         {
-            if (StaticToken.Token == null)
+            /*if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             if (id == null)
             {
                 return Redirect("/ManagerOrder");
@@ -55,10 +55,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Detail(Guid? id)
         {
-            if (StaticToken.Token == null)
+           /* if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             if (id == null)
             {
                 return Redirect("/ManagerOrder");
@@ -76,10 +76,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Update(Guid? id)
         {
-            if (StaticToken.Token == null)
+/*            if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             if (id == null)
             {
                 return Redirect("/ManagerOrder");
@@ -103,10 +103,10 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, OrderUpdateDTO DTO)
         {
-            if (StaticToken.Token == null)
+/*            if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             ResponseBase<OrderDetailDTO?> response = await _service.Update(id, DTO);
             if (response.Data == null)
             {

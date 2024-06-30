@@ -26,7 +26,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(ForgotPasswordDTO DTO)
         {
-            ResponseBase<bool> response = await _service.ForgotPassword(DTO);
+            ResponseBase<bool?> response = await _service.ForgotPassword(DTO);
             if (response.Code == (int)HttpStatusCode.NotFound)
             {
                 ViewData["error"] = response.Message;

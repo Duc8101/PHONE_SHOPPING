@@ -5,8 +5,8 @@ namespace API.Services.Carts
 {
     public interface ICartService
     {
-        ResponseBase<List<CartListDTO>?> List(Guid UserID);
-        ResponseBase<bool> Create(CartCreateDTO DTO, Guid userId);
-        ResponseBase<bool> Delete(Guid productId, Guid userId);
+        ResponseBase List(Guid UserID);
+        ResponseBase Create(CartCreateDTO DTO, Guid userId);
+        ResponseBase Delete(Guid productId, Guid userId);
     }
 }

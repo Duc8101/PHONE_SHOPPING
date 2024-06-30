@@ -1,15 +1,14 @@
 ﻿using Common.Base;
 using Common.DTO.ProductDTO;
-using Common.Pagination;
 
 namespace API.Services.Products
 {
     public interface IProductService
     {
-        ResponseBase<Pagination<ProductListDTO>?> List(bool isAdmin, string? name, int? CategoryID, int page);
-        ResponseBase<bool> Create(ProductCreateUpdateDTO DTO);
-        ResponseBase<ProductListDTO?> Detail(Guid ProductID);
-        ResponseBase<ProductListDTO?> Update(Guid ProductID, ProductCreateUpdateDTO DTO);
-        ResponseBase<bool> Delete(Guid ProductID);
+        ResponseBase List(bool isAdmin, string? name, int? CategoryID, int page);
+        ResponseBase Create(ProductCreateUpdateDTO DTO);
+        ResponseBase Detail(Guid ProductID);
+        ResponseBase Update(Guid ProductID, ProductCreateUpdateDTO DTO);
+        ResponseBase Delete(Guid ProductID);
     }
 }

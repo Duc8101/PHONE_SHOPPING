@@ -12,6 +12,8 @@ namespace API.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
+    [Role(RoleEnum.Customer)]
+    [Authorize]
     public class CartController : ControllerBase
     {
         private readonly ICartService _service;
@@ -21,15 +23,13 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Role<List<CartListDTO>>(RoleEnum.Customer)]
-        [Authorize<List<CartListDTO>>]
-        public ResponseBase<List<CartListDTO>?> List()
+        public ResponseBase List()
         {
             User? user = (User?)HttpContext.Items["user"];
-            ResponseBase<List<CartListDTO>?> response;
+            ResponseBase response;
             if (user == null)
             {
-                response = new ResponseBase<List<CartListDTO>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
             }
             else
             {
@@ -40,16 +40,13 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Role<bool>(RoleEnum.Customer)]
-        [Authorize<bool>]
-
-        public ResponseBase<bool> Create([Required] CartCreateDTO DTO)
+        public ResponseBase Create([Required] CartCreateDTO DTO)
         {
             User? user = (User?)HttpContext.Items["user"];
-            ResponseBase<bool> response;
+            ResponseBase response;
             if (user == null)
             {
-                response = new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                response = new ResponseBase(false, "Not found user", (int)HttpStatusCode.NotFound);
             }
             else
             {
@@ -60,16 +57,13 @@ namespace API.Controllers
         }
 
         [HttpDelete]
-        [Role<bool>(RoleEnum.Customer)]
-        [Authorize<bool>]
-
-        public ResponseBase<bool> Delete([Required] Guid productId)
+        public ResponseBase Delete([Required] Guid productId)
         {
             User? user = (User?)HttpContext.Items["user"];
-            ResponseBase<bool> response;
+            ResponseBase response;
             if (user == null)
             {
-                response = new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                response = new ResponseBase(false, "Not found user", (int)HttpStatusCode.NotFound);
             }
             else
             {

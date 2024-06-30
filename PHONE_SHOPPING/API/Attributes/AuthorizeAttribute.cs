@@ -6,14 +6,14 @@ using System.Net;
 
 namespace API.Attributes
 {
-    public class AuthorizeAttribute<T> : Attribute, IAuthorizationFilter
+    public class AuthorizeAttribute : Attribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             User? user = (User?)context.HttpContext.Items["user"];
             if (user == null)
             {
-                ResponseBase<T> response = new ResponseBase<T>("Unauthorized", (int)HttpStatusCode.Unauthorized);
+                ResponseBase response = new ResponseBase("Unauthorized", (int)HttpStatusCode.Unauthorized);
                 context.Result = new JsonResult(response)
                 {
                     StatusCode = (int)HttpStatusCode.Unauthorized,

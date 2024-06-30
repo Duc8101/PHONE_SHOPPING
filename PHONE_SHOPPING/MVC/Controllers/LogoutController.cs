@@ -18,7 +18,7 @@ namespace MVC.Controllers
         {
             HttpContext.Session.Clear();
             Response.Cookies.Delete("UserID");
-            ResponseBase<bool> response = await _service.Index();
+            ResponseBase<bool?> response = await _service.Index();
             if (response.Code == (int)HttpStatusCode.OK)
             {
                 StaticToken.Token = null;

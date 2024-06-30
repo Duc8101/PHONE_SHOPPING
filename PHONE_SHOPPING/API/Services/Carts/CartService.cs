@@ -16,28 +16,28 @@ namespace API.Services.Carts
 
         }
 
-        public ResponseBase<List<CartListDTO>?> List(Guid UserID)
+        public ResponseBase List(Guid UserID)
         {
             try
             {
                 List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToList();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
-                return new ResponseBase<List<CartListDTO>?>(data, string.Empty);
+                return new ResponseBase(data, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<List<CartListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public ResponseBase<bool> Create(CartCreateDTO DTO, Guid userId)
+        public ResponseBase Create(CartCreateDTO DTO, Guid userId)
         {
             try
             {
                 Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == DTO.ProductId && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseBase<bool>(false, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 Cart? cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
@@ -63,32 +63,32 @@ namespace API.Services.Carts
                     _context.Carts.Update(cart);
                     _context.SaveChanges();
                 }
-                return new ResponseBase<bool>(true, string.Empty);
+                return new ResponseBase(true, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public ResponseBase<bool> Delete(Guid productId, Guid userId)
+        public ResponseBase Delete(Guid productId, Guid userId)
         {
             try
             {
                 User? user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.UserId == userId);
                 if (user == null)
                 {
-                    return new ResponseBase<bool>(false, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase(false, "Not found user", (int)HttpStatusCode.NotFound);
                 }
                 Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == productId && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseBase<bool>(false, "Product not exist", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase(false, "Product not exist", (int)HttpStatusCode.NotFound);
                 }
                 Cart? cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId && c.IsCheckout == false && c.IsDeleted == false);
                 if (cart == null)
                 {
-                    return new ResponseBase<bool>(false, "Cart not exist", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase(false, "Cart not exist", (int)HttpStatusCode.NotFound);
                 }
                 else
                 {
@@ -104,11 +104,11 @@ namespace API.Services.Carts
                     _context.Carts.Update(cart);
                     _context.SaveChanges();
                 }
-                return new ResponseBase<bool>(true, string.Empty);
+                return new ResponseBase(true, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

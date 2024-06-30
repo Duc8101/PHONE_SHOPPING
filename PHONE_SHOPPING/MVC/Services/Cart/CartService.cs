@@ -11,10 +11,10 @@ namespace MVC.Services.Cart
         {
         }
 
-        public async Task<ResponseBase<bool>> Create(CartCreateDTO DTO)
+        public async Task<ResponseBase<bool?>> Create(CartCreateDTO DTO)
         {
             string URL = "https://localhost:7178/Cart/Create";
-            return await Post<CartCreateDTO, bool>(URL, DTO);
+            return await Post<CartCreateDTO, bool?>(URL, DTO);
         }
 
         public async Task<ResponseBase<List<CartListDTO>?>> Index()
@@ -23,10 +23,10 @@ namespace MVC.Services.Cart
             return await Get<List<CartListDTO>?>(URL);
         }
 
-        public async Task<ResponseBase<bool>> Remove(Guid productId)
+        public async Task<ResponseBase<bool?>> Remove(Guid productId)
         {
             string URL = "https://localhost:7178/Cart/Delete";
-            return await Delete<bool>(URL, new KeyValuePair<string, object>("productId", productId));
+            return await Delete<bool?>(URL, new KeyValuePair<string, object>("productId", productId));
         }
 
         public async Task<ResponseBase<List<CartListDTO>?>> Checkout(OrderCreateDTO DTO)

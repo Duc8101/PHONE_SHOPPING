@@ -7,7 +7,7 @@ using System.Net;
 
 namespace MVC.Controllers
 {
-    [ResponseCache(NoStore = true)]
+    //[ResponseCache(NoStore = true)]
     public class ChangePasswordController : BaseController
     {
         private readonly IChangePasswordService _service;
@@ -18,17 +18,17 @@ namespace MVC.Controllers
 
         public ActionResult Index()
         {
-            if (StaticToken.Token == null)
+            /*if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
-            }
+            }*/
             return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(ChangePasswordDTO DTO)
         {
-            ResponseBase<bool> response = await _service.Index(DTO);
+            ResponseBase<bool?> response = await _service.Index(DTO);
             if (response.Code == (int)HttpStatusCode.Conflict)
             {
                 ViewData["error"] = response.Message;

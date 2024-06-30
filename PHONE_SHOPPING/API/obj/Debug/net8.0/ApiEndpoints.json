@@ -15,7 +15,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -41,7 +41,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -61,7 +61,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Collections.Generic.List\u00601[[Common.DTO.CartDTO.CartListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -87,7 +87,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -113,7 +113,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.CategoryDTO.CategoryListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -133,7 +133,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Collections.Generic.List\u00601[[Common.DTO.CategoryDTO.CategoryListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -164,7 +164,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.Pagination.Pagination\u00601[[Common.DTO.CategoryDTO.CategoryListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -195,7 +195,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.CategoryDTO.CategoryListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -221,7 +221,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Collections.Generic.List\u00601[[Common.DTO.CartDTO.CartListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -247,7 +247,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.OrderDetailDTO.OrderDetailDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -278,7 +278,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.Pagination.Pagination\u00601[[Common.DTO.OrderDTO.OrderListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -309,7 +309,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.OrderDetailDTO.OrderDetailDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -335,7 +335,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -361,7 +361,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -387,7 +387,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.ProductDTO.ProductListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -423,7 +423,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.Pagination.Pagination\u00601[[Common.DTO.ProductDTO.ProductListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -459,7 +459,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.Pagination.Pagination\u00601[[Common.DTO.ProductDTO.ProductListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -490,7 +490,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.ProductDTO.ProductListDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -516,7 +516,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -542,7 +542,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -568,7 +568,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.UserDTO.UserDetailDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -594,7 +594,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -620,7 +620,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.UserDTO.UserDetailDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -640,7 +640,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -666,7 +666,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Common.Base.ResponseBase\u00601[[Common.DTO.UserDTO.UserDetailDTO, Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "Common.Base.ResponseBase",
         "MediaTypes": [
           "text/plain",
           "application/json",

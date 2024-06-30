@@ -75,15 +75,15 @@ namespace MVC.Services.ManagerProduct
             DTO.ProductName = DTO.ProductName == null ? "" : DTO.ProductName.Trim();
             DTO.Image = DTO.Image == null ? "" : DTO.Image.Trim();
             string URL = "https://localhost:7178/Product/Create";
-            ResponseBase<bool> response = await Post<ProductCreateUpdateDTO, bool>(URL, DTO);
-            if (response.Data == false)
+            ResponseBase<bool?> response = await Post<ProductCreateUpdateDTO, bool?>(URL, DTO);
+            if ((response.Data == false && response.Code != (int)HttpStatusCode.Conflict) || response.Data == null)
             {
                 return new ResponseBase<List<CategoryListDTO>?>(null, response.Message, response.Code);
             }
             ResponseBase<List<CategoryListDTO>?> result = await getListCategory();
             if (result.Data == null)
             {
-                return new ResponseBase<List<CategoryListDTO>?>(null, response.Message, response.Code);
+                return new ResponseBase<List<CategoryListDTO>?>(null, result.Message, result.Code);
             }
             if (response.Code == (int)HttpStatusCode.OK || response.Code == (int)HttpStatusCode.Conflict)
             {
@@ -134,8 +134,8 @@ namespace MVC.Services.ManagerProduct
         public async Task<ResponseBase<Dictionary<string, object>?>> Delete(Guid ProductID)
         {
             string URL = "https://localhost:7178/Product/Delete/" + ProductID;
-            ResponseBase<bool> response = await Delete<bool>(URL);
-            if (response.Data == false)
+            ResponseBase<bool?> response = await Delete<bool?>(URL);
+            if (response.Data == false || response.Data == null)
             {
                 return new ResponseBase<Dictionary<string, object>?>(null, response.Message, response.Code);
             }

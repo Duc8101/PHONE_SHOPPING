@@ -10,10 +10,10 @@ namespace MVC.Services.ForgotPassword
         {
         }
 
-        public async Task<ResponseBase<bool>> ForgotPassword(ForgotPasswordDTO DTO)
+        public async Task<ResponseBase<bool?>> ForgotPassword(ForgotPasswordDTO DTO)
         {
             string URL = "https://localhost:7178/User/ForgotPassword";
-            return await Post<ForgotPasswordDTO, bool>(URL, DTO);
+            return await Post<ForgotPasswordDTO, bool?>(URL, DTO);
         }
     }
 }

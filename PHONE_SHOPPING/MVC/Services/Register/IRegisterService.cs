@@ -5,6 +5,6 @@ namespace MVC.Services.Register
 {
     public interface IRegisterService
     {
-        Task<ResponseBase<bool>> Index(UserCreateDTO DTO);
+        Task<ResponseBase<bool?>> Index(UserCreateDTO DTO);
     }
 }

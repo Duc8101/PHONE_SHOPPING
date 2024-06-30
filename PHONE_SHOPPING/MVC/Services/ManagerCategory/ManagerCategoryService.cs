@@ -27,10 +27,10 @@ namespace MVC.Services.ManagerCategory
             return response;
 
         }
-        public async Task<ResponseBase<bool>> Create(CategoryCreateUpdateDTO DTO)
+        public async Task<ResponseBase<bool?>> Create(CategoryCreateUpdateDTO DTO)
         {
             string URL = "https://localhost:7178/Category/Create";
-            return await Post<CategoryCreateUpdateDTO, bool>(URL, DTO);
+            return await Post<CategoryCreateUpdateDTO, bool?>(URL, DTO);
         }
         public async Task<ResponseBase<CategoryListDTO?>> Update(int ID)
         {

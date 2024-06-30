@@ -10,10 +10,10 @@ namespace MVC.Services.Register
         {
 
         }
-        public async Task<ResponseBase<bool>> Index(UserCreateDTO DTO)
+        public async Task<ResponseBase<bool?>> Index(UserCreateDTO DTO)
         {
             string URL = "https://localhost:7178/User/Create";
-            return await Post<UserCreateDTO, bool>(URL, DTO);
+            return await Post<UserCreateDTO, bool?>(URL, DTO);
         }
     }
 }

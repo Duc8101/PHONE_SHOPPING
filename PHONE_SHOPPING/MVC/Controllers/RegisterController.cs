@@ -28,7 +28,7 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(UserCreateDTO DTO)
         {
-            ResponseBase<bool> response = await _service.Index(DTO);
+            ResponseBase<bool?> response = await _service.Index(DTO);
             if (response.Code == (int)HttpStatusCode.OK)
             {
                 ViewData["success"] = response.Message;

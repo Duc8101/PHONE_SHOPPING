@@ -32,7 +32,7 @@ namespace API.Services.Products
             return query;
         }
 
-        public ResponseBase<Pagination<ProductListDTO>?> List(bool isAdmin, string? name, int? CategoryID, int page)
+        public ResponseBase List(bool isAdmin, string? name, int? CategoryID, int page)
         {
             int prePage = page - 1;
             int nextPage = page + 1;
@@ -89,29 +89,29 @@ namespace API.Services.Products
                     FIRST_URL = firstURL,
                     NumberPage = numberPage,
                 };
-                return new ResponseBase<Pagination<ProductListDTO>?>(result, string.Empty);
+                return new ResponseBase(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Pagination<ProductListDTO>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public ResponseBase<bool> Create(ProductCreateUpdateDTO DTO)
+        public ResponseBase Create(ProductCreateUpdateDTO DTO)
         {
             try
             {
                 if (DTO.ProductName.Trim().Length == 0)
                 {
-                    return new ResponseBase<bool>(false, "You have to input product name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(false, "You have to input product name", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Image.Trim().Length == 0)
                 {
-                    return new ResponseBase<bool>(false, "You have to input image link", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(false, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
                 if (_context.Products.Any(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false))
                 {
-                    return new ResponseBase<bool>(false, "Product existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(false, "Product existed", (int)HttpStatusCode.Conflict);
                 }
                 Product product = _mapper.Map<Product>(DTO);
                 product.ProductId = Guid.NewGuid();
@@ -120,33 +120,33 @@ namespace API.Services.Products
                 product.IsDeleted = false;
                 _context.Products.Add(product);
                 _context.SaveChanges();
-                return new ResponseBase<bool>(true, "Create successful");
+                return new ResponseBase(true, "Create successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public ResponseBase<ProductListDTO?> Detail(Guid ProductID)
+        public ResponseBase Detail(Guid ProductID)
         {
             try
             {
                 Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseBase<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase("Not found product", (int)HttpStatusCode.NotFound);
                 }
                 ProductListDTO DTO = _mapper.Map<ProductListDTO>(product);
-                return new ResponseBase<ProductListDTO?>(DTO, string.Empty);
+                return new ResponseBase(DTO, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<ProductListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public ResponseBase<ProductListDTO?> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
+        public ResponseBase Update(Guid ProductID, ProductCreateUpdateDTO DTO)
         {
             try
             {
@@ -154,13 +154,13 @@ namespace API.Services.Products
                     .FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseBase<ProductListDTO?>(null, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase("Not found product", (int)HttpStatusCode.NotFound);
                 }
                 List<OrderDetail> list = product.OrderDetails.ToList();
                 ProductListDTO data = _mapper.Map<ProductListDTO>(product);
                 if (list.Count > 0)
                 {
-                    return new ResponseBase<ProductListDTO?>(data, "You can't update this product because it is being or has been ordered", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(data, "You can't update this product because it is being or has been ordered", (int)HttpStatusCode.Conflict);
                 }
                 product.ProductName = DTO.ProductName.Trim();
                 product.Image = DTO.Image.Trim();
@@ -170,44 +170,44 @@ namespace API.Services.Products
                 data = _mapper.Map<ProductListDTO>(product);
                 if (DTO.ProductName.Trim().Length == 0)
                 {
-                    return new ResponseBase<ProductListDTO?>(data, "You have to input product name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(data, "You have to input product name", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Image.Trim().Length == 0)
                 {
-                    return new ResponseBase<ProductListDTO?>(data, "You have to input image link", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(data, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
                 if (_context.Products.Any(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false && p.ProductId != ProductID))
                 {
-                    return new ResponseBase<ProductListDTO?>(data, "Product existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(data, "Product existed", (int)HttpStatusCode.Conflict);
                 }
                 product.UpdateAt = DateTime.Now;
                 _context.Products.Update(product);
                 _context.SaveChanges();
-                return new ResponseBase<ProductListDTO?>(data, "Update successful");
+                return new ResponseBase(data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<ProductListDTO?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public ResponseBase<bool> Delete(Guid ProductID)
+        public ResponseBase Delete(Guid ProductID)
         {
             try
             {
                 Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
                 if (product == null)
                 {
-                    return new ResponseBase<bool>(false, "Not found product", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
                 product.IsDeleted = true;
                 _context.Products.Update(product);
                 _context.SaveChanges();
-                return new ResponseBase<bool>(true, "Delete successful");
+                return new ResponseBase(true, "Delete successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

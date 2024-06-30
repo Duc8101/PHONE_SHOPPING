@@ -1,16 +1,13 @@
 ﻿using Common.Base;
-using Common.DTO.CartDTO;
-using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
-using Common.Pagination;
 
 namespace API.Services.Orders
 {
     public interface IOrderService
     {
-        Task<ResponseBase<List<CartListDTO>?>> Create(OrderCreateDTO DTO, Guid userId);
-        ResponseBase<Pagination<OrderListDTO>?> List(Guid? UserID, string? status, bool isAdmin, int page);
-        ResponseBase<OrderDetailDTO?> Detail(Guid OrderID);
-        Task<ResponseBase<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO);
+        Task<ResponseBase> Create(OrderCreateDTO DTO, Guid userId);
+        ResponseBase List(Guid? UserID, string? status, bool isAdmin, int page);
+        ResponseBase Detail(Guid OrderID, Guid? userId);
+        Task<ResponseBase> Update(Guid OrderID, OrderUpdateDTO DTO);
     }
 }

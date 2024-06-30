@@ -37,6 +37,9 @@ namespace API
             CreateMap<ProductCreateUpdateDTO, Product>()
                 .ForMember(d => d.ProductName, m => m.MapFrom(source => source.ProductName.Trim()))
                 .ForMember(d => d.Image, m => m.MapFrom(source => source.Image.Trim()));
+            CreateMap<Order, OrderDetailDTO>()
+                .ForMember(d => d.Username, m => m.MapFrom(source => source.User.Username))
+                .ForMember(d => d.OrderDate, m => m.MapFrom(source => source.CreatedAt));
         }
     }
 }
