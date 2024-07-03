@@ -1,5 +1,6 @@
 ﻿using Common.Base;
 using Common.DTO.UserDTO;
+using MVC.Hardware;
 using MVC.Services.Base;
 using System.Net;
 
@@ -11,20 +12,24 @@ namespace MVC.Services.Login
         {
         }
 
-        public async Task<ResponseBase<UserDetailDTO?>> Index(string UserID)
+        public async Task<ResponseBase<UserLoginInfoDTO?>> Index(string token)
         {
-            string URL = "https://localhost:7178/User/Detail/" + UserID;
-            return await Get<UserDetailDTO?>(URL);
+            string hardInfo = HardInfo.Generate();
+            string URL = "https://localhost:7077/User/GetUserByToken";
+            return await Get<UserLoginInfoDTO?>(URL, new KeyValuePair<string, object>("token", token)
+                , new KeyValuePair<string, object>("hardware", hardInfo));
         }
 
-        public async Task<ResponseBase<UserDetailDTO?>> Index(LoginDTO DTO)
+        public async Task<ResponseBase<UserLoginInfoDTO?>> Index(LoginDTO DTO)
         {
             if (DTO.Password == null)
             {
-                return new ResponseBase<UserDetailDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
+                return new ResponseBase<UserLoginInfoDTO?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
             }
-            string URL = "https://localhost:7178/User/Login";
-            return await Post<LoginDTO, UserDetailDTO?>(URL, DTO);
+            string hardInfo = HardInfo.Generate();
+            DTO.HarewareInfo = hardInfo;
+            string URL = "https://localhost:7077/User/Login";
+            return await Post<LoginDTO, UserLoginInfoDTO?>(URL, DTO);
         }
     }
 }

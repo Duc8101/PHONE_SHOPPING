@@ -13,7 +13,7 @@ namespace API.Services.Products
 {
     public class ProductService : BaseService, IProductService
     {
-        public ProductService(IMapper mapper, PhoneShoppingContext context) : base(mapper, context)
+        public ProductService(IMapper mapper, PHONE_STOREContext context) : base(mapper, context)
         {
 
         }
@@ -23,7 +23,7 @@ namespace API.Services.Products
             IQueryable<Product> query = _context.Products.Include(p => p.Category).Where(p => p.IsDeleted == false);
             if (name != null && name.Trim().Length > 0)
             {
-                query = query.Where(p => p.ProductName.ToLower().Contains(name.Trim().ToLower()) || p.Category.Name.ToLower().Contains(name.Trim().ToLower()));
+                query = query.Where(p => p.ProductName.ToLower().Contains(name.Trim().ToLower()) || p.Category.CategoryName.ToLower().Contains(name.Trim().ToLower()));
             }
             if (CategoryID.HasValue)
             {

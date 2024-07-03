@@ -1,3 +1,4 @@
+using MVC.Middleware;
 using MVC.Services.Cart;
 using MVC.Services.ChangePassword;
 using MVC.Services.ForgotPassword;
@@ -45,7 +46,7 @@ namespace MVC
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseMiddleware<CookieMiddleware>();
             app.UseRouting();
 
             app.UseAuthorization();

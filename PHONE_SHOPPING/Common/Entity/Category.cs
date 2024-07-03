@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Common.Entity;
-
-public partial class Category
+namespace Common.Entity
 {
-    public int Id { get; set; }
+    public partial class Category
+    {
+        public Category()
+        {
+            Products = new HashSet<Product>();
+        }
 
-    public string Name { get; set; } = null!;
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; } = null!;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdateAt { get; set; }
+        public bool IsDeleted { get; set; }
 
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime UpdateAt { get; set; }
-
-    public bool IsDeleted { get; set; }
-
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+        public virtual ICollection<Product> Products { get; set; }
+    }
 }

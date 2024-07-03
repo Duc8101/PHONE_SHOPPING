@@ -1,12 +1,11 @@
 ﻿using API.Services.Base;
 using AutoMapper;
 using Common.Base;
-using Common.Const;
 using Common.DTO.UserDTO;
 using Common.Entity;
 using Common.Enum;
 using DataAccess.DBContext;
-using DataAccess.Util;
+using DataAccess.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,7 +18,7 @@ namespace API.Services.Users
 {
     public class UserService : BaseService, IUserService
     {
-        public UserService(IMapper mapper, PhoneShoppingContext context) : base(mapper, context)
+        public UserService(IMapper mapper, PHONE_STOREContext context) : base(mapper, context)
         {
 
         }
@@ -32,9 +31,7 @@ namespace API.Services.Users
                 {
                     return new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
                 }
-                string AccessToken = getAccessToken(user);
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
-                data.Token = AccessToken;
                 return new ResponseBase(data, string.Empty);
             }
             catch (Exception ex)
@@ -47,16 +44,68 @@ namespace API.Services.Users
         {
             try
             {
-                User? user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Username == DTO.Username && u.IsDeleted == false);
-                if (user == null)
+                User? user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.Username == DTO.Username);
+                if (user == null || !user.Password.Equals(UserHelper.HashPassword(DTO.Password)))
                 {
                     return new ResponseBase("Username or password incorrect", (int)HttpStatusCode.NotFound);
                 }
+                int clientId;
+                Client? client = _context.Clients.FirstOrDefault(c => c.HarewareInfo == DTO.HarewareInfo);
+                // nếu chưa đăng ký thiết bị
+                if (client == null)
+                {
+                    client = new Client()
+                    {
+                        HarewareInfo = DTO.HarewareInfo,
+                        CreatedAt = DateTime.Now,
+                        UpdateAt = DateTime.Now,
+                        IsDeleted = false,
+                    };
+                    _context.Clients.Add(client);
+                    _context.SaveChanges();
+                    clientId = client.ClientId;
+                }
+                else
+                {
+                    clientId = client.ClientId;
+                }
                 string AccessToken = getAccessToken(user);
-                UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
-                data.Token = AccessToken;
+                UserClient? userClient = _context.UserClients.FirstOrDefault(uc => uc.UserId == user.UserId && uc.ClientId == clientId);
+                // nếu chưa đăng nhập trên thiết bị
+                if (userClient == null)
+                {
+                    userClient = new UserClient()
+                    {
+                        UserClientId = Guid.NewGuid(),
+                        UserId = user.UserId,
+                        ClientId = clientId,
+                        Token = AccessToken,
+                        ExpireDate = DateTime.Now.AddDays(1),
+                        CreatedAt = DateTime.Now,
+                        UpdateAt = DateTime.Now,
+                        IsDeleted = false,
+                    };
+                    _context.UserClients.Add(userClient);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    userClient.Token = AccessToken;
+                    userClient.UpdateAt = DateTime.Now;
+                    userClient.ExpireDate = DateTime.Now.AddDays(1);
+                    _context.UserClients.Update(userClient);
+                    _context.SaveChanges();
+                }
+                UserLoginInfoDTO data = new UserLoginInfoDTO()
+                {
+                    Access_Token = AccessToken,
+                    UserId = user.UserId,
+                    RoleId = user.RoleId,
+                    Username = user.Username,
+                    ExpireDate = userClient.ExpireDate,
+                };
                 // ------------------------- remove all cart ------------------------- 
-                List<Cart> list = _context.Carts.Where(c => c.UserId == user.UserId && c.IsCheckout == false && c.IsDeleted == false).ToList();
+                List<Cart> list = _context.Carts.Where(c => c.UserId == user.UserId && c.IsCheckOut == false && c.IsDeleted == false).ToList();
                 foreach (Cart cart in list)
                 {
                     cart.IsDeleted = true;
@@ -94,7 +143,7 @@ namespace API.Services.Users
         {
             try
             {
-                List<Cart> list = _context.Carts.Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToList();
+                List<Cart> list = _context.Carts.Where(c => c.UserId == UserID && c.IsCheckOut == false && c.IsDeleted == false).ToList();
                 foreach (Cart cart in list)
                 {
                     cart.IsDeleted = true;
@@ -113,7 +162,7 @@ namespace API.Services.Users
         {
             try
             {
-                Regex regex = new Regex(UserConst.FORMAT_EMAIL);
+                Regex regex = new Regex("^[a-zA-Z][\\w-]+@([\\w]+\\.[\\w]+|[\\w]+\\.[\\w]{2,}\\.[\\w]{2,})");
                 if (!regex.IsMatch(DTO.Email.Trim()))
                 {
                     return new ResponseBase(false, "Invalid email", (int)HttpStatusCode.Conflict);
@@ -122,12 +171,12 @@ namespace API.Services.Users
                 {
                     return new ResponseBase(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
                 }
-                string newPw = UserUtil.RandomPassword();
-                string hashPw = UserUtil.HashPassword(newPw);
+                string newPw = UserHelper.RandomPassword();
+                string hashPw = UserHelper.HashPassword(newPw);
                 // get body email
-                string body = UserUtil.BodyEmailForRegister(newPw);
+                string body = UserHelper.BodyEmailForRegister(newPw);
                 // send email
-                await UserUtil.sendEmail("Welcome to PHONE SHOPPING", body, DTO.Email.Trim());
+                await UserHelper.sendEmail("Welcome to PHONE SHOPPING", body, DTO.Email.Trim());
                 User user = _mapper.Map<User>(DTO);
                 user.UserId = Guid.NewGuid();
                 user.Password = hashPw;
@@ -154,12 +203,12 @@ namespace API.Services.Users
                 {
                     return new ResponseBase(false, "Not found email", (int)HttpStatusCode.NotFound);
                 }
-                string newPw = UserUtil.RandomPassword();
-                string hashPw = UserUtil.HashPassword(newPw);
+                string newPw = UserHelper.RandomPassword();
+                string hashPw = UserHelper.HashPassword(newPw);
                 // get body email
-                string body = UserUtil.BodyEmailForForgetPassword(newPw);
+                string body = UserHelper.BodyEmailForForgetPassword(newPw);
                 // send email
-                await UserUtil.sendEmail("Welcome to PHONE SHOPPING", body, DTO.Email.Trim());
+                await UserHelper.sendEmail("Welcome to PHONE SHOPPING", body, DTO.Email.Trim());
                 user.Password = hashPw;
                 user.UpdateAt = DateTime.Now;
                 _context.Users.Update(user);
@@ -211,7 +260,7 @@ namespace API.Services.Users
                 {
                     return new ResponseBase(false, "New password must not contain all space", (int)HttpStatusCode.Conflict);
                 }
-                if (user.Password != UserUtil.HashPassword(DTO.CurrentPassword))
+                if (user.Password != UserHelper.HashPassword(DTO.CurrentPassword))
                 {
                     return new ResponseBase(false, "Your old password not correct", (int)HttpStatusCode.Conflict);
                 }
@@ -219,7 +268,7 @@ namespace API.Services.Users
                 {
                     return new ResponseBase(false, "Your confirm password not the same new password", (int)HttpStatusCode.Conflict);
                 }
-                user.Password = UserUtil.HashPassword(DTO.NewPassword);
+                user.Password = UserHelper.HashPassword(DTO.NewPassword);
                 user.UpdateAt = DateTime.Now;
                 _context.Users.Update(user);
                 _context.SaveChanges();
@@ -231,5 +280,51 @@ namespace API.Services.Users
             }
         }
 
+        public ResponseBase GetUserByToken(string token, string hardware)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var tokenS = handler.ReadJwtToken(token);
+                string userId = tokenS.Claims.First(c => c.Type == "id").Value;
+                User? user = _context.Users.Find(Guid.Parse(userId));
+                if (user == null)
+                {
+                    return new ResponseBase("Not found user", (int) HttpStatusCode.NotFound);
+                }
+                Client? client = _context.Clients.FirstOrDefault(c => c.HarewareInfo == hardware);
+                if(client == null)
+                {
+                    return new ResponseBase("Not found client", (int)HttpStatusCode.NotFound);
+                }
+                UserClient? userClient = _context.UserClients.FirstOrDefault(uc => uc.UserId == Guid.Parse(userId) 
+                && uc.ClientId == client.ClientId);
+                if(userClient == null)
+                {
+                    return new ResponseBase("User not register on this client", (int)HttpStatusCode.NotFound);
+                }
+                if(userClient.Token != token)
+                {
+                    return new ResponseBase("Invalid token", (int)HttpStatusCode.Conflict);
+                }
+                if(userClient.ExpireDate < DateTime.Now)
+                {
+                    return new ResponseBase("Token expired", (int)HttpStatusCode.Conflict);
+                }
+                UserLoginInfoDTO data = new UserLoginInfoDTO()
+                {
+                    Access_Token = token,
+                    UserId = user.UserId,
+                    RoleId = user.RoleId,
+                    Username = user.Username,
+                    ExpireDate = userClient.ExpireDate,
+                };
+                return new ResponseBase(data, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

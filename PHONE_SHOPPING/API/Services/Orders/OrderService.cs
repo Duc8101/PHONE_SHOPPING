@@ -9,7 +9,7 @@ using Common.Entity;
 using Common.Enum;
 using Common.Pagination;
 using DataAccess.DBContext;
-using DataAccess.Util;
+using DataAccess.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -17,7 +17,7 @@ namespace API.Services.Orders
 {
     public class OrderService : BaseService, IOrderService
     {
-        public OrderService(IMapper mapper, PhoneShoppingContext context) : base(mapper, context)
+        public OrderService(IMapper mapper, PHONE_STOREContext context) : base(mapper, context)
         {
 
         }
@@ -26,7 +26,7 @@ namespace API.Services.Orders
         {
             try
             {
-                List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == userId && c.IsCheckout == false && c.IsDeleted == false).ToList();
+                List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == userId && c.IsCheckOut == false && c.IsDeleted == false).ToList();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 if (DTO.Address == null || DTO.Address.Trim().Length == 0)
                 {
@@ -44,13 +44,13 @@ namespace API.Services.Orders
                         return new ResponseBase(data, "Product " + item.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
                     }
                 }
-                string body = UserUtil.BodyEmailForAdminReceiveOrder();
+                string body = UserHelper.BodyEmailForAdminReceiveOrder();
                 List<string> emails = _context.Users.Where(u => u.RoleId == (int)RoleEnum.Admin).Select(u => u.Email).ToList();
                 if (emails.Count > 0)
                 {
                     foreach (string email in emails)
                     {
-                        await UserUtil.sendEmail("[PHONE SHOPPING] Notification for new order", body, email);
+                        await UserHelper.sendEmail("[PHONE SHOPPING] Notification for new order", body, email);
                     }
                 }
                 Order order = _mapper.Map<Order>(DTO);
@@ -80,7 +80,7 @@ namespace API.Services.Orders
                 }
                 foreach (Cart cart in list)
                 {
-                    cart.IsCheckout = true;
+                    cart.IsCheckOut = true;
                     _context.Carts.Update(cart);
                     _context.SaveChanges();
                 }
@@ -255,8 +255,8 @@ namespace API.Services.Orders
                             return new ResponseBase(data, "Product " + item.Product.ProductName + " not have enough quantity!!!", (int)HttpStatusCode.Conflict);
                         }
                     }
-                    string body = UserUtil.BodyEmailForApproveOrder(list);
-                    await UserUtil.sendEmail("[PHONE SHOPPING] Notification for approve order", body, order.User.Email);
+                    string body = UserHelper.BodyEmailForApproveOrder(list);
+                    await UserHelper.sendEmail("[PHONE SHOPPING] Notification for approve order", body, order.User.Email);
                     foreach (OrderDetail item in list)
                     {
                         item.Product.Quantity = item.Product.Quantity - item.Quantity;

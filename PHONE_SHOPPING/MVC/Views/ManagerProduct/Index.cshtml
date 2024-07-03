@@ -26,7 +26,7 @@
                                 <option value="@null">ALL</option>
                                 @foreach (CategoryListDTO DTO in list)
                                 {
-                                    <option value="@DTO.Id" selected="@(DTO.Id == CategoryID)">@DTO.Name</option>
+                                    <option value="@DTO.CategoryId" selected="@(DTO.CategoryId == CategoryID)">@DTO.CategoryName</option>
                                 }
                             </select>
                         </div>

@@ -3,7 +3,6 @@ using Common.DTO.CartDTO;
 using Common.DTO.OrderDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.Cart;
-using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
@@ -19,10 +18,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index()
         {
-           /* if (StaticToken.Token == null)
-            {
-                return Redirect("/Home");
-            }*/
+            /* if (StaticToken.Token == null)
+             {
+                 return Redirect("/Home");
+             }*/
             ResponseBase<List<CartListDTO>?> response = await _service.Index();
             if (response.Data == null)
             {
@@ -71,10 +70,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Checkout()
         {
-           /* if (StaticToken.Token == null)
-            {
-                return Redirect("/Home");
-            }*/
+            /* if (StaticToken.Token == null)
+             {
+                 return Redirect("/Home");
+             }*/
             return await Index();
         }
 

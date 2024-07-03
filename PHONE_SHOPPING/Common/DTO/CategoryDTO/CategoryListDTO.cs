@@ -2,6 +2,6 @@
 {
     public class CategoryListDTO : CategoryCreateUpdateDTO
     {
-        public int Id { get; set; }
+        public int CategoryId { get; set; }
     }
 }

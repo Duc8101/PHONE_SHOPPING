@@ -3,7 +3,6 @@ using Common.DTO.CategoryDTO;
 using Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.ManagerCategory;
-using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
@@ -47,10 +46,10 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CategoryCreateUpdateDTO DTO)
         {
-           /* if (StaticToken.Token == null)
-            {
-                return Redirect("/Home");
-            }*/
+            /* if (StaticToken.Token == null)
+             {
+                 return Redirect("/Home");
+             }*/
             ResponseBase<bool?> response = await _service.Create(DTO);
             if (response.Data == false || response.Data == null)
             {
@@ -59,7 +58,7 @@ namespace MVC.Controllers
                     ViewData["error"] = response.Message;
                     return View();
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));             
+                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             ViewData["success"] = response.Message;
             return View();
@@ -89,10 +88,10 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(int id, CategoryCreateUpdateDTO DTO)
         {
-           /* if (StaticToken.Token == null)
-            {
-                return Redirect("/Home");
-            }*/
+            /* if (StaticToken.Token == null)
+             {
+                 return Redirect("/Home");
+             }*/
             ResponseBase<CategoryListDTO?> response = await _service.Update(id, DTO);
             if (response.Data == null)
             {

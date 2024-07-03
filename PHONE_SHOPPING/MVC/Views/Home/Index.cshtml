@@ -4,13 +4,13 @@
 @model Dictionary<string,object>
 @{
     Pagination<ProductListDTO> result = (Pagination<ProductListDTO>)Model["result"];
-    List<CategoryListDTO> list = (List<CategoryListDTO>) Model["list"];
-    int CategoryID = (int) Model["CategoryID"];
-    string name = (string) Model["name"];
+    List<CategoryListDTO> list = (List<CategoryListDTO>)Model["list"];
+    int CategoryID = (int)Model["CategoryID"];
+    string name = (string)Model["name"];
     int? role = Context.Session.GetInt32("role");
 }
 
-    <div class="row" style="margin-left:3%">
+<div class="row" style="margin-left:3%">
     <form action="Home">
         <div class="form-group">
             <input type="text" class="form-control" name="name" placeholder="Search" value="@name" /><br /><br />
@@ -21,7 +21,7 @@
                 <option value="@null">ALL</option>
                 @foreach (CategoryListDTO DTO in list)
                 {
-                    <option value="@DTO.Id" selected="@(DTO.Id == CategoryID)">@DTO.Name</option>
+                    <option value="@DTO.CategoryId" selected="@(DTO.CategoryId == CategoryID)">@DTO.CategoryName</option>
                 }
             </select>
         </div>
@@ -39,7 +39,7 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Category Name</th>
-                @if(role.HasValue)
+                @if (role.HasValue)
                 {
                     <th>Add Cart</th>
                 }
@@ -65,23 +65,23 @@
                                 </a>
                             </button>
                         </td>
-                    }        
+                    }
                 </tr>
             }
         </tbody>
     </table>
 
-    </div>
+</div>
 
-    @if (result.NumberPage > 1)
-    {
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center list-group" style="margin-left: 50%">
-                <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.FIRST_URL" aria-disabled="true" role="button">First</a></li>
-                <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.PRE_URL" aria-disabled="true" role="button">Previous</a></li>
-                <li class="page-item"><a href="" class="page-link btn btn-primary btn-lg">@result.PageSelected/@result.NumberPage</a></li>
-                <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.NEXT_URL" aria-disabled="true" role="button">Next</a></li>
-                <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.LAST_URL" aria-disabled="true" role="button">Last</a></li>
-            </ul>
-        </nav>
-    }
+@if (result.NumberPage > 1)
+{
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center list-group" style="margin-left: 50%">
+            <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.FIRST_URL" aria-disabled="true" role="button">First</a></li>
+            <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == 1 ? "disabled" : "")" href="@result.PRE_URL" aria-disabled="true" role="button">Previous</a></li>
+            <li class="page-item"><a href="" class="page-link btn btn-primary btn-lg">@result.PageSelected/@result.NumberPage</a></li>
+            <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.NEXT_URL" aria-disabled="true" role="button">Next</a></li>
+            <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link btn btn-primary btn-lg @(result.PageSelected == result.NumberPage ? "disabled" : "")" href="@result.LAST_URL" aria-disabled="true" role="button">Last</a></li>
+        </ul>
+    </nav>
+}

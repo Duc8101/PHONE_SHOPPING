@@ -14,7 +14,7 @@ namespace MVC.Services.ManagerCategory
         public async Task<ResponseBase<Pagination<CategoryListDTO>?>> Index(string? name, int? page)
         {
             int pageSelected = page == null ? 1 : page.Value;
-            string URL = "https://localhost:7178/Category/List/Paged";
+            string URL = "https://localhost:7077/Category/List/Paged";
             ResponseBase<Pagination<CategoryListDTO>?> response;
             if (name == null || name.Trim().Length == 0)
             {
@@ -29,17 +29,17 @@ namespace MVC.Services.ManagerCategory
         }
         public async Task<ResponseBase<bool?>> Create(CategoryCreateUpdateDTO DTO)
         {
-            string URL = "https://localhost:7178/Category/Create";
+            string URL = "https://localhost:7077/Category/Create";
             return await Post<CategoryCreateUpdateDTO, bool?>(URL, DTO);
         }
         public async Task<ResponseBase<CategoryListDTO?>> Update(int ID)
         {
-            string URL = "https://localhost:7178/Category/Detail/" + ID;
+            string URL = "https://localhost:7077/Category/Detail/" + ID;
             return await Get<CategoryListDTO?>(URL);
         }
         public async Task<ResponseBase<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO)
         {
-            string URL = "https://localhost:7178/Category/Update/" + ID;
+            string URL = "https://localhost:7077/Category/Update/" + ID;
             return await Put<CategoryCreateUpdateDTO, CategoryListDTO?>(URL, DTO);
         }
 

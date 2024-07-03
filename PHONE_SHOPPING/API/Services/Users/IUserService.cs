@@ -13,5 +13,6 @@ namespace API.Services.Users
         ResponseBase Update(User user, UserUpdateDTO DTO);
         ResponseBase ChangePassword(User user, ChangePasswordDTO DTO);
         ResponseBase Logout(Guid UserID);
+        ResponseBase GetUserByToken(string token, string hardware);
     }
 }

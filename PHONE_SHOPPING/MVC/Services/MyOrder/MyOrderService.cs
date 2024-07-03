@@ -16,13 +16,13 @@ namespace MVC.Services.MyOrder
         public async Task<ResponseBase<Pagination<OrderListDTO>?>> Index(int? page)
         {
             int pageSelected = page == null ? 1 : page.Value;
-            string URL = "https://localhost:7178/Order/List";
+            string URL = "https://localhost:7077/Order/List";
             return await Get<Pagination<OrderListDTO>?>(URL, new KeyValuePair<string, object>("page", pageSelected));
         }
 
         public async Task<ResponseBase<OrderDetailDTO?>> Detail(Guid OrderID, Guid UserID)
         {
-            string URL = "https://localhost:7178/Order/Detail/" + OrderID;
+            string URL = "https://localhost:7077/Order/Detail/" + OrderID;
             ResponseBase<OrderDetailDTO?> response = await Get<OrderDetailDTO?>(URL);
             if (response.Data == null)
             {

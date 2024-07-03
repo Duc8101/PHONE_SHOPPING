@@ -12,13 +12,13 @@ namespace MVC.Services.Profile
 
         public async Task<ResponseBase<UserDetailDTO?>> Index(string UserID)
         {
-            string URL = "https://localhost:7178/User/Detail/" + UserID;
+            string URL = "https://localhost:7077/User/Detail/" + UserID;
             return await Get<UserDetailDTO?>(URL);
         }
 
         public async Task<ResponseBase<UserDetailDTO?>> Index(UserUpdateDTO DTO)
         {
-            string URL = "https://localhost:7178/User/Update";
+            string URL = "https://localhost:7077/User/Update";
             return await Put<UserUpdateDTO, UserDetailDTO?>(URL, DTO);
         }
     }

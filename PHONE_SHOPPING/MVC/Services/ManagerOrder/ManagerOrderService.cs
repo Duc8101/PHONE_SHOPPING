@@ -17,7 +17,7 @@ namespace MVC.Services.ManagerOrder
         public async Task<ResponseBase<Dictionary<string, object>?>> Index(string? status, int? page)
         {
             int pageSelected = page == null ? 1 : page.Value;
-            string URL = "https://localhost:7178/Order/List";
+            string URL = "https://localhost:7077/Order/List";
             ResponseBase<Pagination<OrderListDTO>?> response;
             if (status == null || status.Trim().Length == 0)
             {
@@ -45,19 +45,19 @@ namespace MVC.Services.ManagerOrder
 
         public async Task<ResponseBase<UserDetailDTO?>> View(Guid UserID)
         {
-            string URL = "https://localhost:7178/User/Detail/" + UserID;
+            string URL = "https://localhost:7077/User/Detail/" + UserID;
             return await Get<UserDetailDTO?>(URL);
         }
 
         public async Task<ResponseBase<OrderDetailDTO?>> Detail(Guid OrderID)
         {
-            string URL = "https://localhost:7178/Order/Detail/" + OrderID;
+            string URL = "https://localhost:7077/Order/Detail/" + OrderID;
             return await Get<OrderDetailDTO?>(URL);
         }
 
         public async Task<ResponseBase<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO)
         {
-            string URL = "https://localhost:7178/Order/Update/" + OrderID;
+            string URL = "https://localhost:7077/Order/Update/" + OrderID;
             return await Put<OrderUpdateDTO, OrderDetailDTO?>(URL, DTO);
         }
     }

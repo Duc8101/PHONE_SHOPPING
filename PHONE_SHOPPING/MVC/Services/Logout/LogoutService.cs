@@ -11,7 +11,7 @@ namespace MVC.Services.Logout
 
         public async Task<ResponseBase<bool?>> Index()
         {
-            string URL = "https://localhost:7178/User/Logout";
+            string URL = "https://localhost:7077/User/Logout";
             return await Get<bool?>(URL);
         }
     }

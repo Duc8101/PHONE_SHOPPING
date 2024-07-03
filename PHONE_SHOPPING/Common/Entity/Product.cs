@@ -1,31 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Common.Entity;
-
-public partial class Product
+namespace Common.Entity
 {
-    public Guid ProductId { get; set; }
+    public partial class Product
+    {
+        public Product()
+        {
+            Carts = new HashSet<Cart>();
+            OrderDetails = new HashSet<OrderDetail>();
+        }
 
-    public string ProductName { get; set; } = null!;
+        public Guid ProductId { get; set; }
+        public string ProductName { get; set; } = null!;
+        public string Image { get; set; } = null!;
+        public decimal Price { get; set; }
+        public int CategoryId { get; set; }
+        public int Quantity { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdateAt { get; set; }
+        public bool IsDeleted { get; set; }
 
-    public string Image { get; set; } = null!;
-
-    public decimal Price { get; set; }
-
-    public int CategoryId { get; set; }
-
-    public int Quantity { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime UpdateAt { get; set; }
-
-    public bool IsDeleted { get; set; }
-
-    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
-
-    public virtual Category Category { get; set; } = null!;
-
-    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+        public virtual Category Category { get; set; } = null!;
+        public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+    }
 }

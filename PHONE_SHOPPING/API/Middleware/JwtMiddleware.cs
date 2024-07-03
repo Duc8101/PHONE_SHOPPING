@@ -12,7 +12,7 @@ namespace API.Middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, PhoneShoppingContext dbContext)
+        public async Task Invoke(HttpContext context, PHONE_STOREContext dbContext)
         {
             // get token login
             string? token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();

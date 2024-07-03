@@ -25,16 +25,16 @@ namespace API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    In = ParameterLocation.Header,
                     Description = "Here Enter JWT Token with Bearer format: Bearer[space][token]"
                 });
-                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -72,8 +72,8 @@ namespace API
                     .AllowAnyHeader();
             }));
             // ------------------------- register dbcontext ----------------------------
-            string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<PhoneShoppingContext>(options =>
+            string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<PHONE_STOREContext>(options =>
                 options.UseSqlServer(connection)
             );
             // ------------------------- register service ----------------------------

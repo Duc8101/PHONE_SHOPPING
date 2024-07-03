@@ -12,7 +12,7 @@ namespace API.Services.Categories
 {
     public class CategoryService : BaseService, ICategoryService
     {
-        public CategoryService(IMapper mapper, PhoneShoppingContext context) : base(mapper, context)
+        public CategoryService(IMapper mapper, PHONE_STOREContext context) : base(mapper, context)
         {
 
         }
@@ -36,7 +36,7 @@ namespace API.Services.Categories
             IQueryable<Category> query = _context.Categories;
             if (name != null && name.Trim().Length > 0)
             {
-                query = query.Where(c => c.Name.ToLower().Contains(name.Trim().ToLower()));
+                query = query.Where(c => c.CategoryName.ToLower().Contains(name.Trim().ToLower()));
             }
             return query;
         }
@@ -88,13 +88,13 @@ namespace API.Services.Categories
         {
             try
             {
-                if (_context.Categories.Any(c => c.Name == DTO.Name.Trim()))
+                if (_context.Categories.Any(c => c.CategoryName == DTO.CategoryName.Trim()))
                 {
                     return new ResponseBase(false, "Category existed", (int)HttpStatusCode.Conflict);
                 }
                 Category category = new Category()
                 {
-                    Name = DTO.Name.Trim(),
+                    CategoryName = DTO.CategoryName.Trim(),
                     CreatedAt = DateTime.Now,
                     UpdateAt = DateTime.Now,
                     IsDeleted = false,
@@ -134,9 +134,9 @@ namespace API.Services.Categories
                 {
                     return new ResponseBase("Not found category", (int)HttpStatusCode.NotFound);
                 }
-                category.Name = DTO.Name.Trim();
+                category.CategoryName = DTO.CategoryName.Trim();
                 CategoryListDTO data = _mapper.Map<CategoryListDTO>(category);
-                if (_context.Categories.Any(c => c.Name == DTO.Name.Trim() && c.Id != ID))
+                if (_context.Categories.Any(c => c.CategoryName == DTO.CategoryName.Trim() && c.CategoryId != ID))
                 {
                     return new ResponseBase(data, "Category existed", (int)HttpStatusCode.Conflict);
                 }

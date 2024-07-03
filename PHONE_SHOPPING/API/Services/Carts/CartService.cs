@@ -11,7 +11,7 @@ namespace API.Services.Carts
 {
     public class CartService : BaseService, ICartService
     {
-        public CartService(IMapper mapper, PhoneShoppingContext context) : base(mapper, context)
+        public CartService(IMapper mapper, PHONE_STOREContext context) : base(mapper, context)
         {
 
         }
@@ -20,7 +20,7 @@ namespace API.Services.Carts
         {
             try
             {
-                List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckout == false && c.IsDeleted == false).ToList();
+                List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckOut == false && c.IsDeleted == false).ToList();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
                 return new ResponseBase(data, string.Empty);
             }
@@ -39,7 +39,7 @@ namespace API.Services.Carts
                 {
                     return new ResponseBase(false, "Not found product", (int)HttpStatusCode.NotFound);
                 }
-                Cart? cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == DTO.ProductId && c.IsCheckout == false && c.IsDeleted == false);
+                Cart? cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == DTO.ProductId && c.IsCheckOut == false && c.IsDeleted == false);
                 if (cart == null)
                 {
                     cart = new Cart()
@@ -48,7 +48,7 @@ namespace API.Services.Carts
                         UserId = userId,
                         ProductId = DTO.ProductId,
                         Quantity = 1,
-                        IsCheckout = false,
+                        IsCheckOut = false,
                         CreatedAt = DateTime.Now,
                         UpdateAt = DateTime.Now,
                         IsDeleted = false,
@@ -85,7 +85,7 @@ namespace API.Services.Carts
                 {
                     return new ResponseBase(false, "Product not exist", (int)HttpStatusCode.NotFound);
                 }
-                Cart? cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId && c.IsCheckout == false && c.IsDeleted == false);
+                Cart? cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId && c.IsCheckOut == false && c.IsDeleted == false);
                 if (cart == null)
                 {
                     return new ResponseBase(false, "Cart not exist", (int)HttpStatusCode.NotFound);

@@ -15,13 +15,13 @@ namespace MVC.Services.ManagerProduct
 
         private async Task<ResponseBase<List<CategoryListDTO>?>> getListCategory()
         {
-            string URL = "https://localhost:7178/Category/List/All";
+            string URL = "https://localhost:7077/Category/List/All";
             return await Get<List<CategoryListDTO>?>(URL);
         }
         private async Task<ResponseBase<Pagination<ProductListDTO>?>> getPagedResult(string? name, int? CategoryID, int? page)
         {
             int pageSelected = page == null ? 1 : page.Value;
-            string URL = "https://localhost:7178/Product/Manager/List";
+            string URL = "https://localhost:7077/Product/Manager/List";
             ResponseBase<Pagination<ProductListDTO>?> response;
             if (name == null)
             {
@@ -74,7 +74,7 @@ namespace MVC.Services.ManagerProduct
         {
             DTO.ProductName = DTO.ProductName == null ? "" : DTO.ProductName.Trim();
             DTO.Image = DTO.Image == null ? "" : DTO.Image.Trim();
-            string URL = "https://localhost:7178/Product/Create";
+            string URL = "https://localhost:7077/Product/Create";
             ResponseBase<bool?> response = await Post<ProductCreateUpdateDTO, bool?>(URL, DTO);
             if ((response.Data == false && response.Code != (int)HttpStatusCode.Conflict) || response.Data == null)
             {
@@ -93,7 +93,7 @@ namespace MVC.Services.ManagerProduct
         }
         public async Task<ResponseBase<Dictionary<string, object>?>> Update(Guid ProductID)
         {
-            string URL = "https://localhost:7178/Product/Detail/" + ProductID;
+            string URL = "https://localhost:7077/Product/Detail/" + ProductID;
             ResponseBase<ProductListDTO?> resPro = await Get<ProductListDTO?>(URL);
             ResponseBase<List<CategoryListDTO>?> resCat = await getListCategory();
             if (resCat.Data == null)
@@ -113,7 +113,7 @@ namespace MVC.Services.ManagerProduct
         {
             DTO.ProductName = DTO.ProductName == null ? "" : DTO.ProductName.Trim();
             DTO.Image = DTO.Image == null ? "" : DTO.Image.Trim();
-            string URL = "https://localhost:7178/Product/Update/" + ProductID;
+            string URL = "https://localhost:7077/Product/Update/" + ProductID;
             ResponseBase<ProductListDTO?>? resPro = await Put<ProductCreateUpdateDTO, ProductListDTO?>(URL, DTO);
             ResponseBase<List<CategoryListDTO>?> resCat = await getListCategory();
             if (resCat.Data == null)
@@ -133,7 +133,7 @@ namespace MVC.Services.ManagerProduct
         }
         public async Task<ResponseBase<Dictionary<string, object>?>> Delete(Guid ProductID)
         {
-            string URL = "https://localhost:7178/Product/Delete/" + ProductID;
+            string URL = "https://localhost:7077/Product/Delete/" + ProductID;
             ResponseBase<bool?> response = await Delete<bool?>(URL);
             if (response.Data == false || response.Data == null)
             {

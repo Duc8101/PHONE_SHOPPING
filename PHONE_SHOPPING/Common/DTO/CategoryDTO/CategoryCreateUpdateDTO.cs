@@ -2,6 +2,6 @@
 {
     public class CategoryCreateUpdateDTO
     {
-        public string Name { get; set; } = null!;
+        public string CategoryName { get; set; } = string.Empty;
     }
 }

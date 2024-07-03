@@ -1,7 +1,7 @@
 ﻿using Common.Base;
 using Microsoft.AspNetCore.Mvc;
+using MVC.Configuration;
 using MVC.Services.Logout;
-using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
@@ -17,11 +17,12 @@ namespace MVC.Controllers
         public async Task<ActionResult> Index()
         {
             HttpContext.Session.Clear();
-            Response.Cookies.Delete("UserID");
+            Response.Cookies.Delete("info");
+            WebConfig.Token = null;
+            WebConfig.IsLogin = false;
             ResponseBase<bool?> response = await _service.Index();
             if (response.Code == (int)HttpStatusCode.OK)
-            {
-                StaticToken.Token = null;
+            {      
                 return Redirect("/Home");
             }
             return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));

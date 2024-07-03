@@ -1,5 +1,5 @@
 ﻿using Common.Base;
-using MVC.Token;
+using MVC.Configuration;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
@@ -15,9 +15,9 @@ namespace MVC.Services.Base
             _client = client;
             MediaTypeWithQualityHeaderValue contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _client.DefaultRequestHeaders.Accept.Add(contentType);
-            if (StaticToken.Token != null)
+            if (WebConfig.Token != null)
             {
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", StaticToken.Token);
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", WebConfig.Token);
             }
         }
 

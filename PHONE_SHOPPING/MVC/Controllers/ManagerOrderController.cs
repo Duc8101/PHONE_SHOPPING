@@ -5,7 +5,6 @@ using Common.DTO.OrderDTO;
 using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.ManagerOrder;
-using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
@@ -55,10 +54,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Detail(Guid? id)
         {
-           /* if (StaticToken.Token == null)
-            {
-                return Redirect("/Home");
-            }*/
+            /* if (StaticToken.Token == null)
+             {
+                 return Redirect("/Home");
+             }*/
             if (id == null)
             {
                 return Redirect("/ManagerOrder");
@@ -76,10 +75,10 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Update(Guid? id)
         {
-/*            if (StaticToken.Token == null)
-            {
-                return Redirect("/Home");
-            }*/
+            /*            if (StaticToken.Token == null)
+                        {
+                            return Redirect("/Home");
+                        }*/
             if (id == null)
             {
                 return Redirect("/ManagerOrder");
@@ -103,10 +102,10 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, OrderUpdateDTO DTO)
         {
-/*            if (StaticToken.Token == null)
-            {
-                return Redirect("/Home");
-            }*/
+            /*            if (StaticToken.Token == null)
+                        {
+                            return Redirect("/Home");
+                        }*/
             ResponseBase<OrderDetailDTO?> response = await _service.Update(id, DTO);
             if (response.Data == null)
             {

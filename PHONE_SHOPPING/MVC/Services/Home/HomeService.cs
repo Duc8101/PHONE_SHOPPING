@@ -14,14 +14,14 @@ namespace MVC.Services.Home
         }
         private async Task<ResponseBase<List<CategoryListDTO>?>> getListCategory()
         {
-            string URL = "https://localhost:7178/Category/List/All";
+            string URL = "https://localhost:7077/Category/List/All";
             return await Get<List<CategoryListDTO>?>(URL);
         }
 
         private async Task<ResponseBase<Pagination<ProductListDTO>?>> getPagedResult(string? name, int? CategoryID, int? page)
         {
             int pageSelected = page == null ? 1 : page.Value;
-            string URL = "https://localhost:7178/Product/Home/List";
+            string URL = "https://localhost:7077/Product/Home/List";
             ResponseBase<Pagination<ProductListDTO>?> response;
             if (name == null)
             {

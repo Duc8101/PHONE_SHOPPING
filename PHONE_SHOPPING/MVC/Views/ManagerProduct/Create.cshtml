@@ -12,7 +12,7 @@
                         <select name="CategoryId" id="CategoryId" class="form-control" style="width: 900px">
                             @foreach (CategoryListDTO category in Model)
                             {
-                                <option value="@category.Id">@category.Name</option>
+                                <option value="@category.CategoryId">@category.CategoryName</option>
                             }
                         </select>
                     </div>

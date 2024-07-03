@@ -14,10 +14,10 @@ namespace API
         public MappingProfile()
         {
             CreateMap<Product, ProductListDTO>()
-                .ForMember(d => d.CategoryName, m => m.MapFrom(source => source.Category.Name));
+                .ForMember(d => d.CategoryName, m => m.MapFrom(source => source.Category.CategoryName));
             CreateMap<Category, CategoryListDTO>();
             CreateMap<User, UserDetailDTO>()
-                .ForMember(d => d.RoleName, m => m.MapFrom(source => source.Role.Name));
+                .ForMember(d => d.RoleName, m => m.MapFrom(source => source.Role.RoleName));
             CreateMap<Cart, CartListDTO>()
                 .ForMember(d => d.ProductName, m => m.MapFrom(source => source.Product.ProductName))
                 .ForMember(d => d.Image, m => m.MapFrom(source => source.Product.Image))
@@ -33,7 +33,7 @@ namespace API
                 .ForMember(d => d.Image, m => m.MapFrom(source => source.Product.Image))
                 .ForMember(d => d.Price, m => m.MapFrom(source => source.Product.Price))
                 .ForMember(d => d.CategoryId, m => m.MapFrom(source => source.Product.CategoryId))
-                .ForMember(d => d.CategoryName, m => m.MapFrom(source => source.Product.Category.Name));
+                .ForMember(d => d.CategoryName, m => m.MapFrom(source => source.Product.Category.CategoryName));
             CreateMap<ProductCreateUpdateDTO, Product>()
                 .ForMember(d => d.ProductName, m => m.MapFrom(source => source.ProductName.Trim()))
                 .ForMember(d => d.Image, m => m.MapFrom(source => source.Image.Trim()));

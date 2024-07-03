@@ -25,7 +25,7 @@ namespace API.Attributes
         public void OnActionExecuting(ActionExecutingContext context)
         {
             var accessor = StaticServiceProvider.Provider.GetService<IHttpContextAccessor>();
-            var dbContext = accessor?.HttpContext?.RequestServices.GetService<PhoneShoppingContext>();
+            var dbContext = accessor?.HttpContext?.RequestServices.GetService<PHONE_STOREContext>();
             if (dbContext == null)
             {
                 ResponseBase response = new ResponseBase("Something wrong when check role", (int)HttpStatusCode.InternalServerError);

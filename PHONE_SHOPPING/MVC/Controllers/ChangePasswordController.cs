@@ -2,7 +2,6 @@
 using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.ChangePassword;
-using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers

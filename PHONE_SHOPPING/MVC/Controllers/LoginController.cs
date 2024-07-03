@@ -1,8 +1,8 @@
 ﻿using Common.Base;
 using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
+using MVC.Configuration;
 using MVC.Services.Login;
-using MVC.Token;
 using System.Net;
 
 namespace MVC.Controllers
@@ -17,29 +17,37 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index()
         {
-            string? UserID = Request.Cookies["UserID"];
-            // if not set cookie or cookie expired
-            if (UserID == null)
+            string? token = Request.Cookies["info"];
+            if(token == null)
             {
                 return View();
             }
-            ResponseBase<UserDetailDTO?> response = await _service.Index(UserID);
+            ResponseBase<UserLoginInfoDTO?> response = await _service.Index(token);
             // if get user failed
             if (response.Data == null)
             {
+                if(response.Code == (int) HttpStatusCode.Conflict)
+                {
+                    if (response.Message.Contains("Invalid"))
+                    {
+                        return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                    }
+                    return View();
+                }
                 return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
-            HttpContext.Session.SetString("UserID", UserID);
+            HttpContext.Session.SetString("UserID", response.Data.UserId.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetInt32("role", response.Data.RoleId);
-            StaticToken.Token = response.Data.Token;
+            WebConfig.Token = response.Data.Access_Token;
+            WebConfig.IsLogin = true;
             return Redirect("/Home");
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(LoginDTO DTO)
         {
-            ResponseBase<UserDetailDTO?> response = await _service.Index(DTO);
+            ResponseBase<UserLoginInfoDTO?> response = await _service.Index(DTO);
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)
@@ -52,13 +60,17 @@ namespace MVC.Controllers
             HttpContext.Session.SetString("UserID", response.Data.UserId.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetInt32("role", response.Data.RoleId);
-            StaticToken.Token = response.Data.Token;
             CookieOptions option = new CookieOptions()
             {
-                Expires = DateTime.Now.AddDays(1)
+                HttpOnly = true,
+                Expires = response.Data.ExpireDate,
+                Secure = true, // Chỉ sử dụng trên kết nối HTTPS
+                SameSite = SameSiteMode.Strict, // Bảo vệ chống lại CSRF
             };
             // add cookie
-            Response.Cookies.Append("UserID", response.Data.UserId.ToString(), option);
+            Response.Cookies.Append("info", response.Data.Access_Token, option);
+            WebConfig.Token = response.Data.Access_Token;
+            WebConfig.IsLogin = true;
             return Redirect("/Home");
         }
     }
