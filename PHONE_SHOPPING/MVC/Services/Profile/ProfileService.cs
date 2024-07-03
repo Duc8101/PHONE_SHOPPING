@@ -10,9 +10,9 @@ namespace MVC.Services.Profile
         {
         }
 
-        public async Task<ResponseBase<UserDetailDTO?>> Index(string UserID)
+        public async Task<ResponseBase<UserDetailDTO?>> Index()
         {
-            string URL = "https://localhost:7077/User/Detail/" + UserID;
+            string URL = "https://localhost:7077/User/Detail";
             return await Get<UserDetailDTO?>(URL);
         }
 

@@ -20,10 +20,20 @@ namespace API.Controllers
             _service = service;
         }
 
-        [HttpGet("{userId}")]
-        public ResponseBase Detail([Required] Guid userId)
+        [HttpGet]
+        [Authorize]
+        public ResponseBase Detail()
         {
-            ResponseBase response = _service.Detail(userId);
+            User? user = (User?)HttpContext.Items["user"];
+            ResponseBase response;
+            if (user == null)
+            {
+                response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = _service.Detail(user.UserId);
+            } 
             Response.StatusCode = response.Code;
             return response;
         }

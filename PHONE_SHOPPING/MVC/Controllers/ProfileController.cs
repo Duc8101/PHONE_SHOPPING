@@ -17,16 +17,7 @@ namespace MVC.Controllers
         }
         public async Task<ActionResult> Index()
         {
-            /*            if (StaticToken.Token == null)
-                        {
-                            return Redirect("/Home");
-                        }*/
-            string? UserID = getUserID();
-            if (UserID == null)
-            {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
-            }
-            ResponseBase<UserDetailDTO?> response = await _service.Index(UserID);
+            ResponseBase<UserDetailDTO?> response = await _service.Index();
             // if get user failed
             if (response.Data == null)
             {

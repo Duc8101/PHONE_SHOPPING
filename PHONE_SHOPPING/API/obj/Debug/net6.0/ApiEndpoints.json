@@ -555,17 +555,11 @@
   {
     "ContainingType": "API.Controllers.UserController",
     "Method": "Detail",
-    "RelativePath": "User/Detail/{userId}",
+    "RelativePath": "User/Detail",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.Guid",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": [
       {
         "Type": "Common.Base.ResponseBase",
