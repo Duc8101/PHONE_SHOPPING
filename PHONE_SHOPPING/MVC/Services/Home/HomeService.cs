@@ -8,10 +8,7 @@ namespace MVC.Services.Home
 {
     public class HomeService : BaseService, IHomeService
     {
-        public HomeService(HttpClient client) : base(client)
-        {
 
-        }
         private async Task<ResponseBase<List<CategoryListDTO>?>> getListCategory()
         {
             string URL = "https://localhost:7077/Category/List/All";

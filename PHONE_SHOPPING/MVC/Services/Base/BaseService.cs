@@ -9,15 +9,14 @@ namespace MVC.Services.Base
 {
     public class BaseService
     {
-        private readonly HttpClient _client;
-        public BaseService(HttpClient client)
+        private readonly HttpClient client = new HttpClient();
+        public BaseService()
         {
-            _client = client;
             MediaTypeWithQualityHeaderValue contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            _client.DefaultRequestHeaders.Accept.Add(contentType);
+            client.DefaultRequestHeaders.Accept.Add(contentType);
             if (WebConfig.Token != null)
             {
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", WebConfig.Token);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", WebConfig.Token);
             }
         }
 
@@ -51,7 +50,7 @@ namespace MVC.Services.Base
                     }
                 }
                 url = url + param;
-                HttpResponseMessage response = await _client.GetAsync(url);
+                HttpResponseMessage response = await client.GetAsync(url);
                 string data = await response.Content.ReadAsStringAsync();
                 ResponseBase<T>? result = Deserialize<T>(data);
                 if (result == null)
@@ -87,7 +86,7 @@ namespace MVC.Services.Base
                     }
                 }
                 url = url + param;
-                HttpResponseMessage response = await _client.DeleteAsync(url);
+                HttpResponseMessage response = await client.DeleteAsync(url);
                 string data = await response.Content.ReadAsStringAsync();
                 ResponseBase<T>? result = Deserialize<T>(data);
                 if (result == null)
@@ -108,7 +107,7 @@ namespace MVC.Services.Base
             {
                 string body = JsonSerializer.Serialize(obj);
                 StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.PostAsync(url, content);
+                HttpResponseMessage response = await client.PostAsync(url, content);
                 string data = await response.Content.ReadAsStringAsync();
                 ResponseBase<Tout>? result = Deserialize<Tout>(data);
                 if (result == null)
@@ -129,7 +128,7 @@ namespace MVC.Services.Base
             {
                 string body = JsonSerializer.Serialize(obj);
                 StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.PutAsync(url, content);
+                HttpResponseMessage response = await client.PutAsync(url, content);
                 string data = await response.Content.ReadAsStringAsync();
                 ResponseBase<Tout>? result = Deserialize<Tout>(data);
                 if (result == null)

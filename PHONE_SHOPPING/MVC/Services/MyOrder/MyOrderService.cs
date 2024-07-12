@@ -9,9 +9,6 @@ namespace MVC.Services.MyOrder
 {
     public class MyOrderService : BaseService, IMyOrderService
     {
-        public MyOrderService(HttpClient client) : base(client)
-        {
-        }
 
         public async Task<ResponseBase<Pagination<OrderListDTO>?>> Index(int? page)
         {

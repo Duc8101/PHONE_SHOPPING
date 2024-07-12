@@ -9,9 +9,6 @@ namespace MVC.Services.ManagerProduct
 {
     public class ManagerProductService : BaseService, IManagerProductService
     {
-        public ManagerProductService(HttpClient client) : base(client)
-        {
-        }
 
         private async Task<ResponseBase<List<CategoryListDTO>?>> getListCategory()
         {

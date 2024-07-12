@@ -7,9 +7,6 @@ namespace MVC.Services.Cart
 {
     public class CartService : BaseService, ICartService
     {
-        public CartService(HttpClient client) : base(client)
-        {
-        }
 
         public async Task<ResponseBase<bool?>> Create(CartCreateDTO DTO)
         {

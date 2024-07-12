@@ -10,9 +10,6 @@ namespace MVC.Services.ManagerOrder
 {
     public class ManagerOrderService : BaseService, IManagerOrderService
     {
-        public ManagerOrderService(HttpClient client) : base(client)
-        {
-        }
 
         public async Task<ResponseBase<Dictionary<string, object>?>> Index(string? status, int? page)
         {

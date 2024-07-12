@@ -7,9 +7,6 @@ namespace MVC.Services.ManagerCategory
 {
     public class ManagerCategoryService : BaseService, IManagerCategoryService
     {
-        public ManagerCategoryService(HttpClient client) : base(client)
-        {
-        }
 
         public async Task<ResponseBase<Pagination<CategoryListDTO>?>> Index(string? name, int? page)
         {

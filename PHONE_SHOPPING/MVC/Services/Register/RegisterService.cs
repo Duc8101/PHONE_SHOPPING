@@ -6,10 +6,7 @@ namespace MVC.Services.Register
 {
     public class RegisterService : BaseService, IRegisterService
     {
-        public RegisterService(HttpClient client) : base(client)
-        {
 
-        }
         public async Task<ResponseBase<bool?>> Index(UserCreateDTO DTO)
         {
             string URL = "https://localhost:7077/User/Create";

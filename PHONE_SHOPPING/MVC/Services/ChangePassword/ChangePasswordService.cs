@@ -6,9 +6,6 @@ namespace MVC.Services.ChangePassword
 {
     public class ChangePasswordService : BaseService, IChangePasswordService
     {
-        public ChangePasswordService(HttpClient client) : base(client)
-        {
-        }
 
         public async Task<ResponseBase<bool?>> Index(ChangePasswordDTO DTO)
         {

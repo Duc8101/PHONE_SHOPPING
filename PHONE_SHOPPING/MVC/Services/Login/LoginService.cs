@@ -8,9 +8,6 @@ namespace MVC.Services.Login
 {
     public class LoginService : BaseService, ILoginService
     {
-        public LoginService(HttpClient client) : base(client)
-        {
-        }
 
         public async Task<ResponseBase<UserLoginInfoDTO?>> Index(string token)
         {

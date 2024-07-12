@@ -34,7 +34,6 @@ namespace MVC
             builder.Services.AddScoped<IManagerCategoryService, ManagerCategoryService>();
             builder.Services.AddScoped<IManagerOrderService, ManagerOrderService>();
             builder.Services.AddScoped<IManagerProductService, ManagerProductService>();
-            builder.Services.AddScoped<HttpClient>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

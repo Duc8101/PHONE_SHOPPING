@@ -6,9 +6,6 @@ namespace MVC.Services.Profile
 {
     public class ProfileService : BaseService, IProfileService
     {
-        public ProfileService(HttpClient client) : base(client)
-        {
-        }
 
         public async Task<ResponseBase<UserDetailDTO?>> Index()
         {

@@ -5,10 +5,6 @@ namespace MVC.Services.Logout
 {
     public class LogoutService : BaseService, ILogoutService
     {
-        public LogoutService(HttpClient client) : base(client)
-        {
-        }
-
         public async Task<ResponseBase<bool?>> Index()
         {
             string URL = "https://localhost:7077/User/Logout";
