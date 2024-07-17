@@ -12,7 +12,7 @@ namespace API.Attributes
 {
     public class RoleAttribute : Attribute, IActionFilter
     {
-        private RoleEnum[] Roles { get; set; }
+        private RoleEnum[] Roles { get; }
         public RoleAttribute(params RoleEnum[] roles)
         {
             Roles = roles;
@@ -24,8 +24,8 @@ namespace API.Attributes
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var accessor = StaticServiceProvider.Provider.GetService<IHttpContextAccessor>();
-            var dbContext = accessor?.HttpContext?.RequestServices.GetService<PHONE_STOREContext>();
+            var accessor = StaticServiceProvider.Provider.GetRequiredService<IHttpContextAccessor>();
+            var dbContext = accessor.HttpContext?.RequestServices.GetRequiredService<PHONE_STOREContext>();
             if (dbContext == null)
             {
                 ResponseBase response = new ResponseBase("Something wrong when check role", (int)HttpStatusCode.InternalServerError);
