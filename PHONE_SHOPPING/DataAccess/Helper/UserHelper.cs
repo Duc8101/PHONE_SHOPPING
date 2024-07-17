@@ -1,7 +1,10 @@
 ﻿using Common.Entity;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using MimeKit;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,6 +13,26 @@ namespace DataAccess.Helper
     public class UserHelper
     {
         private const int MAX_SIZE = 8; // randow password 8 characters
+
+        public static string getAccessToken(User user)
+        {
+            byte[] key = Encoding.UTF8.GetBytes("Yh2k7QSu4l8CZg5p6X3Pna9L0Miy4D3Bvt0JVr87UcOj69Kqw5R2Nmf4FWs03Hdx");
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
+            SigningCredentials credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            //  create list claim  to store user's information
+            List<Claim> list = new List<Claim>()
+            {
+                new Claim("id", user.UserId.ToString()),
+                new Claim("role", user.Role.RoleName),
+            };
+            JwtSecurityToken token = new JwtSecurityToken("JWTAuthenticationServer",
+                "JWTServicePostmanClient", list, expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials);
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            // get access token
+            return handler.WriteToken(token);
+        }
+
         public static string HashPassword(string password)
         {
             // using SHA256 for hash password

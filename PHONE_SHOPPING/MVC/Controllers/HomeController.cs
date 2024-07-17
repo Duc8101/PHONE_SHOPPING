@@ -12,14 +12,14 @@ namespace MVC.Controllers
         {
             _service = service;
         }
-        public async Task<ActionResult> Index(string? name, int? CategoryID, int? page)
+        public async Task<ActionResult> Index(string? name, int? categoryId, int? page)
         {
             int? role = getRole();
             if (role == (int)RoleEnum.Admin)
             {
                 return Redirect("/ManagerProduct");
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.Index(name, CategoryID, page);
+            ResponseBase<Dictionary<string, object>?> result = await _service.Index(name, categoryId, page);
             if (result.Data == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, result.Message, result.Code));

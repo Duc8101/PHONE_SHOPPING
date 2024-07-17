@@ -1,5 +1,5 @@
 ﻿@using Common.DTO.CategoryDTO;
-@using Common.Pagination
+@using Common.Paginations
 @model Dictionary<string, object>
 @{
     Pagination<CategoryListDTO> result = (Pagination<CategoryListDTO>)Model["result"];
@@ -27,7 +27,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (CategoryListDTO DTO in result.Results)
+                            @foreach (CategoryListDTO DTO in result.List)
                             {
                                 <tr>
                                     <td>@No</td>

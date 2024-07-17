@@ -16,13 +16,13 @@ namespace API.Services.Carts
 
         }
 
-        public ResponseBase List(Guid UserID)
+        public ResponseBase List(Guid userId)
         {
             try
             {
-                List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserID && c.IsCheckOut == false && c.IsDeleted == false).ToList();
+                List<Cart> list = _context.Carts.Include(c => c.Product).Where(c => c.UserId == userId && c.IsCheckOut == false && c.IsDeleted == false).ToList();
                 List<CartListDTO> data = _mapper.Map<List<CartListDTO>>(list);
-                return new ResponseBase(data, string.Empty);
+                return new ResponseBase(data);
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
 ﻿using Common.Base;
 using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
-using Common.Pagination;
+using Common.Paginations;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.MyOrder;
 using System.Net;
@@ -36,8 +36,8 @@ namespace MVC.Controllers
                         {
                             return Redirect("/Home");
                         }*/
-            string? UserID = getUserID();
-            if (UserID == null)
+            string? userId = getUserId();
+            if (userId == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
@@ -45,7 +45,7 @@ namespace MVC.Controllers
             {
                 return Redirect("/MyOrder");
             }
-            ResponseBase<OrderDetailDTO?> response = await _service.Detail(id.Value, Guid.Parse(UserID));
+            ResponseBase<OrderDetailDTO?> response = await _service.Detail(id.Value, Guid.Parse(userId));
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)

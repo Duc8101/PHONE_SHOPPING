@@ -100,13 +100,13 @@
   {
     "ContainingType": "API.Controllers.CategoryController",
     "Method": "Detail",
-    "RelativePath": "Category/Detail/{ID}",
+    "RelativePath": "Category/Detail/{categoryId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "ID",
+        "Name": "categoryId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -177,13 +177,13 @@
   {
     "ContainingType": "API.Controllers.CategoryController",
     "Method": "Update",
-    "RelativePath": "Category/Update/{ID}",
+    "RelativePath": "Category/Update/{categoryId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "ID",
+        "Name": "categoryId",
         "Type": "System.Int32",
         "IsRequired": true
       },
@@ -234,13 +234,13 @@
   {
     "ContainingType": "API.Controllers.OrderController",
     "Method": "Detail",
-    "RelativePath": "Order/Detail/{OrderID}",
+    "RelativePath": "Order/Detail/{orderId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "OrderID",
+        "Name": "orderId",
         "Type": "System.Guid",
         "IsRequired": true
       }
@@ -291,13 +291,13 @@
   {
     "ContainingType": "API.Controllers.OrderController",
     "Method": "Update",
-    "RelativePath": "Order/Update/{OrderID}",
+    "RelativePath": "Order/Update/{orderId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "OrderID",
+        "Name": "orderId",
         "Type": "System.Guid",
         "IsRequired": true
       },
@@ -348,13 +348,13 @@
   {
     "ContainingType": "API.Controllers.ProductController",
     "Method": "Delete",
-    "RelativePath": "Product/Delete/{ProductID}",
+    "RelativePath": "Product/Delete/{productId}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "ProductID",
+        "Name": "productId",
         "Type": "System.Guid",
         "IsRequired": true
       }
@@ -374,13 +374,13 @@
   {
     "ContainingType": "API.Controllers.ProductController",
     "Method": "Detail",
-    "RelativePath": "Product/Detail/{ProductID}",
+    "RelativePath": "Product/Detail/{productId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "ProductID",
+        "Name": "productId",
         "Type": "System.Guid",
         "IsRequired": true
       }
@@ -411,7 +411,7 @@
         "IsRequired": false
       },
       {
-        "Name": "CategoryID",
+        "Name": "categoryId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -447,7 +447,7 @@
         "IsRequired": false
       },
       {
-        "Name": "CategoryID",
+        "Name": "categoryId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -472,13 +472,13 @@
   {
     "ContainingType": "API.Controllers.ProductController",
     "Method": "Update",
-    "RelativePath": "Product/Update/{ProductID}",
+    "RelativePath": "Product/Update/{productId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "ProductID",
+        "Name": "productId",
         "Type": "System.Guid",
         "IsRequired": true
       },

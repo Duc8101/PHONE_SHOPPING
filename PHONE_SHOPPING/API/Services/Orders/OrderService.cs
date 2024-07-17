@@ -7,7 +7,7 @@ using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
 using Common.Entity;
 using Common.Enum;
-using Common.Pagination;
+using Common.Paginations;
 using DataAccess.DBContext;
 using DataAccess.Helper;
 using Microsoft.EntityFrameworkCore;
@@ -106,14 +106,14 @@ namespace API.Services.Orders
             return query;
         }
 
-        public ResponseBase List(Guid? UserID, string? status, bool isAdmin, int page)
+        public ResponseBase List(Guid? userId, string? status, bool isAdmin, int page)
         {
             try
             {
-                IQueryable<Order> query = getQuery(UserID, status);
+                IQueryable<Order> query = getQuery(userId, status);
                 List<Order> list = query.Skip(PageSizeConst.MAX_ORDER_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_ORDER_IN_PAGE)
                     .ToList();
-                List<OrderListDTO> result = _mapper.Map<List<OrderListDTO>>(list);
+                List<OrderListDTO> DTO = _mapper.Map<List<OrderListDTO>>(list);
                 int count = query.Count();
                 int number = (int)Math.Ceiling((double)count / PageSizeConst.MAX_ORDER_IN_PAGE);
                 int prePage = page - 1;
@@ -150,13 +150,13 @@ namespace API.Services.Orders
                 {
                     PageSelected = page,
                     NumberPage = number,
-                    Results = result,
+                    List = DTO,
                     FIRST_URL = firstURL,
                     LAST_URL = lastURL,
                     NEXT_URL = nextURL,
                     PRE_URL = preURL,
                 };
-                return new ResponseBase(data, string.Empty);
+                return new ResponseBase(data);
             }
             catch (Exception ex)
             {
@@ -164,7 +164,7 @@ namespace API.Services.Orders
             }
         }
 
-        public ResponseBase Detail(Guid OrderID, Guid? userId)
+        public ResponseBase Detail(Guid orderId, Guid? userId)
         {
             try
             {
@@ -172,11 +172,11 @@ namespace API.Services.Orders
                 Order? order;
                 if (userId == null)
                 {
-                    order = query.SingleOrDefault(o => o.OrderId == OrderID);
+                    order = query.SingleOrDefault(o => o.OrderId == orderId);
                 }
                 else
                 {
-                    order = query.SingleOrDefault(o => o.OrderId == OrderID && o.UserId == userId);
+                    order = query.SingleOrDefault(o => o.OrderId == orderId && o.UserId == userId);
                 }
                 if (order == null)
                 {
@@ -185,9 +185,9 @@ namespace API.Services.Orders
                 List<OrderDetail> list = order.OrderDetails.ToList();
                 List<DetailDTO> DTOs = _mapper.Map<List<DetailDTO>>(list);
                 OrderDetailDTO data = _mapper.Map<OrderDetailDTO>(order);
-                data.OrderId = OrderID;
+                data.OrderId = orderId;
                 data.DetailDTOs = DTOs;
-                return new ResponseBase(data, string.Empty);
+                return new ResponseBase(data);
             }
             catch (Exception ex)
             {
@@ -195,12 +195,12 @@ namespace API.Services.Orders
             }
         }
 
-        public async Task<ResponseBase> Update(Guid OrderID, OrderUpdateDTO DTO)
+        public async Task<ResponseBase> Update(Guid orderId, OrderUpdateDTO DTO)
         {
             try
             {
                 Order? order = _context.Orders.Include(o => o.User).Include(o => o.OrderDetails).ThenInclude(o => o.Product)
-                    .ThenInclude(o => o.Category).FirstOrDefault(o => o.OrderId == OrderID);
+                    .ThenInclude(o => o.Category).SingleOrDefault(o => o.OrderId == orderId);
                 if (order == null)
                 {
                     return new ResponseBase("Not found order", (int)HttpStatusCode.NotFound);
@@ -209,7 +209,7 @@ namespace API.Services.Orders
                 List<DetailDTO> DTOs = _mapper.Map<List<DetailDTO>>(list);
                 OrderDetailDTO data = new OrderDetailDTO()
                 {
-                    OrderId = OrderID,
+                    OrderId = orderId,
                     UserId = order.UserId,
                     Username = order.User.Username,
                     Status = order.Status,

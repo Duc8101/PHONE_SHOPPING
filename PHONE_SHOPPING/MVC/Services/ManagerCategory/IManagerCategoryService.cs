@@ -1,6 +1,6 @@
 ﻿using Common.Base;
 using Common.DTO.CategoryDTO;
-using Common.Pagination;
+using Common.Paginations;
 
 namespace MVC.Services.ManagerCategory
 {

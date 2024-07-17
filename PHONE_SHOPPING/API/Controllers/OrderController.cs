@@ -4,6 +4,7 @@ using Common.Base;
 using Common.DTO.OrderDTO;
 using Common.Entity;
 using Common.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -13,7 +14,7 @@ namespace API.Controllers
     [Route("[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class OrderController : ControllerBase
+    public class OrderController : BaseAPIController
     {
         private readonly IOrderService _service;
         public OrderController(IOrderService service)
@@ -25,15 +26,15 @@ namespace API.Controllers
         [Role(RoleEnum.Customer)]
         public async Task<ResponseBase> Create([Required] OrderCreateDTO DTO)
         {
-            User? user = (User?)HttpContext.Items["user"];
+            string? userId = getUserId();
             ResponseBase response;
-            if (user == null)
+            if (userId == null)
             {
                 response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                response = await _service.Create(DTO, user.UserId);
+                response = await _service.Create(DTO, Guid.Parse(userId));
             }
             Response.StatusCode = response.Code;
             return response;
@@ -42,47 +43,47 @@ namespace API.Controllers
         [HttpGet]
         public ResponseBase List(string? status, [Required] int page = 1)
         {
+            string? userId = getUserId();
             ResponseBase response;
-            User? user = (User?)HttpContext.Items["user"];
-            if (user == null)
+            if (userId == null)
             {
                 response = new ResponseBase("Not found user id", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                bool isAdmin = user.RoleId == (int)RoleEnum.Admin;
-                response = _service.List(isAdmin ? null : user.UserId, status, isAdmin, page);
+                bool isAdmin = base.isAdmin();
+                response = _service.List(isAdmin ? null : Guid.Parse(userId), status, isAdmin, page);
                 Response.StatusCode = response.Code;
             }
             return response;
         }
 
-        [HttpGet("{OrderID}")]
-        public ResponseBase Detail([Required] Guid OrderID)
+        [HttpGet("{orderId}")]
+        public ResponseBase Detail([Required] Guid orderId)
         {
-            User? user = (User?)HttpContext.Items["user"];
+            string? userId = getUserId();
             ResponseBase response;
-            if (user == null)
+            if (userId == null)
             {
                 response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
             }
-            else if(user.RoleId == (int) RoleEnum.Admin)
+            else if(isAdmin())
             {
-                response = _service.Detail(OrderID, null);
+                response = _service.Detail(orderId, null);
             }
             else
             {
-                response = _service.Detail(OrderID, user.UserId);
+                response = _service.Detail(orderId, Guid.Parse(userId));
             }          
             Response.StatusCode = response.Code;
             return response;
         }
 
-        [HttpPut("{OrderID}")]
+        [HttpPut("{orderId}")]
         [Role(RoleEnum.Admin)]
-        public async Task<ResponseBase> Update([Required] Guid OrderID, [Required] OrderUpdateDTO DTO)
+        public async Task<ResponseBase> Update([Required] Guid orderId, [Required] OrderUpdateDTO DTO)
         {
-            ResponseBase response = await _service.Update(OrderID, DTO);
+            ResponseBase response = await _service.Update(orderId, DTO);
             Response.StatusCode = response.Code;
             return response;
         }

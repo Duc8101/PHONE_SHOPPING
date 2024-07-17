@@ -69,7 +69,7 @@ namespace API.Services.Users
                 {
                     clientId = client.ClientId;
                 }
-                string AccessToken = getAccessToken(user);
+                string AccessToken = UserHelper.getAccessToken(user);
                 UserClient? userClient = _context.UserClients.FirstOrDefault(uc => uc.UserId == user.UserId && uc.ClientId == clientId);
                 // nếu chưa đăng nhập trên thiết bị
                 if (userClient == null)
@@ -121,29 +121,11 @@ namespace API.Services.Users
             }
         }
 
-        private string getAccessToken(User user)
-        {
-            byte[] key = Encoding.UTF8.GetBytes("Yh2k7QSu4l8CZg5p6X3Pna9L0Miy4D3Bvt0JVr87UcOj69Kqw5R2Nmf4FWs03Hdx");
-            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
-            SigningCredentials credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            //  create list claim  to store user's information
-            List<Claim> list = new List<Claim>()
-            {
-                new Claim("id", user.UserId.ToString()),
-            };
-            JwtSecurityToken token = new JwtSecurityToken("JWTAuthenticationServer",
-                "JWTServicePostmanClient", list, expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials);
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            // get access token
-            return handler.WriteToken(token);
-        }
-
-        public ResponseBase Logout(Guid UserID)
+        public ResponseBase Logout(Guid userId)
         {
             try
             {
-                List<Cart> list = _context.Carts.Where(c => c.UserId == UserID && c.IsCheckOut == false && c.IsDeleted == false).ToList();
+                List<Cart> list = _context.Carts.Where(c => c.UserId == userId && c.IsCheckOut == false && c.IsDeleted == false).ToList();
                 foreach (Cart cart in list)
                 {
                     cart.IsDeleted = true;
@@ -221,10 +203,15 @@ namespace API.Services.Users
             }
         }
 
-        public ResponseBase Update(User user, UserUpdateDTO DTO)
+        public ResponseBase Update(Guid userId, UserUpdateDTO DTO)
         {
             try
             {
+                User? user = _context.Users.Find(userId);
+                if (user == null)
+                {
+                    return new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
+                }
                 user.FullName = DTO.FullName.Trim();
                 user.Phone = DTO.Phone;
                 user.Email = DTO.Email.Trim();
@@ -244,10 +231,15 @@ namespace API.Services.Users
             }
         }
 
-        public ResponseBase ChangePassword(User user, ChangePasswordDTO DTO)
+        public ResponseBase ChangePassword(Guid userId, ChangePasswordDTO DTO)
         {
             try
             {
+                User? user = _context.Users.Find(userId);
+                if (user == null)
+                {
+                    return new ResponseBase(false, "Not found user", (int)HttpStatusCode.NotFound);
+                }
                 if (DTO.CurrentPassword == null)
                 {
                     return new ResponseBase(false, "Current password must not contain all space", (int)HttpStatusCode.Conflict);

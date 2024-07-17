@@ -8,7 +8,7 @@ namespace API.Services.Categories
         ResponseBase ListAll();
         ResponseBase ListPaged(string? name, int page);
         ResponseBase Create(CategoryCreateUpdateDTO DTO);
-        ResponseBase Detail(int ID);
-        ResponseBase Update(int ID, CategoryCreateUpdateDTO DTO);
+        ResponseBase Detail(int categoryId);
+        ResponseBase Update(int categoryId, CategoryCreateUpdateDTO DTO);
     }
 }

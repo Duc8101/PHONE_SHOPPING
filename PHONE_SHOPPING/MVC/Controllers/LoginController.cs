@@ -36,7 +36,7 @@ namespace MVC.Controllers
                 }
                 return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
-            HttpContext.Session.SetString("UserID", response.Data.UserId.ToString());
+            HttpContext.Session.SetString("userId", response.Data.UserId.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetInt32("role", response.Data.RoleId);
             WebConfig.Token = response.Data.Access_Token;
@@ -57,7 +57,7 @@ namespace MVC.Controllers
                 }
                 return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
-            HttpContext.Session.SetString("UserID", response.Data.UserId.ToString());
+            HttpContext.Session.SetString("userId", response.Data.UserId.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetInt32("role", response.Data.RoleId);
             CookieOptions option = new CookieOptions()

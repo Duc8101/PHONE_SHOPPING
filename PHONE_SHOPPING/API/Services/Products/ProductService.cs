@@ -4,7 +4,7 @@ using Common.Base;
 using Common.Const;
 using Common.DTO.ProductDTO;
 using Common.Entity;
-using Common.Pagination;
+using Common.Paginations;
 using DataAccess.DBContext;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -18,21 +18,21 @@ namespace API.Services.Products
 
         }
 
-        private IQueryable<Product> getQuery(string? name, int? CategoryID)
+        private IQueryable<Product> getQuery(string? name, int? categoryId)
         {
             IQueryable<Product> query = _context.Products.Include(p => p.Category).Where(p => p.IsDeleted == false);
             if (name != null && name.Trim().Length > 0)
             {
                 query = query.Where(p => p.ProductName.ToLower().Contains(name.Trim().ToLower()) || p.Category.CategoryName.ToLower().Contains(name.Trim().ToLower()));
             }
-            if (CategoryID.HasValue)
+            if (categoryId.HasValue)
             {
-                query = query.Where(p => p.CategoryId == CategoryID);
+                query = query.Where(p => p.CategoryId == categoryId);
             }
             return query;
         }
 
-        public ResponseBase List(bool isAdmin, string? name, int? CategoryID, int page)
+        public ResponseBase List(bool isAdmin, string? name, int? categoryId, int page)
         {
             int prePage = page - 1;
             int nextPage = page + 1;
@@ -42,11 +42,11 @@ namespace API.Services.Products
             string lastURL = isAdmin ? "/ManagerProduct" : "/Home";
             try
             {
-                IQueryable<Product> query = getQuery(name, CategoryID);
+                IQueryable<Product> query = getQuery(name, categoryId);
                 int count = query.Count();
                 int numberPage = (int)Math.Ceiling((double)count / PageSizeConst.MAX_PRODUCT_IN_PAGE);
                 // if not choose category and name
-                if (CategoryID == null && (name == null || name.Trim().Length == 0))
+                if (categoryId == null && (name == null || name.Trim().Length == 0))
                 {
                     preURL = preURL + "?page=" + prePage;
                     nextURL = nextURL + "?page=" + nextPage;
@@ -56,12 +56,12 @@ namespace API.Services.Products
                 {
                     if (name == null || name.Trim().Length == 0)
                     {
-                        preURL = preURL + "?CategoryID=" + CategoryID + "&page=" + prePage;
-                        nextURL = nextURL + "?CategoryID=" + CategoryID + "&page=" + nextPage;
-                        firstURL = firstURL + "?CategoryID=" + CategoryID;
-                        lastURL = lastURL + "?CategoryID=" + CategoryID + "&page=" + numberPage;
+                        preURL = preURL + "?categoryId=" + categoryId + "&page=" + prePage;
+                        nextURL = nextURL + "?categoryId=" + categoryId + "&page=" + nextPage;
+                        firstURL = firstURL + "?categoryId=" + categoryId;
+                        lastURL = lastURL + "?categoryId=" + categoryId + "&page=" + numberPage;
                     }
-                    else if (CategoryID == null)
+                    else if (categoryId == null)
                     {
                         preURL = preURL + "?name=" + name.Trim() + "&page=" + prePage;
                         nextURL = nextURL + "?name=" + name.Trim() + "&page=" + nextPage;
@@ -70,26 +70,26 @@ namespace API.Services.Products
                     }
                     else
                     {
-                        preURL = preURL + "?name=" + name.Trim() + "&CategoryID=" + CategoryID + "&page=" + prePage;
-                        nextURL = nextURL + "?name=" + name.Trim() + "&CategoryID=" + CategoryID + "&page=" + nextPage;
-                        firstURL = firstURL + "?name=" + name.Trim() + "&CategoryID=" + CategoryID;
-                        lastURL = lastURL + "?name=" + name.Trim() + "&CategoryID=" + CategoryID + "&page=" + numberPage;
+                        preURL = preURL + "?name=" + name.Trim() + "&categoryId=" + categoryId + "&page=" + prePage;
+                        nextURL = nextURL + "?name=" + name.Trim() + "&categoryId=" + categoryId + "&page=" + nextPage;
+                        firstURL = firstURL + "?name=" + name.Trim() + "&categoryId=" + categoryId;
+                        lastURL = lastURL + "?name=" + name.Trim() + "&categoryId=" + categoryId + "&page=" + numberPage;
                     }
                 }
-                List<Product> listProduct = query.OrderByDescending(p => p.UpdateAt).Skip(PageSizeConst.MAX_PRODUCT_IN_PAGE * (page - 1))
+                List<Product> list= query.OrderByDescending(p => p.UpdateAt).Skip(PageSizeConst.MAX_PRODUCT_IN_PAGE * (page - 1))
                     .Take(PageSizeConst.MAX_PRODUCT_IN_PAGE).ToList();
-                List<ProductListDTO> productDTOs = _mapper.Map<List<ProductListDTO>>(listProduct);
-                Pagination<ProductListDTO> result = new Pagination<ProductListDTO>()
+                List<ProductListDTO> DTO = _mapper.Map<List<ProductListDTO>>(list);
+                Pagination<ProductListDTO> data = new Pagination<ProductListDTO>()
                 {
                     PageSelected = page,
-                    Results = productDTOs,
+                    List = DTO,
                     PRE_URL = preURL,
                     LAST_URL = lastURL,
                     NEXT_URL = nextURL,
                     FIRST_URL = firstURL,
                     NumberPage = numberPage,
                 };
-                return new ResponseBase(result, string.Empty);
+                return new ResponseBase(data);
             }
             catch (Exception ex)
             {
@@ -128,11 +128,11 @@ namespace API.Services.Products
             }
         }
 
-        public ResponseBase Detail(Guid ProductID)
+        public ResponseBase Detail(Guid productId)
         {
             try
             {
-                Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
+                Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == productId && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase("Not found product", (int)HttpStatusCode.NotFound);
@@ -146,12 +146,12 @@ namespace API.Services.Products
             }
         }
 
-        public ResponseBase Update(Guid ProductID, ProductCreateUpdateDTO DTO)
+        public ResponseBase Update(Guid productId, ProductCreateUpdateDTO DTO)
         {
             try
             {
                 Product? product = _context.Products.Include(p => p.Category).Include(p => p.OrderDetails)
-                    .FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
+                    .FirstOrDefault(p => p.ProductId == productId && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase("Not found product", (int)HttpStatusCode.NotFound);
@@ -176,7 +176,7 @@ namespace API.Services.Products
                 {
                     return new ResponseBase(data, "You have to input image link", (int)HttpStatusCode.Conflict);
                 }
-                if (_context.Products.Any(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false && p.ProductId != ProductID))
+                if (_context.Products.Any(p => p.ProductName == DTO.ProductName.Trim() && p.IsDeleted == false && p.ProductId != productId))
                 {
                     return new ResponseBase(data, "Product existed", (int)HttpStatusCode.Conflict);
                 }
@@ -191,11 +191,11 @@ namespace API.Services.Products
             }
         }
 
-        public ResponseBase Delete(Guid ProductID)
+        public ResponseBase Delete(Guid productId)
         {
             try
             {
-                Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == ProductID && p.IsDeleted == false);
+                Product? product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == productId && p.IsDeleted == false);
                 if (product == null)
                 {
                     return new ResponseBase(false, "Not found product", (int)HttpStatusCode.NotFound);

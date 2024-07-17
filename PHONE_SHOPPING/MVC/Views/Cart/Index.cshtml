@@ -35,12 +35,12 @@
                                 @foreach (CartListDTO DTO in Model)
                                 {
                                     <tr>
-                                        <td><a class="btn btn-link" href="/Cart/Create?ProductID=@DTO.ProductId">@DTO.ProductName</a></td>
+                                        <td><a class="btn btn-link" href="/Cart/Create?productId=@DTO.ProductId">@DTO.ProductName</a></td>
                                         <td><img src="@DTO.Image" alt="" width="50" height="50"></td>
                                         <td>@DTO.Quantity</td>
                                         <td>@DTO.Price</td>
                                         <td>@(DTO.Price * DTO.Quantity)</td>
-                                        <td><a href="/Cart/Remove?ProductID=@DTO.ProductId" class="btn btn-danger" onclick="return confirm('Do you sure you want to remove?')"> Delete</a></td>
+                                        <td><a href="/Cart/Remove?productId=@DTO.ProductId" class="btn btn-danger" onclick="return confirm('Do you sure you want to remove?')"> Delete</a></td>
                                     </tr>
 
                                     sum = sum + DTO.Price * DTO.Quantity;

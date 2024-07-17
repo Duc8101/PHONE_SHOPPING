@@ -1,7 +1,7 @@
 ﻿using Common.Base;
 using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
-using Common.Pagination;
+using Common.Paginations;
 using MVC.Services.Base;
 using System.Net;
 

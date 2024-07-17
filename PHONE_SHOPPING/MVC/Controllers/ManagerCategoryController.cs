@@ -1,6 +1,6 @@
 ﻿using Common.Base;
 using Common.DTO.CategoryDTO;
-using Common.Pagination;
+using Common.Paginations;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.ManagerCategory;
 using System.Net;

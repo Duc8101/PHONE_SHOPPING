@@ -9,9 +9,9 @@ namespace MVC.Controllers
             return HttpContext.Session.GetInt32("role");
         }
 
-        internal string? getUserID()
+        internal string? getUserId()
         {
-            return HttpContext.Session.GetString("UserID");
+            return HttpContext.Session.GetString("userId");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@using Common.Const;
 @using Common.DTO.OrderDTO;
-@using Common.Pagination
+@using Common.Paginations
 @model Dictionary<string, object>
 @{
     Pagination<OrderListDTO> result = (Pagination<OrderListDTO>)Model["result"];
@@ -36,7 +36,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (OrderListDTO order in result.Results)
+                        @foreach (OrderListDTO order in result.List)
                         {
                             <tr>
                                 <td>@No</td>

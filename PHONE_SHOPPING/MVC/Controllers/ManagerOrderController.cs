@@ -31,6 +31,7 @@ namespace MVC.Controllers
             }
             return View(response.Data);
         }
+
         public async Task<ActionResult> View(Guid? id)
         {
             /*if (StaticToken.Token == null)
@@ -73,6 +74,7 @@ namespace MVC.Controllers
             }
             return View(response.Data);
         }
+
         public async Task<ActionResult> Update(Guid? id)
         {
             /*            if (StaticToken.Token == null)

@@ -29,19 +29,19 @@ namespace MVC.Controllers
             }
             return View(response.Data);
         }
-        public async Task<ActionResult> Create(Guid? ProductID)
+        public async Task<ActionResult> Create(Guid? productId)
         {
             /*if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
             }*/
-            if (ProductID == null)
+            if (productId == null)
             {
                 return Redirect("/Home");
             }
             CartCreateDTO DTO = new CartCreateDTO()
             {
-                ProductId = ProductID.Value,
+                ProductId = productId.Value,
             };
             ResponseBase<bool?> response = await _service.Create(DTO);
             if (response.Data == true)
@@ -51,23 +51,24 @@ namespace MVC.Controllers
             return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
         }
 
-        public async Task<ActionResult> Remove(Guid? ProductID)
+        public async Task<ActionResult> Remove(Guid? productId)
         {
             /*if (StaticToken.Token == null)
             {
                 return Redirect("/Home");
             }*/
-            if (ProductID == null)
+            if (productId == null)
             {
                 return Redirect("/Home");
             }
-            ResponseBase<bool?> response = await _service.Remove(ProductID.Value);
+            ResponseBase<bool?> response = await _service.Remove(productId.Value);
             if (response.Data == true)
             {
                 return Redirect("/Cart");
             }
             return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
         }
+
         public async Task<ActionResult> Checkout()
         {
             /* if (StaticToken.Token == null)

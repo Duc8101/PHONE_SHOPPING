@@ -8,8 +8,8 @@ namespace MVC.Services.ManagerOrder
     public interface IManagerOrderService
     {
         Task<ResponseBase<Dictionary<string, object>?>> Index(string? status, int? page);
-        Task<ResponseBase<UserDetailDTO?>> View(Guid UserID);
-        Task<ResponseBase<OrderDetailDTO?>> Detail(Guid OrderID);
-        Task<ResponseBase<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO);
+        Task<ResponseBase<UserDetailDTO?>> View(Guid userId);
+        Task<ResponseBase<OrderDetailDTO?>> Detail(Guid orderId);
+        Task<ResponseBase<OrderDetailDTO?>> Update(Guid orderId, OrderUpdateDTO DTO);
     }
 }

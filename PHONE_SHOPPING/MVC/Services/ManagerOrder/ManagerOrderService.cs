@@ -3,7 +3,7 @@ using Common.Const;
 using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
 using Common.DTO.UserDTO;
-using Common.Pagination;
+using Common.Paginations;
 using MVC.Services.Base;
 
 namespace MVC.Services.ManagerOrder
@@ -40,21 +40,21 @@ namespace MVC.Services.ManagerOrder
             return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
         }
 
-        public async Task<ResponseBase<UserDetailDTO?>> View(Guid UserID)
+        public async Task<ResponseBase<UserDetailDTO?>> View(Guid userId)
         {
-            string URL = "https://localhost:7077/User/Detail/" + UserID;
+            string URL = "https://localhost:7077/User/Detail/" + userId;
             return await Get<UserDetailDTO?>(URL);
         }
 
-        public async Task<ResponseBase<OrderDetailDTO?>> Detail(Guid OrderID)
+        public async Task<ResponseBase<OrderDetailDTO?>> Detail(Guid orderId)
         {
-            string URL = "https://localhost:7077/Order/Detail/" + OrderID;
+            string URL = "https://localhost:7077/Order/Detail/" + orderId;
             return await Get<OrderDetailDTO?>(URL);
         }
 
-        public async Task<ResponseBase<OrderDetailDTO?>> Update(Guid OrderID, OrderUpdateDTO DTO)
+        public async Task<ResponseBase<OrderDetailDTO?>> Update(Guid orderId, OrderUpdateDTO DTO)
         {
-            string URL = "https://localhost:7077/Order/Update/" + OrderID;
+            string URL = "https://localhost:7077/Order/Update/" + orderId;
             return await Put<OrderUpdateDTO, OrderDetailDTO?>(URL, DTO);
         }
     }

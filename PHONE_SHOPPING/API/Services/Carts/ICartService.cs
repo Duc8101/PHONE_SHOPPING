@@ -5,7 +5,7 @@ namespace API.Services.Carts
 {
     public interface ICartService
     {
-        ResponseBase List(Guid UserID);
+        ResponseBase List(Guid userId);
         ResponseBase Create(CartCreateDTO DTO, Guid userId);
         ResponseBase Delete(Guid productId, Guid userId);
     }

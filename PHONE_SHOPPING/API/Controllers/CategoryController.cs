@@ -3,6 +3,7 @@ using API.Services.Categories;
 using Common.Base;
 using Common.DTO.CategoryDTO;
 using Common.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,7 +11,7 @@ namespace API.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoryController : BaseAPIController
     {
         private readonly ICategoryService _service;
         public CategoryController(ICategoryService service)
@@ -46,22 +47,22 @@ namespace API.Controllers
             return response;
         }
 
-        [HttpGet("{ID}")]
+        [HttpGet("{categoryId}")]
         [Role(RoleEnum.Admin)]
         [Authorize]
-        public ResponseBase Detail([Required] int ID)
+        public ResponseBase Detail([Required] int categoryId)
         {
-            ResponseBase response = _service.Detail(ID);
+            ResponseBase response = _service.Detail(categoryId);
             Response.StatusCode = response.Code;
             return response;
         }
 
-        [HttpPut("{ID}")]
+        [HttpPut("{categoryId}")]
         [Role(RoleEnum.Admin)]
         [Authorize]
-        public ResponseBase Update([Required] int ID, [Required] CategoryCreateUpdateDTO DTO)
+        public ResponseBase Update([Required] int categoryId, [Required] CategoryCreateUpdateDTO DTO)
         {
-            ResponseBase response = _service.Update(ID, DTO);
+            ResponseBase response = _service.Update(categoryId, DTO);
             Response.StatusCode = response.Code;
             return response;
         }

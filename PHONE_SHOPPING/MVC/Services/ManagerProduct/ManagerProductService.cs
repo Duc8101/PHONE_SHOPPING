@@ -1,7 +1,7 @@
 ﻿using Common.Base;
 using Common.DTO.CategoryDTO;
 using Common.DTO.ProductDTO;
-using Common.Pagination;
+using Common.Paginations;
 using MVC.Services.Base;
 using System.Net;
 
@@ -15,24 +15,25 @@ namespace MVC.Services.ManagerProduct
             string URL = "https://localhost:7077/Category/List/All";
             return await Get<List<CategoryListDTO>?>(URL);
         }
-        private async Task<ResponseBase<Pagination<ProductListDTO>?>> getPagedResult(string? name, int? CategoryID, int? page)
+
+        private async Task<ResponseBase<Pagination<ProductListDTO>?>> getPagination(string? name, int? categoryId, int? page)
         {
             int pageSelected = page == null ? 1 : page.Value;
             string URL = "https://localhost:7077/Product/Manager/List";
             ResponseBase<Pagination<ProductListDTO>?> response;
             if (name == null)
             {
-                if (CategoryID == null)
+                if (categoryId == null)
                 {
                     response = await Get<Pagination<ProductListDTO>?>(URL, new KeyValuePair<string, object>("page", pageSelected));
                 }
                 else
                 {
-                    response = await Get<Pagination<ProductListDTO>?>(URL, new KeyValuePair<string, object>("CategoryID", CategoryID),
+                    response = await Get<Pagination<ProductListDTO>?>(URL, new KeyValuePair<string, object>("categoryId", categoryId),
                         new KeyValuePair<string, object>("page", pageSelected));
                 }
             }
-            else if (CategoryID == null)
+            else if (categoryId == null)
             {
                 response = await Get<Pagination<ProductListDTO>?>(URL, new KeyValuePair<string, object>("name", name),
                     new KeyValuePair<string, object>("page", pageSelected));
@@ -40,14 +41,15 @@ namespace MVC.Services.ManagerProduct
             else
             {
                 response = await Get<Pagination<ProductListDTO>?>(URL, new KeyValuePair<string, object>("name", name),
-                    new KeyValuePair<string, object>("CategoryID", CategoryID), new KeyValuePair<string, object>("page", pageSelected));
+                    new KeyValuePair<string, object>("categoryId", categoryId), new KeyValuePair<string, object>("page", pageSelected));
             }
             return response;
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Index(string? name, int? CategoryID, int? page)
+        
+        public async Task<ResponseBase<Dictionary<string, object>?>> Index(string? name, int? categoryId, int? page)
         {
             ResponseBase<List<CategoryListDTO>?> resCategory = await getListCategory();
-            ResponseBase<Pagination<ProductListDTO>?> resProduct = await getPagedResult(name, CategoryID, page);
+            ResponseBase<Pagination<ProductListDTO>?> resProduct = await getPagination(name, categoryId, page);
             if (resCategory.Data == null)
             {
                 return new ResponseBase<Dictionary<string, object>?>(null, resCategory.Message, resCategory.Code);
@@ -56,17 +58,19 @@ namespace MVC.Services.ManagerProduct
             {
                 return new ResponseBase<Dictionary<string, object>?>(null, resProduct.Message, resProduct.Code);
             }
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            result["result"] = resProduct.Data;
-            result["list"] = resCategory.Data;
-            result["CategoryID"] = CategoryID == null ? 0 : CategoryID;
-            result["name"] = name == null ? "" : name.Trim();
-            return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["result"] = resProduct.Data;
+            data["list"] = resCategory.Data;
+            data["categoryId"] = categoryId == null ? 0 : categoryId;
+            data["name"] = name == null ? "" : name.Trim();
+            return new ResponseBase<Dictionary<string, object>?>(data);
         }
+
         public async Task<ResponseBase<List<CategoryListDTO>?>> Create()
         {
             return await getListCategory();
         }
+
         public async Task<ResponseBase<List<CategoryListDTO>?>> Create(ProductCreateUpdateDTO DTO)
         {
             DTO.ProductName = DTO.ProductName == null ? "" : DTO.ProductName.Trim();
@@ -88,9 +92,10 @@ namespace MVC.Services.ManagerProduct
             }
             return new ResponseBase<List<CategoryListDTO>?>(null, response.Message, response.Code);
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Update(Guid ProductID)
+
+        public async Task<ResponseBase<Dictionary<string, object>?>> Update(Guid productId)
         {
-            string URL = "https://localhost:7077/Product/Detail/" + ProductID;
+            string URL = "https://localhost:7077/Product/Detail/" + productId;
             ResponseBase<ProductListDTO?> resPro = await Get<ProductListDTO?>(URL);
             ResponseBase<List<CategoryListDTO>?> resCat = await getListCategory();
             if (resCat.Data == null)
@@ -104,13 +109,14 @@ namespace MVC.Services.ManagerProduct
             Dictionary<string, object> result = new Dictionary<string, object>();
             result["product"] = resPro.Data;
             result["list"] = resCat.Data;
-            return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
+            return new ResponseBase<Dictionary<string, object>?>(result);
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Update(Guid ProductID, ProductCreateUpdateDTO DTO)
+
+        public async Task<ResponseBase<Dictionary<string, object>?>> Update(Guid productId, ProductCreateUpdateDTO DTO)
         {
             DTO.ProductName = DTO.ProductName == null ? "" : DTO.ProductName.Trim();
             DTO.Image = DTO.Image == null ? "" : DTO.Image.Trim();
-            string URL = "https://localhost:7077/Product/Update/" + ProductID;
+            string URL = "https://localhost:7077/Product/Update/" + productId;
             ResponseBase<ProductListDTO?>? resPro = await Put<ProductCreateUpdateDTO, ProductListDTO?>(URL, DTO);
             ResponseBase<List<CategoryListDTO>?> resCat = await getListCategory();
             if (resCat.Data == null)
@@ -122,15 +128,15 @@ namespace MVC.Services.ManagerProduct
             {
                 return new ResponseBase<Dictionary<string, object>?>(null, resPro.Message, resPro.Code);
             }
-            Dictionary<string, object> dic = new Dictionary<string, object>();
-            dic["product"] = resPro.Data;
-            dic["list"] = resCat.Data;
-            return new ResponseBase<Dictionary<string, object>?>(dic, resPro.Message, resPro.Code);
-
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["product"] = resPro.Data;
+            data["list"] = resCat.Data;
+            return new ResponseBase<Dictionary<string, object>?>(data, resPro.Message, resPro.Code);
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Delete(Guid ProductID)
+
+        public async Task<ResponseBase<Dictionary<string, object>?>> Delete(Guid productId)
         {
-            string URL = "https://localhost:7077/Product/Delete/" + ProductID;
+            string URL = "https://localhost:7077/Product/Delete/" + productId;
             ResponseBase<bool?> response = await Delete<bool?>(URL);
             if (response.Data == false || response.Data == null)
             {

@@ -4,6 +4,7 @@ using Common.Base;
 using Common.DTO.CartDTO;
 using Common.Entity;
 using Common.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -14,7 +15,7 @@ namespace API.Controllers
     [ApiController]
     [Role(RoleEnum.Customer)]
     [Authorize]
-    public class CartController : ControllerBase
+    public class CartController : BaseAPIController
     {
         private readonly ICartService _service;
         public CartController(ICartService service)
@@ -25,15 +26,15 @@ namespace API.Controllers
         [HttpGet]
         public ResponseBase List()
         {
-            User? user = (User?)HttpContext.Items["user"];
+            string? userId = getUserId();
             ResponseBase response;
-            if (user == null)
+            if (userId == null)
             {
                 response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                response = _service.List(user.UserId);
+                response = _service.List(Guid.Parse(userId));
             }
             Response.StatusCode = response.Code;
             return response;
@@ -42,15 +43,15 @@ namespace API.Controllers
         [HttpPost]
         public ResponseBase Create([Required] CartCreateDTO DTO)
         {
-            User? user = (User?)HttpContext.Items["user"];
+            string? userId = getUserId();
             ResponseBase response;
-            if (user == null)
+            if (userId == null)
             {
-                response = new ResponseBase(false, "Not found user", (int)HttpStatusCode.NotFound);
+                response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                response = _service.Create(DTO, user.UserId);
+                response = _service.Create(DTO, Guid.Parse(userId));
             }
             Response.StatusCode = response.Code;
             return response;
@@ -59,15 +60,15 @@ namespace API.Controllers
         [HttpDelete]
         public ResponseBase Delete([Required] Guid productId)
         {
-            User? user = (User?)HttpContext.Items["user"];
+            string? userId = getUserId();
             ResponseBase response;
-            if (user == null)
+            if (userId == null)
             {
-                response = new ResponseBase(false, "Not found user", (int)HttpStatusCode.NotFound);
+                response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                response = _service.Delete(productId, user.UserId);
+                response = _service.Delete(productId, Guid.Parse(userId));
             }
             Response.StatusCode = response.Code;
             return response;

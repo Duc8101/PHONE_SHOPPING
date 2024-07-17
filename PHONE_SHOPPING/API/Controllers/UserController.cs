@@ -4,6 +4,7 @@ using Common.Base;
 using Common.DTO.UserDTO;
 using Common.Entity;
 using Common.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -12,7 +13,7 @@ namespace API.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseAPIController
     {
         private readonly IUserService _service;
         public UserController(IUserService service)
@@ -24,15 +25,15 @@ namespace API.Controllers
         [Authorize]
         public ResponseBase Detail()
         {
-            User? user = (User?)HttpContext.Items["user"];
+            string? userId = getUserId();
             ResponseBase response;
-            if (user == null)
+            if (userId == null)
             {
                 response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                response = _service.Detail(user.UserId);
+                response = _service.Detail(Guid.Parse(userId));
             } 
             Response.StatusCode = response.Code;
             return response;
@@ -50,15 +51,15 @@ namespace API.Controllers
         [Authorize]
         public ResponseBase Logout()
         {
+            string? userId = getUserId();
             ResponseBase response;
-            User? user = (User?)HttpContext.Items["user"];
-            if (user == null)
+            if (userId == null)
             {
                 response = new ResponseBase(false, "Not found user id", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                response = _service.Logout(user.UserId);
+                response = _service.Logout(Guid.Parse(userId));
             }
             Response.StatusCode = response.Code;
             return response;
@@ -85,15 +86,15 @@ namespace API.Controllers
         [Authorize]
         public ResponseBase Update([Required] UserUpdateDTO DTO)
         {
-            User? user = (User?) HttpContext.Items["user"];
+            string? userId = getUserId();
             ResponseBase response;
-            if (user == null)
+            if (userId == null)
             {
-                response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
+                response = new ResponseBase("Not found user id", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                response = _service.Update(user, DTO);
+                response = _service.Update(Guid.Parse(userId), DTO);
             }   
             Response.StatusCode = response.Code;
             return response;
@@ -104,15 +105,15 @@ namespace API.Controllers
         [Authorize]
         public ResponseBase ChangePassword([Required] ChangePasswordDTO DTO)
         {
-            User? user = (User?)HttpContext.Items["user"];
+            string? userId = getUserId();
             ResponseBase response;
-            if (user == null)
+            if (userId == null)
             {
-                response = new ResponseBase(false, "Not found user", (int)HttpStatusCode.NotFound);
+                response = new ResponseBase(false, "Not found user id", (int)HttpStatusCode.NotFound);
             }
             else
             {
-                 response = _service.ChangePassword(user, DTO);
+                 response = _service.ChangePassword(Guid.Parse(userId), DTO);
             }            
             Response.StatusCode = response.Code;
             return response;

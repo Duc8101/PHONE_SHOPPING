@@ -1,6 +1,6 @@
 ﻿@using Common.Const;
 @using Common.DTO.OrderDTO;
-@using Common.Pagination
+@using Common.Paginations
 @model Pagination<OrderListDTO>
 @{
     int No = 1;
@@ -23,7 +23,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (OrderListDTO order in Model.Results)
+                                @foreach (OrderListDTO order in Model.List)
                                 {
                                     string color;
                                     if (order.Status == OrderConst.STATUS_PENDING)
