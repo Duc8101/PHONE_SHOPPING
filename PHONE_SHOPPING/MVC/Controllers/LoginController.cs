@@ -28,10 +28,7 @@ namespace MVC.Controllers
             {
                 if(response.Code == (int) HttpStatusCode.Conflict)
                 {
-                    if (response.Message.Contains("Invalid"))
-                    {
-                        return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
-                    }
+                    Response.Cookies.Delete("info");
                     return View();
                 }
                 return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));

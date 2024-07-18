@@ -68,6 +68,7 @@ namespace API.Services.Orders
                 {
                     OrderDetail detail = new OrderDetail()
                     {
+                        DetailId = Guid.NewGuid(),
                         OrderId = order.OrderId,
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
@@ -168,7 +169,9 @@ namespace API.Services.Orders
         {
             try
             {
-                IQueryable<Order> query = _context.Orders.Include(o => o.User);
+                IQueryable<Order> query = _context.Orders.Include(o => o.User)
+                    .Include(o => o.OrderDetails).ThenInclude(o => o.Product)
+                    .ThenInclude(o => o.Category);
                 Order? order;
                 if (userId == null)
                 {

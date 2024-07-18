@@ -104,7 +104,7 @@ namespace API
             }
             app.UseMiddleware<UnauthorizedMiddleware>();
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

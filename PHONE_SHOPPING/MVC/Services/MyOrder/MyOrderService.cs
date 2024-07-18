@@ -17,15 +17,15 @@ namespace MVC.Services.MyOrder
             return await Get<Pagination<OrderListDTO>?>(URL, new KeyValuePair<string, object>("page", pageSelected));
         }
 
-        public async Task<ResponseBase<OrderDetailDTO?>> Detail(Guid OrderID, Guid UserID)
+        public async Task<ResponseBase<OrderDetailDTO?>> Detail(Guid orderId, Guid userId)
         {
-            string URL = "https://localhost:7077/Order/Detail/" + OrderID;
+            string URL = "https://localhost:7077/Order/Detail/" + orderId;
             ResponseBase<OrderDetailDTO?> response = await Get<OrderDetailDTO?>(URL);
             if (response.Data == null)
             {
                 return new ResponseBase<OrderDetailDTO?>(null, response.Message, response.Code);
             }
-            if (response.Data.UserId != UserID)
+            if (response.Data.UserId != userId)
             {
                 return new ResponseBase<OrderDetailDTO?>(null, "Not found order match user", (int)HttpStatusCode.NotFound);
             }
