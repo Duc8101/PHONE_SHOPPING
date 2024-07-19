@@ -29,7 +29,7 @@ namespace MVC.Services.Base
             return JsonSerializer.Deserialize<ResponseBase<T>>(data, options);
         }
 
-        internal async Task<ResponseBase<T>> Get<T>(string url, params KeyValuePair<string, object>[] parameters)
+        private protected async Task<ResponseBase<T>> Get<T>(string url, params KeyValuePair<string, object>[] parameters)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace MVC.Services.Base
             }
         }
 
-        internal async Task<ResponseBase<T>> Delete<T>(string url, params KeyValuePair<string, object>[] parameters)
+        private protected async Task<ResponseBase<T>> Delete<T>(string url, params KeyValuePair<string, object>[] parameters)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace MVC.Services.Base
             }
         }
 
-        internal async Task<ResponseBase<Tout>> Post<Tin, Tout>(string url, Tin obj)
+        private protected async Task<ResponseBase<Tout>> Post<Tin, Tout>(string url, Tin obj)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace MVC.Services.Base
             }
         }
 
-        internal async Task<ResponseBase<Tout>> Put<Tin, Tout>(string url, Tin obj)
+        private protected async Task<ResponseBase<Tout>> Put<Tin, Tout>(string url, Tin obj)
         {
             try
             {
