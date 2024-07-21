@@ -3,7 +3,7 @@ using API.Services.Carts;
 using Common.Base;
 using Common.DTO.CartDTO;
 using Common.Entity;
-using Common.Enum;
+using Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -13,7 +13,7 @@ namespace API.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    [Role(RoleEnum.Customer)]
+    [Role(Roles.Customer)]
     [Authorize]
     public class CartController : BaseAPIController
     {

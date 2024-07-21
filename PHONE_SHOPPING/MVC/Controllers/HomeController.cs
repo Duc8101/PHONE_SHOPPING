@@ -1,5 +1,5 @@
 using Common.Base;
-using Common.Enum;
+using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.Home;
 
@@ -15,7 +15,7 @@ namespace MVC.Controllers
         public async Task<ActionResult> Index(string? name, int? categoryId, int? page)
         {
             int? role = getRole();
-            if (role == (int)RoleEnum.Admin)
+            if (role == (int)Roles.Admin)
             {
                 return Redirect("/ManagerProduct");
             }

@@ -1,9 +1,9 @@
 ﻿using API.Services.Base;
 using AutoMapper;
 using Common.Base;
-using Common.Const;
 using Common.DTO.CategoryDTO;
 using Common.Entity;
+using Common.Enums;
 using Common.Paginations;
 using DataAccess.DBContext;
 using System.Net;
@@ -45,11 +45,11 @@ namespace API.Services.Categories
             try
             {
                 IQueryable<Category> query = getQuery(name);
-                List<Category> list = query.Skip(PageSizeConst.MAX_CATEGORY_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_CATEGORY_IN_PAGE)
+                List<Category> list = query.Skip(PageSize.MAX_CATEGORY_IN_PAGE * (page - 1)).Take(PageSize.MAX_CATEGORY_IN_PAGE)
                     .OrderByDescending(c => c.UpdateAt).ToList();
                 List<CategoryListDTO> DTO = _mapper.Map<List<CategoryListDTO>>(list);
                 int count = query.Count();
-                int number = (int)Math.Ceiling((double)count / PageSizeConst.MAX_CATEGORY_IN_PAGE);
+                int number = (int)Math.Ceiling((double)count / PageSize.MAX_CATEGORY_IN_PAGE);
                 string preURL = "/ManagerCategory";
                 string nextURL = "/ManagerCategory";
                 string firstURL = "/ManagerCategory";

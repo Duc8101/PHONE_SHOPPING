@@ -1,5 +1,5 @@
-﻿@using Common.Const;
-@using Common.DTO.OrderDTO;
+﻿@using Common.DTO.OrderDTO;
+@using Common.Enums
 @using Common.Paginations
 @model Pagination<OrderListDTO>
 @{
@@ -26,11 +26,11 @@
                                 @foreach (OrderListDTO order in Model.List)
                                 {
                                     string color;
-                                    if (order.Status == OrderConst.STATUS_PENDING)
+                                    if (order.Status == OrderStatus.Pending.ToString())
                                     {
                                         color = "gold";
                                     }
-                                    else if (order.Status == OrderConst.STATUS_APPROVED)
+                                    else if (order.Status == OrderStatus.Approved.ToString())
                                     {
                                         color = "green";
                                     }

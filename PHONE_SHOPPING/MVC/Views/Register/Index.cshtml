@@ -1,4 +1,4 @@
-﻿@using Common.Const;
+﻿@using Common.Enums
 <section class="products section bg-gray" style="height: 100vh">
     <div class="container-fluid">
         <div class="row">
@@ -40,12 +40,12 @@
             document.getElementById("error").innerHTML = "You have to input your name";
             document.getElementById("success").innerHTML = "";
             handleSubmit(event);
-        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @UserConst.PHONE_LENGTH) {
-            document.getElementById("error").innerHTML = "Phone must be " + @UserConst.PHONE_LENGTH +" numbers";
+        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @((int)UserInfo.Phone_Length)) {
+            document.getElementById("error").innerHTML = "Phone must be " + @((int)UserInfo.Phone_Length) +" numbers";
             document.getElementById("success").innerHTML = "";
             handleSubmit(event);
-        } else if (!regexUsername.test(username.value.toString()) || username.value.toString().length > @UserConst.MAX_LENGTH_USERNAME || username.value.toString().length < @UserConst.MIN_LENGTH_USERNAME || regexNumber.test(username.value.toString())) {
-            document.getElementById("error").innerHTML = "The username starts with alphabet , contains only alphabet and numbers, at least " + @UserConst.MIN_LENGTH_USERNAME + " characters, max " + @UserConst.MAX_LENGTH_USERNAME + " characters";
+        } else if (!regexUsername.test(username.value.toString()) || username.value.toString().length > @((int)UserInfo.Max_Length_Username)) || username.value.toString().length < @((int)UserInfo.Min_Length_Username)) || regexNumber.test(username.value.toString())) {
+            document.getElementById("error").innerHTML = "The username starts with alphabet , contains only alphabet and numbers, at least " + @((int)UserInfo.Min_Length_Username) + " characters, max " + @((int)UserInfo.Max_Length_Username)) + " characters";
             document.getElementById("success").innerHTML = "";
             handleSubmit(event);
         }

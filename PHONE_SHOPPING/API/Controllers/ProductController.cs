@@ -2,7 +2,7 @@
 using API.Services.Products;
 using Common.Base;
 using Common.DTO.ProductDTO;
-using Common.Enum;
+using Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         [HttpGet("List")]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase Manager(string? name, int? categoryId, [Required] int page = 1)
         {
@@ -38,7 +38,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase Create([Required] ProductCreateUpdateDTO DTO)
         {
@@ -48,7 +48,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{productId}")]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase Detail([Required] Guid productId)
         {
@@ -58,7 +58,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{productId}")]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase Update([Required] Guid productId, [Required] ProductCreateUpdateDTO DTO)
         {
@@ -68,7 +68,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{productId}")]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase Delete([Required] Guid productId)
         {

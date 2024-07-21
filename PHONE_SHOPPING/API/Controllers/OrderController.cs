@@ -3,7 +3,7 @@ using API.Services.Orders;
 using Common.Base;
 using Common.DTO.OrderDTO;
 using Common.Entity;
-using Common.Enum;
+using Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +23,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Role(RoleEnum.Customer)]
+        [Role(Roles.Customer)]
         public async Task<ResponseBase> Create([Required] OrderCreateDTO DTO)
         {
             string? userId = getUserId();
@@ -80,7 +80,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{orderId}")]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         public async Task<ResponseBase> Update([Required] Guid orderId, [Required] OrderUpdateDTO DTO)
         {
             ResponseBase response = await _service.Update(orderId, DTO);

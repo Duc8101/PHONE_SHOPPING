@@ -1,4 +1,4 @@
-﻿using Common.Enum;
+﻿using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -15,7 +15,7 @@ namespace API.Controllers
         internal bool isAdmin()
         {
             Claim? claim = User.Claims.Where(c => c.Type == "role").FirstOrDefault();
-            return claim != null && claim.Value == RoleEnum.Admin.ToString();
+            return claim != null && claim.Value == Roles.Admin.ToString();
         }
     }
 }

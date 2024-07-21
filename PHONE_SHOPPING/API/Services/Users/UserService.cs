@@ -3,7 +3,7 @@ using AutoMapper;
 using Common.Base;
 using Common.DTO.UserDTO;
 using Common.Entity;
-using Common.Enum;
+using Common.Enums;
 using DataAccess.DBContext;
 using DataAccess.Helper;
 using Microsoft.EntityFrameworkCore;
@@ -162,7 +162,7 @@ namespace API.Services.Users
                 User user = _mapper.Map<User>(DTO);
                 user.UserId = Guid.NewGuid();
                 user.Password = hashPw;
-                user.RoleId = (int)RoleEnum.Customer;
+                user.RoleId = (int)Roles.Customer;
                 user.CreatedAt = DateTime.Now;
                 user.UpdateAt = DateTime.Now;
                 user.IsDeleted = false;

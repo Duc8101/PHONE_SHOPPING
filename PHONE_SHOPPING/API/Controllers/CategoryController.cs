@@ -2,7 +2,7 @@
 using API.Services.Categories;
 using Common.Base;
 using Common.DTO.CategoryDTO;
-using Common.Enum;
+using Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         [HttpGet("Paged")]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase List(string? name, [Required] int page = 1)
         {
@@ -38,7 +38,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase Create([Required] CategoryCreateUpdateDTO DTO)
         {
@@ -48,7 +48,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{categoryId}")]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase Detail([Required] int categoryId)
         {
@@ -58,7 +58,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{categoryId}")]
-        [Role(RoleEnum.Admin)]
+        [Role(Roles.Admin)]
         [Authorize]
         public ResponseBase Update([Required] int categoryId, [Required] CategoryCreateUpdateDTO DTO)
         {

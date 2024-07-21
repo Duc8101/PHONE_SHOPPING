@@ -3,7 +3,7 @@ using API.Services.Users;
 using Common.Base;
 using Common.DTO.UserDTO;
 using Common.Entity;
-using Common.Enum;
+using Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -82,7 +82,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        [Role(RoleEnum.Customer)]
+        [Role(Roles.Customer)]
         [Authorize]
         public ResponseBase Update([Required] UserUpdateDTO DTO)
         {

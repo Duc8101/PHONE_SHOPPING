@@ -1,5 +1,5 @@
-﻿@using Common.Const;
-@using Common.DTO.OrderDetailDTO;
+﻿@using Common.DTO.OrderDetailDTO;
+@using Common.Enums
 @model OrderDetailDTO
 <section class="products section bg-gray" style="height: 100vh">
     <div class="container-fluid">
@@ -8,21 +8,21 @@
                 <p style="color:red">@ViewData["error"]</p>
                 <p style="color:green">@ViewData["success"]</p>
                 <form action="/ManagerOrder/Update/@Model.OrderId" method="post" class="text-left clearfix">
-                    <select name="Status" @(ViewData["success"] == null || Model.Status == OrderConst.STATUS_PENDING ? "" : "disabled")>
-                        <option value="@OrderConst.STATUS_PENDING" selected="@(Model.Status == OrderConst.STATUS_PENDING)">@OrderConst.STATUS_PENDING</option>
-                        <option value="@OrderConst.STATUS_APPROVED" selected="@(Model.Status == OrderConst.STATUS_APPROVED)">@OrderConst.STATUS_APPROVED</option>
-                        <option value="@OrderConst.STATUS_REJECTED" selected="@(Model.Status == OrderConst.STATUS_REJECTED)">@OrderConst.STATUS_REJECTED</option>
+                    <select name="Status" @(ViewData["success"] == null || Model.Status == OrderStatus.Pending.ToString() ? "" : "disabled")>
+                        <option value="@OrderStatus.Pending.ToString()" selected="@(Model.Status == OrderStatus.Pending.ToString())">@OrderStatus.Pending.ToString()</option>
+                        <option value="@OrderStatus.Approved.ToString()" selected="@(Model.Status == OrderStatus.Approved.ToString())">@OrderStatus.Approved.ToString()</option>
+                        <option value="@OrderStatus.Rejected.ToString()" selected="@(Model.Status == OrderStatus.Rejected.ToString())">@OrderStatus.Rejected.ToString()</option>
                     </select>
                     <br />
                     <div>
                         Note :
-                        <textarea name="Note" style="width: 300px" class="form-control" @(ViewData["success"] == null || Model.Status == OrderConst.STATUS_PENDING ? "" : "disabled")>
+                        <textarea name="Note" style="width: 300px" class="form-control" @(ViewData["success"] == null || Model.Status == OrderStatus.Pending.ToString() ? "" : "disabled")>
                             @Model.Note
                         </textarea>
                     </div>
                     <br />
                     <button type="submit" onclick="return confirm('Are you sure you want to save your change?')"
-                    @(ViewData["success"] == null || Model.Status == OrderConst.STATUS_PENDING ? "" : "disabled")>
+                    @(ViewData["success"] == null || Model.Status == OrderStatus.Pending.ToString() ? "" : "disabled")>
                         Update
                     </button>
                 </form>

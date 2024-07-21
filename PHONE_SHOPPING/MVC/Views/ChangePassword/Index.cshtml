@@ -1,12 +1,11 @@
-﻿@using Common.Const;
-@using Common.Enum
+﻿@using Common.Enums
 @{
     int? role = Context.Session.GetInt32("role");
 }
 <section class="products section bg-gray" style="height: 100vh">
     <div class="container-fluid">
         <div class="row">
-            @if (role == (int)RoleEnum.Customer)
+            @if (role == (int)Roles.Customer)
             {
                 <div class="col-lg-2 title text-center">
                     <ul class="list-group">
@@ -15,7 +14,7 @@
                     </ul>
                 </div>
             }
-            <div class="col-lg-@(role == (int) RoleEnum.Customer ? 9 : 12) title text-center" style="margin-left: @(role == (int) RoleEnum.Customer ? 4 : 0)%">
+            <div class="col-lg-@(role == (int) Roles.Customer ? 9 : 12) title text-center" style="margin-left: @(role == (int) Roles.Customer ? 4 : 0)%">
                 <p style="color:red">@ViewData["error"]</p>
                 <p style="color:green">@ViewData["success"]</p>
                 <form method="POST" class="text-left clearfix" action="/ChangePassword">

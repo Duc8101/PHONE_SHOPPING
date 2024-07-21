@@ -1,8 +1,8 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
 using Common.DTO.UserDTO;
+using Common.Enums;
 using Common.Paginations;
 using MVC.Services.Base;
 
@@ -30,14 +30,14 @@ namespace MVC.Services.ManagerOrder
                 return new ResponseBase<Dictionary<string, object>?>(null, response.Message, response.Code);
             }
             List<string> list = new List<string>();
-            list.Add(OrderConst.STATUS_PENDING);
-            list.Add(OrderConst.STATUS_APPROVED);
-            list.Add(OrderConst.STATUS_REJECTED);
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            result["result"] = response.Data;
-            result["list"] = list;
-            result["status"] = status == null ? "" : status.Trim();
-            return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
+            list.Add(OrderStatus.Pending.ToString());
+            list.Add(OrderStatus.Approved.ToString());
+            list.Add(OrderStatus.Rejected.ToString());
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["result"] = response.Data;
+            data["list"] = list;
+            data["status"] = status == null ? "" : status.Trim();
+            return new ResponseBase<Dictionary<string, object>?>(data);
         }
 
         public async Task<ResponseBase<UserDetailDTO?>> View(Guid userId)

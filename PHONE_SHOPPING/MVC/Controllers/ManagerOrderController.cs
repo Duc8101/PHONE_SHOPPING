@@ -1,8 +1,8 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
 using Common.DTO.UserDTO;
+using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Services.ManagerOrder;
 using System.Net;
@@ -77,10 +77,6 @@ namespace MVC.Controllers
 
         public async Task<ActionResult> Update(Guid? id)
         {
-            /*            if (StaticToken.Token == null)
-                        {
-                            return Redirect("/Home");
-                        }*/
             if (id == null)
             {
                 return Redirect("/ManagerOrder");
@@ -94,7 +90,7 @@ namespace MVC.Controllers
                 }
                 return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
-            if (response.Data.Status == OrderConst.STATUS_APPROVED || response.Data.Status == OrderConst.STATUS_REJECTED)
+            if (response.Data.Status == OrderStatus.Approved.ToString() || response.Data.Status == OrderStatus.Rejected.ToString())
             {
                 return Redirect("/ManagerOrder");
             }

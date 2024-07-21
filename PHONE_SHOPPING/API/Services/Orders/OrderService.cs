@@ -1,12 +1,11 @@
 ﻿using API.Services.Base;
 using AutoMapper;
 using Common.Base;
-using Common.Const;
 using Common.DTO.CartDTO;
 using Common.DTO.OrderDetailDTO;
 using Common.DTO.OrderDTO;
 using Common.Entity;
-using Common.Enum;
+using Common.Enums;
 using Common.Paginations;
 using DataAccess.DBContext;
 using DataAccess.Helper;
@@ -45,7 +44,7 @@ namespace API.Services.Orders
                     }
                 }
                 string body = UserHelper.BodyEmailForAdminReceiveOrder();
-                List<string> emails = _context.Users.Where(u => u.RoleId == (int)RoleEnum.Admin).Select(u => u.Email).ToList();
+                List<string> emails = _context.Users.Where(u => u.RoleId == (int)Roles.Admin).Select(u => u.Email).ToList();
                 if (emails.Count > 0)
                 {
                     foreach (string email in emails)
@@ -56,7 +55,7 @@ namespace API.Services.Orders
                 Order order = _mapper.Map<Order>(DTO);
                 order.OrderId = Guid.NewGuid();
                 order.Address = DTO.Address.Trim();
-                order.Status = OrderConst.STATUS_PENDING;
+                order.Status = OrderStatus.Pending.ToString();
                 order.CreatedAt = DateTime.Now;
                 order.UpdateAt = DateTime.Now;
                 order.IsDeleted = false;
@@ -103,7 +102,7 @@ namespace API.Services.Orders
             {
                 query = query.Where(o => o.Status == status.Trim());
             }
-            query = query.OrderBy(o => o.Status == OrderConst.STATUS_PENDING ? 0 : 1).ThenByDescending(o => o.UpdateAt);
+            query = query.OrderBy(o => o.Status == OrderStatus.Pending.ToString() ? 0 : 1).ThenByDescending(o => o.UpdateAt);
             return query;
         }
 
@@ -112,11 +111,11 @@ namespace API.Services.Orders
             try
             {
                 IQueryable<Order> query = getQuery(userId, status);
-                List<Order> list = query.Skip(PageSizeConst.MAX_ORDER_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_ORDER_IN_PAGE)
+                List<Order> list = query.Skip(PageSize.MAX_ORDER_IN_PAGE * (page - 1)).Take(PageSize.MAX_ORDER_IN_PAGE)
                     .ToList();
                 List<OrderListDTO> DTO = _mapper.Map<List<OrderListDTO>>(list);
                 int count = query.Count();
-                int number = (int)Math.Ceiling((double)count / PageSizeConst.MAX_ORDER_IN_PAGE);
+                int number = (int)Math.Ceiling((double)count / PageSize.MAX_ORDER_IN_PAGE);
                 int prePage = page - 1;
                 int nextPage = page + 1;
                 string preURL;
@@ -210,26 +209,18 @@ namespace API.Services.Orders
                 }
                 List<OrderDetail> list = order.OrderDetails.ToList();
                 List<DetailDTO> DTOs = _mapper.Map<List<DetailDTO>>(list);
-                OrderDetailDTO data = new OrderDetailDTO()
-                {
-                    OrderId = orderId,
-                    UserId = order.UserId,
-                    Username = order.User.Username,
-                    Status = order.Status,
-                    Address = order.Address,
-                    Note = order.Note,
-                    OrderDate = order.CreatedAt,
-                    DetailDTOs = DTOs,
-                };
-                if (order.Status == OrderConst.STATUS_REJECTED || order.Status == OrderConst.STATUS_APPROVED)
+                OrderDetailDTO data = _mapper.Map<OrderDetailDTO>(order);
+                data.OrderId = orderId;
+                data.DetailDTOs = DTOs; 
+                if (order.Status == OrderStatus.Rejected.ToString() || order.Status == OrderStatus.Approved.ToString())
                 {
                     return new ResponseBase(data, "Order was approved or rejected", (int)HttpStatusCode.Conflict);
                 }
-                if (DTO.Status.Trim() == OrderConst.STATUS_REJECTED || DTO.Status.Trim() == OrderConst.STATUS_PENDING)
+                if (DTO.Status.Trim() == OrderStatus.Rejected.ToString() || DTO.Status.Trim() == OrderStatus.Pending.ToString())
                 {
-                    if (DTO.Status.Trim() == OrderConst.STATUS_REJECTED && (DTO.Note == null || DTO.Note.Trim().Length == 0))
+                    if (DTO.Status.Trim() == OrderStatus.Rejected.ToString() && (DTO.Note == null || DTO.Note.Trim().Length == 0))
                     {
-                        return new ResponseBase(data, "When status is " + OrderConst.STATUS_REJECTED + ", you have to note the reason why rejected", (int)HttpStatusCode.Conflict);
+                        return new ResponseBase(data, "When status is " + OrderStatus.Rejected + ", you have to note the reason why rejected", (int)HttpStatusCode.Conflict);
                     }
                     order.Status = DTO.Status.Trim();
                     order.UpdateAt = DateTime.Now;
@@ -240,7 +231,7 @@ namespace API.Services.Orders
                     data.Note = order.Note;
                     return new ResponseBase(data, "Update successful");
                 }
-                if (DTO.Status.Trim() == OrderConst.STATUS_APPROVED)
+                if (DTO.Status.Trim() == OrderStatus.Approved.ToString())
                 {
                     order.Status = DTO.Status.Trim();
                     order.Note = DTO.Note == null || DTO.Note.Trim().Length == 0 ? null : DTO.Note.Trim();
@@ -271,7 +262,7 @@ namespace API.Services.Orders
                     _context.SaveChanges();
                     return new ResponseBase(data, "Update successful");
                 }
-                return new ResponseBase(data, "Status update must be " + OrderConst.STATUS_APPROVED + "," + OrderConst.STATUS_REJECTED + " or " + OrderConst.STATUS_PENDING, (int)HttpStatusCode.Conflict);
+                return new ResponseBase(data, "Status update must be " + OrderStatus.Approved + "," + OrderStatus.Rejected + " or " + OrderStatus.Pending, (int)HttpStatusCode.Conflict);
             }
             catch (Exception ex)
             {

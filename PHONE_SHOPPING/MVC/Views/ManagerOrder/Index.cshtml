@@ -1,5 +1,5 @@
-﻿@using Common.Const;
-@using Common.DTO.OrderDTO;
+﻿@using Common.DTO.OrderDTO;
+@using Common.Enums
 @using Common.Paginations
 @model Dictionary<string, object>
 @{
@@ -42,11 +42,11 @@
                                 <td>@No</td>
                                 @{
                                     string color;
-                                    if (order.Status == OrderConst.STATUS_PENDING)
+                                    if (order.Status == OrderStatus.Pending.ToString())
                                     {
                                         color = "gold";
                                     }
-                                    else if (order.Status == OrderConst.STATUS_APPROVED)
+                                    else if (order.Status == OrderStatus.Approved.ToString())
                                     {
                                         color = "green";
                                     }
@@ -63,7 +63,7 @@
                                 <td><a href="/ManagerOrder/View/@order.UserId" class="btn btn-info" aria-disabled="true" role="button">View</a></td>
                                 <td><a class="btn btn-primary" href="/ManagerOrder/Detail/@order.OrderId">Detail</a></td>
                                 <td>
-                                    <a class="btn btn-success @(order.Status == OrderConst.STATUS_PENDING ? "" : "disabled")" href="/ManagerOrder/Update/@order.OrderId" aria-disabled="true" role="button">Update</a>
+                                    <a class="btn btn-success @(order.Status == OrderStatus.Pending.ToString() ? "" : "disabled")" href="/ManagerOrder/Update/@order.OrderId" aria-disabled="true" role="button">Update</a>
                                 </td>
                             </tr>
                             No++;

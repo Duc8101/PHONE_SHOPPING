@@ -1,19 +1,19 @@
 ﻿using API.Providers;
 using Common.Base;
 using Common.Entity;
-using Common.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using DataAccess.DBContext;
+using Common.Enums;
 
 namespace API.Attributes
 {
     public class RoleAttribute : Attribute, IActionFilter
     {
-        private RoleEnum[] Roles { get; }
-        public RoleAttribute(params RoleEnum[] roles)
+        public Roles[] Roles { get; }
+        public RoleAttribute(params Roles[] roles)
         {
             Roles = roles;
         }
@@ -51,7 +51,7 @@ namespace API.Attributes
                         StatusCode = (int)HttpStatusCode.NotFound,
                     };
                 }
-                else if (!Roles.Contains((RoleEnum)user.RoleId))
+                else if (!Roles.Contains((Roles)user.RoleId))
                 {
                     ResponseBase response = new ResponseBase("You are not allowed to access", (int)HttpStatusCode.Forbidden);
                     context.Result = new JsonResult(response)

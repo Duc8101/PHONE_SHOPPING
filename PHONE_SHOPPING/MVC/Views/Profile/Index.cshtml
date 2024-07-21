@@ -1,5 +1,5 @@
-﻿@using Common.Const;
-@using Common.DTO.UserDTO;
+﻿@using Common.DTO.UserDTO;
+@using Common.Enums
 @model UserDetailDTO
 <section class="products section bg-gray" style="height: 100vh">
     <div class="container-fluid">
@@ -42,8 +42,8 @@
             document.getElementById("error").innerHTML = "You have to input your name";
             document.getElementById("success").innerHTML = "";
             handleSubmit(event);
-        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @UserConst.PHONE_LENGTH) {
-            document.getElementById("error").innerHTML = "Phone must be " + @UserConst.PHONE_LENGTH +" numbers";
+        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @((int) UserInfo.Phone_Length) {
+            document.getElementById("error").innerHTML = "Phone must be " + @((int)UserInfo.Phone_Length) +" numbers";
             document.getElementById("success").innerHTML = "";
             handleSubmit(event);
         }
