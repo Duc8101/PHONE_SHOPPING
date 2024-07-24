@@ -91,12 +91,12 @@ namespace API.Services.Orders
                 return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        private IQueryable<Order> getQuery(Guid? UserID, string? status)
+        private IQueryable<Order> getQuery(Guid? userId, string? status)
         {
             IQueryable<Order> query = _context.Orders.Include(u => u.User);
-            if (UserID.HasValue)
+            if (userId.HasValue)
             {
-                query = query.Where(o => o.UserId == UserID);
+                query = query.Where(o => o.UserId == userId);
             }
             if (status != null && status.Trim().Length > 0)
             {
@@ -111,11 +111,11 @@ namespace API.Services.Orders
             try
             {
                 IQueryable<Order> query = getQuery(userId, status);
-                List<Order> list = query.Skip(PageSize.MAX_ORDER_IN_PAGE * (page - 1)).Take(PageSize.MAX_ORDER_IN_PAGE)
+                List<Order> list = query.Skip((int)PageSize.Order_List * (page - 1)).Take((int)PageSize.Order_List)
                     .ToList();
                 List<OrderListDTO> DTO = _mapper.Map<List<OrderListDTO>>(list);
                 int count = query.Count();
-                int number = (int)Math.Ceiling((double)count / PageSize.MAX_ORDER_IN_PAGE);
+                int number = (int)Math.Ceiling((double)count / (int)PageSize.Order_List);
                 int prePage = page - 1;
                 int nextPage = page + 1;
                 string preURL;

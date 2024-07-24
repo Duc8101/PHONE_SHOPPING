@@ -5,13 +5,11 @@ using Common.DTO.UserDTO;
 using Common.Entity;
 using Common.Enums;
 using DataAccess.DBContext;
+using DataAccess.Extensions;
 using DataAccess.Helper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Security.Claims;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace API.Services.Users
@@ -144,7 +142,8 @@ namespace API.Services.Users
         {
             try
             {
-                Regex regex = new Regex("^[a-zA-Z][\\w-]+@([\\w]+\\.[\\w]+|[\\w]+\\.[\\w]{2,}\\.[\\w]{2,})");
+                string format = UserInfo.Format_Email.getDescription();
+                Regex regex = new Regex(format);
                 if (!regex.IsMatch(DTO.Email.Trim()))
                 {
                     return new ResponseBase(false, "Invalid email", (int)HttpStatusCode.Conflict);
@@ -282,24 +281,24 @@ namespace API.Services.Users
                 User? user = _context.Users.Find(Guid.Parse(userId));
                 if (user == null)
                 {
-                    return new ResponseBase("Not found user", (int) HttpStatusCode.NotFound);
+                    return new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
                 }
                 Client? client = _context.Clients.FirstOrDefault(c => c.HarewareInfo == hardware);
-                if(client == null)
+                if (client == null)
                 {
                     return new ResponseBase("Not found client", (int)HttpStatusCode.NotFound);
                 }
-                UserClient? userClient = _context.UserClients.FirstOrDefault(uc => uc.UserId == Guid.Parse(userId) 
+                UserClient? userClient = _context.UserClients.FirstOrDefault(uc => uc.UserId == Guid.Parse(userId)
                 && uc.ClientId == client.ClientId);
-                if(userClient == null)
+                if (userClient == null)
                 {
                     return new ResponseBase("User not register on this client", (int)HttpStatusCode.NotFound);
                 }
-                if(userClient.Token != token)
+                if (userClient.Token != token)
                 {
                     return new ResponseBase("Invalid token", (int)HttpStatusCode.Conflict);
                 }
-                if(userClient.ExpireDate < DateTime.Now)
+                if (userClient.ExpireDate < DateTime.Now)
                 {
                     return new ResponseBase("Token expired", (int)HttpStatusCode.Conflict);
                 }

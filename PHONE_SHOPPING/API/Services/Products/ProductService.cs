@@ -44,7 +44,7 @@ namespace API.Services.Products
             {
                 IQueryable<Product> query = getQuery(name, categoryId);
                 int count = query.Count();
-                int numberPage = (int)Math.Ceiling((double)count / PageSize.MAX_PRODUCT_IN_PAGE);
+                int numberPage = (int)Math.Ceiling((double)count / (int)PageSize.Product_List);
                 // if not choose category and name
                 if (categoryId == null && (name == null || name.Trim().Length == 0))
                 {
@@ -76,8 +76,8 @@ namespace API.Services.Products
                         lastURL = lastURL + "?name=" + name.Trim() + "&categoryId=" + categoryId + "&page=" + numberPage;
                     }
                 }
-                List<Product> list= query.OrderByDescending(p => p.UpdateAt).Skip(PageSize.MAX_PRODUCT_IN_PAGE * (page - 1))
-                    .Take(PageSize.MAX_PRODUCT_IN_PAGE).ToList();
+                List<Product> list= query.OrderByDescending(p => p.UpdateAt).Skip((int)PageSize.Product_List * (page - 1))
+                    .Take((int)PageSize.Product_List).ToList();
                 List<ProductListDTO> DTO = _mapper.Map<List<ProductListDTO>>(list);
                 Pagination<ProductListDTO> data = new Pagination<ProductListDTO>()
                 {

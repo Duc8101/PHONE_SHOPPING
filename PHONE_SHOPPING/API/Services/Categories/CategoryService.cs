@@ -45,11 +45,11 @@ namespace API.Services.Categories
             try
             {
                 IQueryable<Category> query = getQuery(name);
-                List<Category> list = query.Skip(PageSize.MAX_CATEGORY_IN_PAGE * (page - 1)).Take(PageSize.MAX_CATEGORY_IN_PAGE)
+                List<Category> list = query.Skip((int)PageSize.Category_List * (page - 1)).Take((int)PageSize.Category_List)
                     .OrderByDescending(c => c.UpdateAt).ToList();
                 List<CategoryListDTO> DTO = _mapper.Map<List<CategoryListDTO>>(list);
                 int count = query.Count();
-                int number = (int)Math.Ceiling((double)count / PageSize.MAX_CATEGORY_IN_PAGE);
+                int number = (int)Math.Ceiling((double)count / (int)PageSize.Category_List);
                 string preURL = "/ManagerCategory";
                 string nextURL = "/ManagerCategory";
                 string firstURL = "/ManagerCategory";
