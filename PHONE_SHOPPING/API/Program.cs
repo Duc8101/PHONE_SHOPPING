@@ -1,5 +1,4 @@
 using API.Middleware;
-using API.Providers;
 using API.Services.Carts;
 using API.Services.Categories;
 using API.Services.Orders;
@@ -85,7 +84,6 @@ namespace API
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
-            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // ------------------------- config auto mapper ----------------------------
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var config = new MapperConfiguration(cfg =>
@@ -94,7 +92,6 @@ namespace API
             });
             var mapper = config.CreateMapper();
             var app = builder.Build();
-            StaticServiceProvider.Provider = app.Services;
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

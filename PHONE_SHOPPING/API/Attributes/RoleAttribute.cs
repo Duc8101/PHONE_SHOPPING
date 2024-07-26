@@ -1,12 +1,12 @@
-﻿using API.Providers;
-using Common.Base;
+﻿using Common.Base;
 using Common.Entity;
+using Common.Enums;
+using DataAccess.DBContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using DataAccess.DBContext;
-using Common.Enums;
+using System.Security.Claims;
 
 namespace API.Attributes
 {
@@ -24,24 +24,24 @@ namespace API.Attributes
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var accessor = StaticServiceProvider.Provider.GetRequiredService<IHttpContextAccessor>();
-            var dbContext = accessor.HttpContext?.RequestServices.GetRequiredService<PHONE_STOREContext>();
-            if (dbContext == null)
+            PHONE_STOREContext dbContext = context.HttpContext.RequestServices.GetRequiredService<PHONE_STOREContext>();
+            // ---------------------- get token -----------------------------
+            string? token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            // ---------------------- get user from token -------------------
+            var handler = new JwtSecurityTokenHandler();
+            var security = handler.ReadJwtToken(token);
+            Claim? claim = security.Claims.FirstOrDefault(t => t.Type == "id");
+            if (claim == null)
             {
-                ResponseBase response = new ResponseBase("Something wrong when check role", (int)HttpStatusCode.InternalServerError);
-                context.Result = new JsonResult(response)
+                ResponseBase result = new ResponseBase("Not found user id based on token. Please check information!!", (int)HttpStatusCode.NotFound);
+                context.Result = new JsonResult(result)
                 {
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    StatusCode = (int)HttpStatusCode.NotFound,
                 };
             }
             else
             {
-                // ---------------------- get token -----------------------------
-                string? token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                // ---------------------- get user from token -------------------
-                var handler = new JwtSecurityTokenHandler();
-                var tokenS = handler.ReadJwtToken(token);
-                string userId = tokenS.Claims.First(c => c.Type == "id").Value;
+                string userId = claim.Value;
                 User? user = dbContext.Users.Find(Guid.Parse(userId));
                 if (user == null)
                 {
@@ -60,6 +60,7 @@ namespace API.Attributes
                     };
                 }
             }
+            
         }
     }
 }
