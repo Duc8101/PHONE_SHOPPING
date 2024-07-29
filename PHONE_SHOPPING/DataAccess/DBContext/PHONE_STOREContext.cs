@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Common.Entity;
+﻿using Common.Entity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.DBContext
 {
@@ -28,17 +24,17 @@ namespace DataAccess.DBContext
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserClient> UserClients { get; set; } = null!;
 
-/*        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                ConfigurationBuilder builder = new ConfigurationBuilder();
-                IConfigurationRoot config = builder.SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", true, true).Build();
-                string connection = config.GetConnectionString("DefaultConnection");
-                optionsBuilder.UseSqlServer(connection);
-            }
-        }*/
+        /*        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+                {
+                    if (!optionsBuilder.IsConfigured)
+                    {
+                        ConfigurationBuilder builder = new ConfigurationBuilder();
+                        IConfigurationRoot config = builder.SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json", true, true).Build();
+                        string connection = config.GetConnectionString("DefaultConnection");
+                        optionsBuilder.UseSqlServer(connection);
+                    }
+                }*/
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -149,11 +145,19 @@ namespace DataAccess.DBContext
 
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
 
+                entity.Property(e => e.Image).HasColumnName("image");
+
                 entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
+                entity.Property(e => e.Price)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnName("price");
+
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.ProductName).HasColumnName("product_name");
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 

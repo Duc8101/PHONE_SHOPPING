@@ -23,7 +23,7 @@ namespace DataAccess.Helper
             List<Claim> list = new List<Claim>()
             {
                 new Claim("id", user.UserId.ToString()),
-                new Claim("role", user.Role.RoleName),
+                new Claim(ClaimTypes.Role, user.Role.RoleName),
             };
             JwtSecurityToken token = new JwtSecurityToken("JWTAuthenticationServer",
                 "JWTServicePostmanClient", list, expires: DateTime.Now.AddDays(1),

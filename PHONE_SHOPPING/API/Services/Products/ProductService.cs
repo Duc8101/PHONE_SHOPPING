@@ -150,7 +150,7 @@ namespace API.Services.Products
         {
             try
             {
-                Product? product = _context.Products.Include(p => p.Category).Include(p => p.OrderDetails)
+                Product? product = _context.Products.Include(p => p.Category).Include(p => p.OrderDetails).ThenInclude(p => p.Order)
                     .FirstOrDefault(p => p.ProductId == productId && p.IsDeleted == false);
                 if (product == null)
                 {
@@ -158,9 +158,9 @@ namespace API.Services.Products
                 }
                 List<OrderDetail> list = product.OrderDetails.ToList();
                 ProductListDTO data = _mapper.Map<ProductListDTO>(product);
-                if (list.Count > 0)
+                if (list.Any(od => od.Order.Status == OrderStatus.Pending.ToString()))
                 {
-                    return new ResponseBase(data, "You can't update this product because it is being or has been ordered", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase(data, "You can't update this product because it is being ordered", (int)HttpStatusCode.Conflict);
                 }
                 product.ProductName = DTO.ProductName.Trim();
                 product.Image = DTO.Image.Trim();

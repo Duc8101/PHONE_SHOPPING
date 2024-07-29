@@ -100,7 +100,7 @@ namespace API.Services.Users
                     UserId = user.UserId,
                     RoleId = user.RoleId,
                     Username = user.Username,
-                    ExpireDate = userClient.ExpireDate,
+                    ExpireDate = userClient.ExpireDate
                 };
                 // ------------------------- remove all cart ------------------------- 
                 List<Cart> list = _context.Carts.Where(c => c.UserId == user.UserId && c.IsCheckOut == false && c.IsDeleted == false).ToList();
@@ -110,7 +110,7 @@ namespace API.Services.Users
                     _context.Carts.Update(cart);
                     _context.SaveChanges();
                 }
-                return new ResponseBase(data, string.Empty);
+                return new ResponseBase(data);
 
             }
             catch (Exception ex)

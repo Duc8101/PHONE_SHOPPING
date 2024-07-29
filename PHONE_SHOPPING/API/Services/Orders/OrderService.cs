@@ -65,16 +65,12 @@ namespace API.Services.Orders
                 _context.SaveChanges();
                 foreach (CartListDTO item in data)
                 {
-                    OrderDetail detail = new OrderDetail()
-                    {
-                        DetailId = Guid.NewGuid(),
-                        OrderId = order.OrderId,
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        CreatedAt = DateTime.Now,
-                        UpdateAt = DateTime.Now,
-                        IsDeleted = false
-                    };
+                    OrderDetail detail = _mapper.Map<OrderDetail>(item);
+                    detail.DetailId = Guid.NewGuid();
+                    detail.OrderId = order.OrderId;
+                    detail.CreatedAt = DateTime.Now;
+                    detail.UpdateAt = DateTime.Now;
+                    detail.IsDeleted = false;
                     _context.OrderDetails.Add(detail);
                     _context.SaveChanges();
                 }

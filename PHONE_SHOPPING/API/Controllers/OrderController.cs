@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -51,8 +52,8 @@ namespace API.Controllers
             }
             else
             {
-                bool isAdmin = base.isAdmin();
-                response = _service.List(isAdmin ? null : Guid.Parse(userId), status, isAdmin, page);
+                bool admin = isAdmin();
+                response = _service.List(admin ? null : Guid.Parse(userId), status, admin, page);
                 Response.StatusCode = response.Code;
             }
             return response;
@@ -67,14 +68,14 @@ namespace API.Controllers
             {
                 response = new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
             }
-            else if(isAdmin())
+            else if (isAdmin())
             {
                 response = _service.Detail(orderId, null);
             }
             else
             {
                 response = _service.Detail(orderId, Guid.Parse(userId));
-            }          
+            }
             Response.StatusCode = response.Code;
             return response;
         }

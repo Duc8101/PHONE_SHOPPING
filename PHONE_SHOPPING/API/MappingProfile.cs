@@ -25,15 +25,11 @@ namespace API
             CreateMap<UserCreateDTO, User>()
                 .ForMember(d => d.Email, m => m.MapFrom(source => source.Email.Trim()));
             CreateMap<OrderCreateDTO, Order>();
+            CreateMap<CartListDTO, OrderDetail>();
             CreateMap<Order, OrderListDTO>()
                 .ForMember(d => d.Username, m => m.MapFrom(source => source.User.Username))
                 .ForMember(d => d.OrderDate, m => m.MapFrom(source => source.CreatedAt));
-            CreateMap<OrderDetail, DetailDTO>()
-                .ForMember(d => d.ProductName, m => m.MapFrom(source => source.Product.ProductName))
-                .ForMember(d => d.Image, m => m.MapFrom(source => source.Product.Image))
-                .ForMember(d => d.Price, m => m.MapFrom(source => source.Product.Price))
-                .ForMember(d => d.CategoryId, m => m.MapFrom(source => source.Product.CategoryId))
-                .ForMember(d => d.CategoryName, m => m.MapFrom(source => source.Product.Category.CategoryName));
+            CreateMap<OrderDetail, DetailDTO>();
             CreateMap<ProductCreateUpdateDTO, Product>()
                 .ForMember(d => d.ProductName, m => m.MapFrom(source => source.ProductName.Trim()))
                 .ForMember(d => d.Image, m => m.MapFrom(source => source.Image.Trim()));
