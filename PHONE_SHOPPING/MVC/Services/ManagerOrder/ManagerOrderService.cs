@@ -29,14 +29,18 @@ namespace MVC.Services.ManagerOrder
             {
                 return new ResponseBase<Dictionary<string, object>?>(null, response.Message, response.Code);
             }
-            List<string> list = new List<string>();
-            list.Add(OrderStatus.Pending.ToString());
-            list.Add(OrderStatus.Approved.ToString());
-            list.Add(OrderStatus.Rejected.ToString());
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data["result"] = response.Data;
-            data["list"] = list;
-            data["status"] = status == null ? "" : status.Trim();
+            List<string> list = new List<string>() 
+            { 
+                OrderStatus.Pending.ToString(), 
+                OrderStatus.Approved.ToString(),
+                OrderStatus.Rejected.ToString()
+            };
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"result", response.Data },
+                {"list", list },
+                {"status", status == null ? "" : status.Trim() },
+            };
             return new ResponseBase<Dictionary<string, object>?>(data);
         }
 

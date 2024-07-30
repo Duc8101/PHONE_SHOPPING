@@ -8,7 +8,7 @@ namespace MVC.Services.ManagerCategory
     {
         Task<ResponseBase<Pagination<CategoryListDTO>?>> Index(string? name, int? page);
         Task<ResponseBase<bool?>> Create(CategoryCreateUpdateDTO DTO);
-        Task<ResponseBase<CategoryListDTO?>> Update(int ID);
-        Task<ResponseBase<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO);
+        Task<ResponseBase<CategoryListDTO?>> Update(int id);
+        Task<ResponseBase<CategoryListDTO?>> Update(int id, CategoryCreateUpdateDTO DTO);
     }
 }

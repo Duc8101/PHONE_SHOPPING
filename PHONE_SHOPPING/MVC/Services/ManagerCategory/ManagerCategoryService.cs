@@ -29,14 +29,14 @@ namespace MVC.Services.ManagerCategory
             string URL = "https://localhost:7077/Category/Create";
             return await Post<CategoryCreateUpdateDTO, bool?>(URL, DTO);
         }
-        public async Task<ResponseBase<CategoryListDTO?>> Update(int ID)
+        public async Task<ResponseBase<CategoryListDTO?>> Update(int id)
         {
-            string URL = "https://localhost:7077/Category/Detail/" + ID;
+            string URL = "https://localhost:7077/Category/Detail/" + id;
             return await Get<CategoryListDTO?>(URL);
         }
-        public async Task<ResponseBase<CategoryListDTO?>> Update(int ID, CategoryCreateUpdateDTO DTO)
+        public async Task<ResponseBase<CategoryListDTO?>> Update(int id, CategoryCreateUpdateDTO DTO)
         {
-            string URL = "https://localhost:7077/Category/Update/" + ID;
+            string URL = "https://localhost:7077/Category/Update/" + id;
             return await Put<CategoryCreateUpdateDTO, CategoryListDTO?>(URL, DTO);
         }
 

@@ -45,7 +45,7 @@ namespace MVC.Services.ManagerProduct
             }
             return response;
         }
-        
+
         public async Task<ResponseBase<Dictionary<string, object>?>> Index(string? name, int? categoryId, int? page)
         {
             ResponseBase<List<CategoryListDTO>?> resCategory = await getListCategory();
@@ -58,11 +58,13 @@ namespace MVC.Services.ManagerProduct
             {
                 return new ResponseBase<Dictionary<string, object>?>(null, resProduct.Message, resProduct.Code);
             }
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data["result"] = resProduct.Data;
-            data["list"] = resCategory.Data;
-            data["categoryId"] = categoryId == null ? 0 : categoryId;
-            data["name"] = name == null ? "" : name.Trim();
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"result", resProduct.Data},
+                {"list", resCategory.Data},
+                {"categoryId", categoryId == null ? 0 : categoryId},
+                {"name", name == null ? "" : name.Trim()},
+            };
             return new ResponseBase<Dictionary<string, object>?>(data);
         }
 
@@ -106,9 +108,11 @@ namespace MVC.Services.ManagerProduct
             {
                 return new ResponseBase<Dictionary<string, object>?>(null, resPro.Message, resPro.Code);
             }
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            result["product"] = resPro.Data;
-            result["list"] = resCat.Data;
+            Dictionary<string, object> result = new Dictionary<string, object>()
+            {
+                {"product", resPro.Data},
+                {"list", resCat.Data},
+            };
             return new ResponseBase<Dictionary<string, object>?>(result);
         }
 
@@ -128,9 +132,11 @@ namespace MVC.Services.ManagerProduct
             {
                 return new ResponseBase<Dictionary<string, object>?>(null, resPro.Message, resPro.Code);
             }
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data["product"] = resPro.Data;
-            data["list"] = resCat.Data;
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                {"product", resPro.Data},
+                {"list",  resCat.Data},
+            };
             return new ResponseBase<Dictionary<string, object>?>(data, resPro.Message, resPro.Code);
         }
 

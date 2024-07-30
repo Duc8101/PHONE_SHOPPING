@@ -29,7 +29,7 @@ namespace MVC.Services.MyOrder
             {
                 return new ResponseBase<OrderDetailDTO?>(null, "Not found order match user", (int)HttpStatusCode.NotFound);
             }
-            return new ResponseBase<OrderDetailDTO?>(response.Data, string.Empty);
+            return new ResponseBase<OrderDetailDTO?>(response.Data);
         }
     }
 }
