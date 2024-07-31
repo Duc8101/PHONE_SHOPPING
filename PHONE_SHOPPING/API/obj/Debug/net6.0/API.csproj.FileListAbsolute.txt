@@ -78,3 +78,6 @@ D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\obj\Debug\net6.0\API.genruntimeconfi
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\obj\Debug\net6.0\ref\API.dll
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
+D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\bin\Debug\net6.0\System.CodeDom.dll
+D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\bin\Debug\net6.0\System.Management.dll
+D:\GitHub\PHONE_SHOPPING\PHONE_SHOPPING\API\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Management.dll

@@ -6,6 +6,7 @@ namespace MVC.Hardware
 {
     public class HardInfo
     {
+
         public static string Generate()
         {
             // ------------------- dùng lớp VMI Win32_BaseBoard để lấy thông tin motherboard
@@ -27,13 +28,13 @@ namespace MVC.Hardware
             string input = string.Join("\n", baseBoardInfo);
             // ------------------ dùng sha1 mã hóa -----------------------
             byte[] hash = SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(input));
-            string result = "";
+            StringBuilder builder = new StringBuilder();
             for (int i = 0; i < hash.Length; i++)
             {
                 // convert into hexadecimal
-                result = result + hash[i].ToString("x2");
+                builder.Append(hash[i].ToString("x2"));
             }
-            return result;
+            return builder.ToString();
         }
     }
 }
