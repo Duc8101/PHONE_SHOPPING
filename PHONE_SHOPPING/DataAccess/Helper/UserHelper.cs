@@ -101,8 +101,8 @@ namespace DataAccess.Helper
 
         public static string BodyEmailForAdminReceiveOrder()
         {
-            string body = "<h1>New Order</h1>\n";
-            body = body + "<p>Please check information order</p>\n";
+            string body = "<h1>New Order</h1>\n"
+                + "<p>Please check information order</p>\n";
             return body;
         }
 

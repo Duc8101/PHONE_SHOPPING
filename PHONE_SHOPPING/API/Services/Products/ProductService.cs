@@ -138,7 +138,7 @@ namespace API.Services.Products
                     return new ResponseBase("Not found product", (int)HttpStatusCode.NotFound);
                 }
                 ProductListDTO DTO = _mapper.Map<ProductListDTO>(product);
-                return new ResponseBase(DTO, string.Empty);
+                return new ResponseBase(DTO);
             }
             catch (Exception ex)
             {
