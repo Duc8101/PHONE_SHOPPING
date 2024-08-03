@@ -73,6 +73,7 @@ namespace API
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             }));
+            builder.Services.AddControllersWithViews();
             // ------------------------- register dbcontext ----------------------------
             string connection = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<PHONE_STOREContext>(options =>
@@ -96,7 +97,7 @@ namespace API
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-              
+
             }
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -104,7 +105,7 @@ namespace API
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseCors("AllowOrigin");
             app.MapControllers();
 
             app.Run();
