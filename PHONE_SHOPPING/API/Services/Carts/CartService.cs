@@ -63,7 +63,7 @@ namespace API.Services.Carts
                     _context.Carts.Update(cart);
                     _context.SaveChanges();
                 }
-                return new ResponseBase(true, string.Empty);
+                return new ResponseBase(true);
             }
             catch (Exception ex)
             {
@@ -104,7 +104,7 @@ namespace API.Services.Carts
                     _context.Carts.Update(cart);
                     _context.SaveChanges();
                 }
-                return new ResponseBase(true, string.Empty);
+                return new ResponseBase(true);
             }
             catch (Exception ex)
             {

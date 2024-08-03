@@ -19,13 +19,12 @@ namespace MVC.Controllers
             {
                 return Redirect("/ManagerProduct");
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.Index(name, categoryId, page);
-            if (result.Data == null)
+            ResponseBase<Dictionary<string, object>?> response = await _service.Index(name, categoryId, page);
+            if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
-            return View(result.Data);
-
+            return View(response.Data);
         }
     }
 }

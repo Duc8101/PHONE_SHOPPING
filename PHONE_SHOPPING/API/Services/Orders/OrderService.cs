@@ -87,6 +87,7 @@ namespace API.Services.Orders
                 return new ResponseBase(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        
         private IQueryable<Order> getQuery(Guid? userId, string? status)
         {
             IQueryable<Order> query = _context.Orders.Include(u => u.User);

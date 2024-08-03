@@ -26,7 +26,7 @@ namespace MVC.Controllers
             ResponseBase<Pagination<CategoryListDTO>?> response = await _service.Index(name, page);
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             Dictionary<string, object> dic = new Dictionary<string, object>();
             dic["result"] = response.Data;
@@ -58,7 +58,7 @@ namespace MVC.Controllers
                     ViewData["error"] = response.Message;
                     return View();
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             ViewData["success"] = response.Message;
             return View();
@@ -80,7 +80,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerCategory");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -99,7 +99,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerCategory");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {

@@ -25,7 +25,7 @@ namespace MVC.Controllers
             ResponseBase<Pagination<OrderListDTO>?> response = await _service.Index(page);
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -52,7 +52,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/MyOrder");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }

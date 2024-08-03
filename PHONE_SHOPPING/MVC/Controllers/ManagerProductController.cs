@@ -23,12 +23,12 @@ namespace MVC.Controllers
                         {
                             return Redirect("/Home");
                         }*/
-            ResponseBase<Dictionary<string, object>?> result = await _service.Index(name, categoryId, page);
-            if (result.Data == null)
+            ResponseBase<Dictionary<string, object>?> response = await _service.Index(name, categoryId, page);
+            if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
-            return View(result.Data);
+            return View(response.Data);
         }
 
         public async Task<ActionResult> Create()
@@ -40,7 +40,7 @@ namespace MVC.Controllers
             ResponseBase<List<CategoryListDTO>?> response = await _service.Create();
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -55,7 +55,7 @@ namespace MVC.Controllers
             ResponseBase<List<CategoryListDTO>?> response = await _service.Create(DTO);
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {
@@ -85,7 +85,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerProduct");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -104,7 +104,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerProduct");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {
@@ -134,7 +134,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerProduct");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             ViewData["message"] = response.Message;
             return View("/Views/ManagerProduct/Index.cshtml", response.Data);

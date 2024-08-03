@@ -25,7 +25,7 @@ namespace MVC.Controllers
             {      
                 return Redirect("/Home");
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+            return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
         }
     }
 }

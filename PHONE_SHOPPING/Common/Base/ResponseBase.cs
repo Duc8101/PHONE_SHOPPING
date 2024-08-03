@@ -8,10 +8,11 @@ namespace Common.Base
         public string Message { get; set; } = string.Empty;
         public T? Data { get; set; }
 
-        public ResponseBase()
-        {
-
+        public ResponseBase() 
+        { 
+        
         }
+
         public ResponseBase(T data, string message, int code)
         {
             Data = data;

@@ -16,6 +16,7 @@ namespace MVC.Controllers
         {
             _service = service;
         }
+
         public async Task<ActionResult> Index()
         {
             /* if (StaticToken.Token == null)
@@ -25,10 +26,11 @@ namespace MVC.Controllers
             ResponseBase<List<CartListDTO>?> response = await _service.Index();
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
+
         public async Task<ActionResult> Create(Guid? productId)
         {
             /*if (StaticToken.Token == null)
@@ -48,7 +50,7 @@ namespace MVC.Controllers
             {
                 return Redirect("/Cart");
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+            return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
         }
 
         public async Task<ActionResult> Remove(Guid? productId)
@@ -66,7 +68,7 @@ namespace MVC.Controllers
             {
                 return Redirect("/Cart");
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+            return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
         }
 
         public async Task<ActionResult> Checkout()
@@ -89,7 +91,7 @@ namespace MVC.Controllers
             ResponseBase<List<CartListDTO>?> response = await _service.Checkout(DTO);
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.OK)
             {

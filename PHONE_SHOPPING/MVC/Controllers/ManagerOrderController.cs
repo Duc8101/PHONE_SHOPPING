@@ -27,7 +27,7 @@ namespace MVC.Controllers
             ResponseBase<Dictionary<string, object>?> response = await _service.Index(status, page);
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -49,7 +49,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerOrder");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -70,7 +70,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerOrder");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -88,7 +88,7 @@ namespace MVC.Controllers
                 {
                     return Redirect("/ManagerOrder");
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             if (response.Data.Status == OrderStatus.Approved.ToString() || response.Data.Status == OrderStatus.Rejected.ToString())
             {
@@ -107,7 +107,7 @@ namespace MVC.Controllers
             ResponseBase<OrderDetailDTO?> response = await _service.Update(id, DTO);
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.OK)
             {

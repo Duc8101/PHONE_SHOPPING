@@ -30,7 +30,7 @@ namespace API.Services.Users
                     return new ResponseBase("Not found user", (int)HttpStatusCode.NotFound);
                 }
                 UserDetailDTO data = _mapper.Map<UserDetailDTO>(user);
-                return new ResponseBase(data, string.Empty);
+                return new ResponseBase(data);
             }
             catch (Exception ex)
             {
@@ -47,6 +47,7 @@ namespace API.Services.Users
                 {
                     return new ResponseBase("Username or password incorrect", (int)HttpStatusCode.NotFound);
                 }
+                
                 int clientId;
                 Client? client = _context.Clients.FirstOrDefault(c => c.HarewareInfo == DTO.HarewareInfo);
                 // nếu chưa đăng ký thiết bị
@@ -67,7 +68,8 @@ namespace API.Services.Users
                 {
                     clientId = client.ClientId;
                 }
-                string AccessToken = UserHelper.getAccessToken(user);
+                
+                string accessToken = UserHelper.getAccessToken(user);
                 UserClient? userClient = _context.UserClients.FirstOrDefault(uc => uc.UserId == user.UserId && uc.ClientId == clientId);
                 // nếu chưa đăng nhập trên thiết bị
                 if (userClient == null)
@@ -77,7 +79,7 @@ namespace API.Services.Users
                         UserClientId = Guid.NewGuid(),
                         UserId = user.UserId,
                         ClientId = clientId,
-                        Token = AccessToken,
+                        Token = accessToken,
                         ExpireDate = DateTime.Now.AddDays(1),
                         CreatedAt = DateTime.Now,
                         UpdateAt = DateTime.Now,
@@ -88,7 +90,7 @@ namespace API.Services.Users
                 }
                 else
                 {
-                    userClient.Token = AccessToken;
+                    userClient.Token = accessToken;
                     userClient.UpdateAt = DateTime.Now;
                     userClient.ExpireDate = DateTime.Now.AddDays(1);
                     _context.UserClients.Update(userClient);
@@ -96,7 +98,7 @@ namespace API.Services.Users
                 }
                 UserLoginInfoDTO data = new UserLoginInfoDTO()
                 {
-                    Access_Token = AccessToken,
+                    Access_Token = accessToken,
                     UserId = user.UserId,
                     RoleId = user.RoleId,
                     Username = user.Username,
@@ -111,7 +113,6 @@ namespace API.Services.Users
                     _context.SaveChanges();
                 }
                 return new ResponseBase(data);
-
             }
             catch (Exception ex)
             {
@@ -310,7 +311,7 @@ namespace API.Services.Users
                     Username = user.Username,
                     ExpireDate = userClient.ExpireDate,
                 };
-                return new ResponseBase(data, string.Empty);
+                return new ResponseBase(data);
             }
             catch (Exception ex)
             {

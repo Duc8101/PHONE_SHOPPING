@@ -31,7 +31,7 @@ namespace MVC.Controllers
                     Response.Cookies.Delete("info");
                     return View();
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             HttpContext.Session.SetString("userId", response.Data.UserId.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
@@ -52,7 +52,7 @@ namespace MVC.Controllers
                     ViewData["message"] = response.Message;
                     return View();
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             HttpContext.Session.SetString("userId", response.Data.UserId.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);

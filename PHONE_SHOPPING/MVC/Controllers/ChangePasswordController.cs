@@ -39,7 +39,7 @@ namespace MVC.Controllers
                 ViewData["success"] = response.Message;
                 return View();
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+            return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
         }
     }
 }

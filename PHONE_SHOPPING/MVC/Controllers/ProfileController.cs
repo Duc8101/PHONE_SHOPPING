@@ -21,7 +21,7 @@ namespace MVC.Controllers
             // if get user failed
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -36,7 +36,7 @@ namespace MVC.Controllers
             ResponseBase<UserDetailDTO?> response = await _service.Index(DTO);
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Shared/Error.cshtml", new ResponseBase(response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {
