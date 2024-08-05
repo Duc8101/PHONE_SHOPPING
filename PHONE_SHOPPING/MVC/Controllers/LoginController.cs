@@ -47,7 +47,7 @@ namespace MVC.Controllers
             ResponseBase<UserLoginInfoDTO?> response = await _service.Index(DTO);
             if (response.Data == null)
             {
-                if (response.Code == (int)HttpStatusCode.NotFound)
+                if (response.Code == (int)HttpStatusCode.Conflict)
                 {
                     ViewData["message"] = response.Message;
                     return View();
